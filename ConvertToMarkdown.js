@@ -618,7 +618,7 @@ ${include}::selection{
 '<span id="$1"></PRIVATE-BLANK-ELEMENT>'
 ],
 [
-/(?<!\\)\\(FONT|SIZE|COLOR):(.*)\\/g,
+/(?<!\\)\\(FONT|SIZE|COLOR|CUSTOM):(.*)\\/g,
 (_, type, value)=>{
     switch(type){
         case "FONT":
@@ -627,6 +627,8 @@ ${include}::selection{
             return `<div style='font-size:${value}'>`
         case "COLOR":
             return `<div style='color:${value}'>`
+        case "CUSTOM":
+            return `<div style="${value}">`
     }
 }
 ],
@@ -676,13 +678,8 @@ function convert(value, custom=true){
         for(let match of value.matchAll(/(?<!\\)\\replace:?(.+)\n(.*)((?:\n)re)?\\/g)){
             value = value.replace(match[0], "")
             if(match[3]){
-                value = value.replace(new RegExp(match[1], "g"), match[2])
+                value = value.replace(new RegExp(match[1], "gm"), match[2])
             }else value = value.replaceAll(match[1], match[2])
-        }
-        for(let match of value.matchAll(/(?<!\\)\\count:([^\n]+)((?:\n)re)?\\/g)){
-            if(match[2]){
-                value = value.replace(match[0], [...preview.textContent.matchAll(match[1])].length - 1)
-            }else value = value.replace(match[0], preview.textContent.split(match[1]).length - 1)
         }
         for(let regexReplace of regexes){
             value = value.replace(regexReplace[0], regexReplace[1])
