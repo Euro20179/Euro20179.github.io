@@ -37,14 +37,14 @@
                 <label>Find <input type="search" id="find-search" style="width:10vw"></label>
                 <label>Replace <input type="search" id="find-replace" style="width:10vw"></label>
                 <label><input type="checkbox" id="find-regex"> Use regex?</label>
-                <button onclick="if(document.getElementById('find-regex').checked){textEditor.value = textEditor.value.replace(new RegExp(document.getElementById('find-search').value), document.getElementById('find-replace').value)}else{textEditor.value = textEditor.value.replace(document.getElementById('find-search').value, document.getElementById('find-replace').value)}">replace 1</button>
-                <button onclick="if(document.getElementById('find-regex').checked){textEditor.value = textEditor.value.replace(new RegExp(document.getElementById('find-search').value, 'gm'), document.getElementById('find-replace').value)}else{textEditor.value = textEditor.value.replaceAll(document.getElementById('find-search').value, document.getElementById('find-replace').value)}">replace all</button>
+                <button class="editing-button" onclick="if(document.getElementById('find-regex').checked){textEditor.value = textEditor.value.replace(new RegExp(document.getElementById('find-search').value), document.getElementById('find-replace').value)}else{textEditor.value = textEditor.value.replace(document.getElementById('find-search').value, document.getElementById('find-replace').value)}">replace 1</button>
+                <button class="editing-button" onclick="if(document.getElementById('find-regex').checked){textEditor.value = textEditor.value.replace(new RegExp(document.getElementById('find-search').value, 'gm'), document.getElementById('find-replace').value)}else{textEditor.value = textEditor.value.replaceAll(document.getElementById('find-search').value, document.getElementById('find-replace').value)}">replace all</button>
                 <span class="divider"></span>
                 <label>Count of <input type="search" id="preview-search-count" style="width:15vw"></label>
                 <input type="checkbox" id="preview-search-count-regex"><label>use regex?</label>
-                <button onclick="let count;if(document.getElementById('preview-search-count-regex').checked){count = [...preview.textContent.matchAll(document.getElementById('preview-search-count').value)].length}else{count= preview.textContent.split(document.getElementById('preview-search-count').value).length - 1}alert(count)">Get Count</button>
+                <button class="editing-button" onclick="let count;if(document.getElementById('preview-search-count-regex').checked){count = [...preview.textContent.matchAll(document.getElementById('preview-search-count').value)].length}else{count= preview.textContent.split(document.getElementById('preview-search-count').value).length - 1}alert(count)">Get Count</button>
                 <span class="divider" dashed></span>
-                <button onclick="alert([...preview.textContent.matchAll(/[^ ]+/gm)].length)">Word Count</button>
+                <button class="editing-button" onclick="alert([...preview.textContent.matchAll(/[^ ]+/gm)].length)">Word Count</button>
             </fieldset>
         </div>
         <div id="ui-options" class="bar-section" style="text-align:right">
@@ -70,7 +70,7 @@
                 <label class="option-item"><input title="(F4)" type="checkbox" id="custom" checked>Custom markdown?</label>
                 <span class="divider"></span>
                 <label class="option-item"><input type="checkbox" id="syncscrolling" onclick="SyncScrolling = !SyncScrolling">Sync Scrolling?</label>                    <span class="divider"></span>
-                <label class="option-item"><input type="checkbox" id="previews" checked="checked" onclick="Preview=!Preview">Previews?</label>
+                <label class="option-item" style="cursor:help" title="stuff like the background color picker changes the A next to it"><input type="checkbox" id="previews" checked="checked" onclick="Preview=!Preview">Previews?</label>
                 <span class="divider"></span>
                 <label class="option-item"><input type="checkbox" id="autocomplete-elements" onclick="AutoCompleteElements=!AutoCompleteElements">Autocomplete Elements?</label>
             </fieldset>
@@ -88,15 +88,15 @@
         </div>
         <div id="file" class="bar-section">
             <fieldset>
-                <button onclick="document.getElementById('fileReader').click()" title="put text from a text file into the editor, (ctrl + shift + alt + o)">Import Text File</button>
+                <button class="editing-button" onclick="document.getElementById('fileReader').click()" title="put text from a text file into the editor, (ctrl + shift + alt + o)">Import Text File</button>
                 <input type="file" id="fileReader" value="hi" style="user-select: none;cursor: inherit;display:none;">
                 <span class="divider"></span>
-                <a href="" id="download"><button onclick="saveFile()" title="save generated html, (ctrl + shift + alt + s)">&#128190; HTML</button></a>
-                <button onclick="savePDF()" title="save generated html as a pdf file, (ctrl + shift + alt + p)">&#128190; PDF</button>
-                <a href="" id="download-plain"><button onclick="savePlain()" title="save text you have inputed, (ctrl + shift + alt + b)">&#128190; Plain</button></a>
-                <button onclick="document.getElementById('preview').printMe()" title="prints the preview, (Alt + q)">🖨️ Print</button>
+                <a href="" id="download"><button class="editing-button" onclick="saveFile()" title="save generated html, (ctrl + shift + alt + s)">&#128190; HTML</button></a>
+                <button class="editing-button" onclick="savePDF()" title="save generated html as a pdf file, (ctrl + shift + alt + p)">&#128190; PDF</button>
+                <a href="" id="download-plain"><button class="editing-button" onclick="savePlain()" title="save text you have inputed, (ctrl + shift + alt + b)">&#128190; Plain</button></a>
+                <button class="editing-button" onclick="document.getElementById('preview').printMe()" title="prints the preview, (Alt + q)">🖨️ Print</button>
                 <span class="divider"></span>
-                <button onclick="preview.innerHTML = convert(textEditor.value, custom=cusotmMdChkbx.checked)" title="(F1)">Convert (F1)</button>
+                <button class="editing-button" onclick="preview.innerHTML = convert(textEditor.value, custom=cusotmMdChkbx.checked)" title="(F1)">Convert (F1)</button>
             </fieldset>
         </div>
         <div id="home" class="bar-section">
