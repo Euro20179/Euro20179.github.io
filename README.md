@@ -2,7 +2,7 @@
 
 I wanted to add some "features" to markdown so I put a bunch of regular expressions in a list and ran input from a textarea through that.
 
-<!--# Documentation
+# Documentation
 
 ## Text
 
@@ -20,14 +20,14 @@ I wanted to add some "features" to markdown so I put a bunch of regular expressi
 * You can add \[color] in front of any of the items below to change the color of the line
     * You can also add \[title] after any of the items below to add a title
 
-* \_underline_
-* \_\_double underline__
-* .\_dotted underline_.
-* ~\_wavy underline_~
-* ^\_overline_^
-* ^^\_double overline|^^
+* \_underline\_
+* \_\_double underline\_\_
+* .\_dotted underline\_.
+* ~\_wavy underline\_~
+* ^\_overline\_^
+* ^^\_double overline\_^^
 * ^~overline wavy~^
-* ~.overline dotted.^
+* ^.overline dotted.^
 * \*-highlight-*
 
 ### General other
@@ -44,10 +44,8 @@ I wanted to add some "features" to markdown so I put a bunch of regular expressi
 
 ## Arrows
 * --->
-<!--
 * <---
 * <-->
-<!--
 * ==>
 * <==
 * -=>
@@ -77,15 +75,101 @@ I wanted to add some "features" to markdown so I put a bunch of regular expressi
 
 ## Custom Elements
 
+
+### builtins
 * c-3d: makes the text have that stereotypical red blue 3d look
 * c-rainbow: gives the text a rainbow background
 * c-upsidedown: makes the text upsidedown
 * c-circled: makes the text circled
 * c-unicode: when given any string of numbers it will convert it to unicode
-* c-choose: give an items attribute each item is seperated by |
+* c-choose: give an items attribute each item is seperated by | put $1 where you wnat the choice to go in the innerHTML
+* c-random: give min, max, and round attributes, put $1 where you want the number to go
+
+### includes
+* Start each of these with \\INDLUDE:
+    * and end with \\
+* SHADOW: shadow element
+* LIMARKER: allows you to do &lt;li marker="marker"> for a custom marker
+* BLINK: annoying
+* SOFTBLINK: blink but smooth transition
+* PLACEHOLDER: kinda just grey unslectable text
+* KEYBOARD: actually just changes how kbd looks
+
+---
+
+## Emojis
+
+[List](https://euro20179.github.io/Emojis.html)
 
 ---
 
 ## Media
 
-* A!\[audio file] creates an audio tag-->
+* A!\[audio file] creates an audio tag
+
+---
+
+## Misc
+
+* \\s\\: special escape, escapes out of my markdown because i'm bad
+
+* \>PRO: pro
+* \>CON: con
+
+* |*: ⚑
+* |>: 🚩
+* (C): copyright
+* (R): registered copyright
+* \ulmarker:1\cool\: sets unordered list marker at the 1st level to cool
+* \olmarker:2\TYPE:lower-alpha\: sets ordered list marker at the 2nd level to the lower-alpha type
+* \UPPER\ uppercase letters
+* \LOWER\ lowercase letters
+* \NUMBERS\ numbers
+* \EMOJI\: random "emoji"
+* 1\/2 makes it look like 1⁄2
+
+## NOT RECOMMENDED (usually causes lag)
+* \RAND\: random number from 1 to 100
+* \RAND{50 56}: random number from 1 to 56
+* \[VAR:x=2]: will replace any \[x] with 2
+
+### Find Replace
+* Properties:
+    * color
+    * font
+    * size
+    * background
+    * custom: any styling
+
+* LAYOUT
+```
+match:(search)
+(property):value\
+```
+OR
+```
+match:(regex)
+(property):value
+re\
+```
+
+#### Examples
+
+```
+\match:red
+color:red\
+```
+searches through the input and makes the string "red" red
+
+```
+\match:.red.
+background:red
+re\
+```
+matches the regular expression .red. and makes the background red
+
+```
+\match:underline
+custom:text-decoration:underline double;\
+```
+matches "underline" and gives it a double underline
