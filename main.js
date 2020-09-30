@@ -14,6 +14,7 @@ let extraElemTextLength = 0;
 let elementInnerHTML;
 let AutoCompleteElements = document.getElementById("autocomplete-elements").checked
 
+
 textEditor.style.backgroundColor = document.getElementById("text-editor-color").value
 textEditor.style.color = document.getElementById("text-editor-text-color").value
 

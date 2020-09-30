@@ -148,7 +148,9 @@ const EMOJIS = {
     medium_dark_skin: "🏾",
     dark_skin: "🏿",
     jsmile: "&#12484;",
-    shrug: "¯\\&lowbar;(ツ)\_/¯"
+    shrug: "¯\\&lowbar;(ツ)\_/¯",
+    upsidedown_e: "¡",
+    upsidedown_q: "¿"
 }
 const imgEmotes = {
     java: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.softexia.com%2Fwp-content%2Fuploads%2F2017%2F04%2FJava-logo.png&f=1&nofb=1",
@@ -172,8 +174,6 @@ regexes = [
     return Math.floor((Math.random() * two) + 1)
 }
 ],
-
-
 [
 /(?<!\\):U_([0-9]+):/g,
 (_, chr)=>{
@@ -402,7 +402,7 @@ NUMBERS
 '<span style="text-decoration:underline double $1" title="$3">$2</span>'
 ],
 [
-/(?<!\\|!?\[.*\]\(.*)(?:\[([^\]]+)\])?_([^_]+)_(?:\[([^\n\]]+)\])?/g,
+/(?<!\\|!?\[.*\]\(.*|:.*)(?:\[([^\]]+)\])?_([^_]+)_(?:\[([^\n\]]+)\])?(?!.*:)/g,
 "<u style='text-decoration:underline $1' title='$3'>$2</u>"
 ],
 [
@@ -422,7 +422,7 @@ NUMBERS
 "<span style='text-shadow:$2'>$3</span>"
 ],
 [
-/(?<!\\)\{(?:\.|class)("|')([^\1\n]+)\1 ?(.+)\}/g,
+/(?<!\\)\{(?:\.|class)("|')(.+)\1 ?(.+)\}/g,
 "<span class='$2'>$3</span>"
 ],
 [
@@ -441,7 +441,7 @@ NUMBERS
 "<marquee direction='$1' height='$3' width='$2' scrollamount='$4'>$5</marquee>"
 ],
 [
-/(?<!\\)\{(?:white)?space:? ?(?:#([^\n ]+))?(?:(?: a:?)?([^\n\}]+))?\}/g,
+/(?<!\\)\{(?:white)?space:? ?(?:([^\n ]+))?(?:(?: a:?)?([^\n\}]+))?\}/g,
 "<c-spacer color='$1' amount='$2'></c-spacer>"
 ],
 [
@@ -657,7 +657,7 @@ function convert(value, custom=true){
             value = value.replace(x[0], "")
             value = value.replace(regex, x[2])
         }
-        for(let match of value.matchAll(/(?<!\\)\\match:?(.*)\n(color|font|size|background|custom):([^\\\n]+)((?:\n)re)?\\/g)){
+        for(let match of value.matchAll(/(?<!\\)\\match:?(.*)\n(color|font|size|background|custom):(.+)((?:\n)re)?\\/g)){
             value = value.replace(match[0], "")
             let styling;
             switch(match[2]){
