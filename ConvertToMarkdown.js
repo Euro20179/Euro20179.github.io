@@ -343,7 +343,7 @@ NUMBERS
 ],
 [
 /(?<!\\)\{(k(?:ey)?|(?:cmd|samp)):([^\}]+)\}/g,
-(_, type, contents)=> `<${type === "cmd" || type === "samp" ? "samp" : "kbd"}>${contents}</${type === "cmd" || type === "samp" ? "samp" : "kbd"}>`
+(_, type, contents)=> `<${type === "cmd"? "cmd" : "samp"}>${contents}</${type === "cmd"? "cmd" : "samp"}>`
 ],
 [
 /(?<!\\)(?:\[(.*)\])?\*-([^-\*]+)-\*(?:\[([^\]\n]+)\])?/g,
@@ -507,7 +507,7 @@ ${selector} li{
 }
 ],
 [
-/(?<!\\)\\INCLUDE:(SHADOW|LIMARKER|SOFTBLINK|BLINK|PLACEHOLDER|KEYBOARD)\\/g,
+/(?<!\\)\\INCLUDE:(SHADOW|LIMARKER|SOFTBLINK|BLINK|PLACEHOLDER|KEYBOARD|SAMP|CMD)\\/g,
 (_, include)=>{
     switch(include){
         case "SHADOW":
@@ -597,6 +597,15 @@ font:.8em SFMono-Regular,Consolas,Liberation Mono,Menlo,Courier,monospace;
 line-height:.9em;
 padding:3px 5px;
 vertical-align:middle
+}</style>`
+        case "SAMP":
+        case "CMD":
+            return `<style>
+${include}{
+    font-family:monospace, monospace;
+    color:green;
+    background-color:black;
+    padding:2px;
 }</style>`
     }
 }
