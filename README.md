@@ -152,15 +152,23 @@ I wanted to add some "features" to markdown so I put a bunch of regular expressi
 * \RAND{50 56}\\: random number from 1 to 56
 * \[VAR:x=2]: will replace any \[x] with 2
 
-### Find Replace
-* Properties:
-    * color
-    * font
-    * size
-    * background
-    * custom: any styling
+### Find
 
-* LAYOUT
+```
+\count:(search)\
+```
+
+OR
+
+```
+\count:(search)
+re\
+```
+
+* replaces that with how many times the search shows up
+    * NOTE: it will be one convert behind since it searches the preview's textContent not the value of the textarea
+
+### Find Replace
 ```
 replace:(search)
 (replacement)\

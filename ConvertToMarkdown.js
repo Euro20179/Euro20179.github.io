@@ -659,7 +659,7 @@ ${include}::selection{
 ]
 function convert(value, custom=true){
     if(custom){
-        for(let x of value.matchAll(/(?:\[|<)(?:VAR:|\$)([^=]*)=(.*)(?:\]|>)/g)){
+        for(let x of value.matchAll(/(?:\[|<)(?:var:|\$)([^=]*)=(.*)(?:\]|>)/g)){
             regex = new RegExp(`(?:\\[|<)${x[1]}(?:>|\\])`, "g")
             value = value.replace(x[0], "")
             value = value.replace(regex, x[2])
@@ -669,6 +669,11 @@ function convert(value, custom=true){
             if(match[3]){
                 value = value.replace(new RegExp(match[1], "g"), match[2])
             }else value = value.replaceAll(match[1], match[2])
+        }
+        for(let match of value.matchAll(/(?<!\\)\\count:([^\n]+)((?:\n)re)?\\/g)){
+            if(match[2]){
+                value = value.replace(match[0], [...preview.textContent.matchAll(match[1])].length - 1)
+            }else value = value.replace(match[0], preview.textContent.split(match[1]).length - 1)
         }
         for(let regexReplace of regexes){
             value = value.replace(regexReplace[0], regexReplace[1])

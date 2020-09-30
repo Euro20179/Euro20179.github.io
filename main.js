@@ -83,10 +83,6 @@ const helpTab = new Tab(document.getElementById("help"), document.getElementById
 let currTab = homeTab
 turnOffAllOtherTabs(currTab)
 
-onbeforeunload = (e)=>{
-    return "Are you sure you want to leave without saveing"
-}
-
 class Upsidedown extends HTMLElement{
     connectedCallback(){
         let newStr = "";
