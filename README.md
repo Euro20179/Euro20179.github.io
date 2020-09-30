@@ -23,10 +23,10 @@ I wanted to add some "features" to markdown so I put a bunch of regular expressi
 * \_underline\_
 * \_\_double underline\_\_
 * .\_dotted underline\_.
-* ~\_wavy underline\_~
+* \~\_wavy underline\_\~
 * ^\_overline\_^
 * ^^\_double overline\_^^
-* ^~overline wavy~^
+* ^\~overline wavy\~^
 * ^.overline dotted.^
 * \*-highlight-*
 
