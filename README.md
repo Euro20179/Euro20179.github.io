@@ -29,6 +29,8 @@ I wanted to add some "features" to markdown so I put a bunch of regular expressi
 * ^\~overline wavy\~^
 * ^.overline dotted.^
 * \*-highlight-*
+* \\^\[text]: puts text in a sup element
+* \\_\[text]: puts text in a sub element
 
 ### General other
 
