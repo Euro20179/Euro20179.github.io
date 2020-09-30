@@ -24,6 +24,7 @@ I wanted to add some "features" to markdown so I put a bunch of regular expressi
 * {bg:color any text in here will have a background color of color}
 <br>
 <br>
+
 * You can add \[color] in front of any of the items below to change the color of the line
     * You can also add \[title] after any of the items below to add a title
 
