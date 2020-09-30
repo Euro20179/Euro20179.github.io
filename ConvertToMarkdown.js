@@ -641,6 +641,15 @@ ${include}::selection{
 '<span style="cursor:$1">$2</span>'
 ],
 [
+/(?<!\\)\\count:([^\n]+)((?:\n)re)?\\/g,
+(_, search, Re)=>{
+    if(Re){
+         return [...preview.textContent.matchAll(search)].length
+    }
+    return preview.textContent.split(search).length - 1
+}
+],
+[
 /(?<!\\)\\;(.*)\\/g,
 "<!--$1-->"
 ],

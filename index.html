@@ -14,6 +14,9 @@
         <button id="file-title" class="bar-section-title" title="file">
             🗎
         </button>
+        <button id="count-title" class="bar-section-title" title="count">
+            #
+        </button>
         <button id="home-title" class="bar-section-title" title="text">
             A
         </button>
@@ -29,6 +32,15 @@
         <button id="ui-title" class="bar-section-title" title="ui colors" style="float:right;margin-right:1.5vw">
             UI ⚙️
         </button>
+        <div id="count" class="bar-section">
+            <fieldset>
+                <label>Count of <input type="search" id="preview-search-count" style="width:15vw"></label>
+                <input type="checkbox" id="preview-search-count-regex"><label>use regex?</label>
+                <button onclick="let count;if(document.getElementById('preview-search-count-regex').checked){count = [...preview.textContent.matchAll(document.getElementById('preview-search-count').value)].length}else{count= preview.textContent.split(document.getElementById('preview-search-count').value).length - 1}alert(count)">Get Count</button>
+                <span class="divider"></span>
+                <button onclick="alert(preview.textContent.split(' ').length)">Rough Word Count</button>
+            </fieldset>
+        </div>
         <div id="ui-options" class="bar-section" style="text-align:right">
             <fieldset>
                 <label class="option-item" title="(F6)"><input type="checkbox" id="darkmode" onclick="DarkMode=!DarkMode;setDarkMode()" title="F6" checked>Dark Mode?</label>

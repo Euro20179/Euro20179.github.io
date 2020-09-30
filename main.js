@@ -79,6 +79,7 @@ const fileTab = new Tab(document.getElementById("file"), document.getElementById
 const optionsTab = new Tab(document.getElementById("options"), document.getElementById("options-title"))
 const UIOptionsTab = new Tab(document.getElementById("ui-options"), document.getElementById("ui-title"))
 const helpTab = new Tab(document.getElementById("help"), document.getElementById("help-title"))
+const countTab = new Tab(document.getElementById("count"), document.getElementById("count-title"))
 
 let currTab = homeTab
 turnOffAllOtherTabs(currTab)
