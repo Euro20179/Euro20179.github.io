@@ -342,8 +342,8 @@ NUMBERS
 "<details><summary>$1</summary>$2</details>"
 ],
 [
-/(?<!\\)\{(k(?:ey)?|(?:cmd|samp)):([^\}]+)\}/g,
-(_, type, contents)=> `<${type === "cmd"? "cmd" : "samp"}>${contents}</${type === "cmd"? "cmd" : "samp"}>`
+/(?<!\\)\{(k(?:ey)?|(?:cmd|samp|k(?:ey)?)):([^\}]+)\}/g,
+(_, type, contents)=>`<${type != "k" && type != "key" ? type : "kbd"}>${contents}</${type != "k" && type != "key" ? type : "kbd"}>`
 ],
 [
 /(?<!\\)(?:\[(.*)\])?\*-([^-\*]+)-\*(?:\[([^\]\n]+)\])?/g,
@@ -606,6 +606,9 @@ ${include}{
     color:green;
     background-color:black;
     padding:2px;
+}
+${include}::selection{
+    background-color:white;
 }</style>`
     }
 }
@@ -634,6 +637,10 @@ ${include}{
 }
 ],
 [
+/(?<!\\)\{cur(?:sor)?:? ?([^\n:]*):([^\}]+)\}/g,
+'<span style="cursor:$1">$2</span>'
+],
+[
 /(?<!\\)\\;(.*)\\/g,
 "<!--$1-->"
 ],
@@ -657,7 +664,7 @@ function convert(value, custom=true){
             value = value.replace(x[0], "")
             value = value.replace(regex, x[2])
         }
-        for(let match of value.matchAll(/(?<!\\)\\match:?(.*)\n(color|font|size|background|custom):(.+)((?:\n)re)?\\/g)){
+        for(let match of value.matchAll(/(?<!\\)\\match:?(.+)\n(color|font|size|background|custom):(.+)((?:\n)re)?\\/g)){
             value = value.replace(match[0], "")
             let styling;
             switch(match[2]){

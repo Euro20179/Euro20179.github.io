@@ -22,6 +22,7 @@ I wanted to add some "features" to markdown so I put a bunch of regular expressi
 * {ssize any text in here will be of size size}
 * {#color any text in here will be color}
 * {bg:color any text in here will have a background color of color}
+* {cursor:type:text} any text will have a cursor of type
 <br>
 <br>
 
