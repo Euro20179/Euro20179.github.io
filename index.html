@@ -9,7 +9,7 @@
     <link rel="icon" type="image/png" href="fav.png">
 </head>
 <body ondrop="dropHandler(event)" ondragover="dragOverHandler(event)">
-    <div class="editing-bar" id="editing-bar" style="visibility: visible;">
+    <div class="editing-bar" id="editing-bar" style="visibility: visible;" title="Ctrl + Shift + E">
         <button id="file-title" class="bar-section-title" title="file">
             🗎
         </button>
@@ -58,6 +58,8 @@
         </div>
         <div id="help" class="bar-section">
             <fieldset>
+                <span style="text-decoration: underline dotted;" title="Ctrl + Shift + E">Open/close this</span>
+                <span class="divider"></span>   
                 <a href="./Emojis.html"><button class="editing-button">Emoji List</button></a>
                 <a href="./Emojis.html#custom-emoji-shortcuts"><button class="editing-button">Custom Emoji shortcuts</button></a>
                 <a href="./Emojis.html#custom-emoji"><button class="editing-button">Custom Emoji</button></a>
@@ -136,7 +138,6 @@
             <span class="divider"></span>
             <button class="editing-button" onclick="let more = document.getElementById('text-more');if(more.style.visibility === 'visible'){more.style.visibility = 'hidden';more.style.height=0;more.style.marginTop='0%'}else{more.style.visibility = 'visible';more.style.height='initial';more.style.marginTop='1%'}" id="more-button">More</button>
             <div id="text-more" style="visibility:hidden;height:0px;margin-top:0%;"> 
-                <br>
                 <label>Border Options</label>
                     <select name="direction" value="" id="border-direction" title="line side" oninput="updateBorderButton()">
                         <option value="" title="all sides">All Sides</option>
