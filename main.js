@@ -1,7 +1,6 @@
 const textEditor = document.querySelector('.text-editor')
 const preview = document.querySelector('.preview')
 const cusotmMdChkbx = document.getElementById("custom")
-const textEditorinnerHTML = localStorage.getItem("TEXT")
 const fileReader = document.getElementById("fileReader")
 const contextMenuColorpicker = document.getElementById("context-menu-color-picker")
 let InterprateLive = document.getElementById("live-interprate").checked
@@ -83,6 +82,10 @@ const helpTab = new Tab(document.getElementById("help"), document.getElementById
 
 let currTab = homeTab
 turnOffAllOtherTabs(currTab)
+
+onbeforeunload = (e)=>{
+    return "Are you sure you want to leave without saveing"
+}
 
 class Upsidedown extends HTMLElement{
     connectedCallback(){
@@ -291,10 +294,6 @@ const converter = new showdown.Converter({
     parseImgDimensions:true
 })
 
-if(textEditorinnerHTML){
-    textEditor.value = textEditorinnerHTML
-}
-
 function addBorder(){
     let size=document.getElementById('border-size').value; 
     let unit = document.getElementById('border-unit').value;
@@ -469,7 +468,9 @@ textEditor.addEventListener('keydown', e=>{
                 e.preventDefault()
                 break;
             case "F1":
+                textEditor.style.cursor = "wait"
                 preview.innerHTML = convert(textEditor.value, custom=cusotmMdChkbx.checked)
+                textEditor.style.cursor = "initial"
                 e.preventDefault()
                 break;
             default:
@@ -681,7 +682,6 @@ textEditor.addEventListener('input', (e)=>{
         let { value } = e.target;
         //matches the variable things like [VAR:x=y]
         preview.innerHTML = convert(value, custom=cusotmMdChkbx.checked)
-        localStorage.setItem("TEXT", textEditor.value)
     }
 })
 textEditor.addEventListener('click', (e)=>{
@@ -706,12 +706,14 @@ function saveFile(){
     downloadB.download = "converted.md"
 }
 function savePDF(){
+    preview.style.width = "992px"
     html2pdf()
     .set({
-        image: {type: "jpeg", quality: 1}
+        image: {type: "png"},
     })
     .from(preview)
     .save()
+    preview.style.width = "50%"
 }
 function savePlain(){
     const downloadB = document.getElementById("download-plain")

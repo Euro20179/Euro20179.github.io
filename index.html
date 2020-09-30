@@ -294,12 +294,6 @@
             </select>
             <button class="editing-button" onclick="addOLULInclude()">Add</button>
             <span class="divider"></span>
-            <label>Themes</label>
-            <select name="themes" id="themes" title="themes" oninput="addTextTypeInTextArea(`\\THEME:${this.value}\\`)">
-                <option value="github-dark">Github dark</option>
-                <option value="github-light">Github light</option>
-            </select>
-            <span class="divider"></span>
             <label>Includes</label>
             <select name="includes" id="includes" title="elements" oninput="addTextTypeInTextArea(`\\INCLUDE:${this.value}\\`)">
                 <optgroup label="Elements">
@@ -333,7 +327,7 @@
     </div>
     <div class="main-content">
         <textarea class="text-editor" style="resize:horizontal" id="text-editor" spellcheck placeholder="# text here" autofocus>\FONT: arial\</textarea>
-        <div class="preview" style="resize: horizontal;overflow: auto;" id="preview"></div>
+        <div class="preview" style="resize: horizontal;overflow: auto;width:50%" id="preview"></div>
     </div>
     <div class="context-menu">
         <div class="context-menu-item" id="color-picker-menu-item">

@@ -106,7 +106,7 @@ I wanted to add some "features" to markdown so I put a bunch of regular expressi
 * BLINK: annoying
 * SOFTBLINK: blink but smooth transition
 * PLACEHOLDER: kinda just grey unslectable text
-* KEYBOARD: css for the kbd element
+* KBD: css for the kbd element
 * SAMP: css for the samp element
 * CMD: css for a cmd element (same css as SAMP)
 
@@ -162,33 +162,33 @@ I wanted to add some "features" to markdown so I put a bunch of regular expressi
 
 * LAYOUT
 ```
-match:(search)
-(property):value\
+replace:(search)
+(replacement)\
 ```
 OR
 ```
 match:(regex)
-(property):value
+(replacement)
 re\
 ```
 
 #### Examples
 
 ```
-\match:red
-color:red\
+\replace:red
+{#red red}\
 ```
 searches through the input and makes the string "red" red
 
 ```
-\match:.red.
-background:red
+\replace:.red.
+{bg:red $1}
 re\
 ```
 matches the regular expression .red. and makes the background red
 
 ```
-\match:underline
-custom:text-decoration:underline double;\
+\replace:underline
+{*'text-decoration:underline double;' underline}\
 ```
 matches "underline" and gives it a double underline

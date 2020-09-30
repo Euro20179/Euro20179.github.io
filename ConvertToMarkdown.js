@@ -507,7 +507,7 @@ ${selector} li{
 }
 ],
 [
-/(?<!\\)\\INCLUDE:(SHADOW|LIMARKER|SOFTBLINK|BLINK|PLACEHOLDER|KEYBOARD|SAMP|CMD)\\/g,
+/(?<!\\)\\INCLUDE:(SHADOW|LIMARKER|SOFTBLINK|BLINK|PLACEHOLDER|KBD|SAMP|CMD)\\/g,
 (_, include)=>{
     switch(include){
         case "SHADOW":
@@ -584,7 +584,7 @@ user-select:none;
 }
 </style>
 `
-        case "KEYBOARD":
+        case "KBD":
             return `<style>
 kbd{
 background-color:#fafbfc;
@@ -664,29 +664,11 @@ function convert(value, custom=true){
             value = value.replace(x[0], "")
             value = value.replace(regex, x[2])
         }
-        for(let match of value.matchAll(/(?<!\\)\\match:?(.+)\n(color|font|size|background|custom):(.+)((?:\n)re)?\\/g)){
+        for(let match of value.matchAll(/(?<!\\)\\replace:?(.+)\n(.*)((?:\n)re)?\\/g)){
             value = value.replace(match[0], "")
-            let styling;
-            switch(match[2]){
-                case "color":
-                    styling = `color:${match[3]}`
-                    break
-                case "font":
-                    styling = `font-family:${match[3]}`
-                    break;
-                case "size":
-                    styling = `font-size: ${match[3]}`
-                    break;
-                case "background":
-                    styling = `background-color: ${match[3]}`
-                    break;
-                case "custom":
-                    styling = match[3]
-                    break;
-            }
-            if(match[4]){
-                value = value.replace(new RegExp(match[1], "g"), (find)=>`<span style="${styling}">${find}</span>`)
-            }else value = value.split(match[1]).join(`<span style="${styling}">${match[1]}</span>`)
+            if(match[3]){
+                value = value.replace(new RegExp(match[1], "g"), match[2])
+            }else value = value.replaceAll(match[1], match[2])
         }
         for(let regexReplace of regexes){
             value = value.replace(regexReplace[0], regexReplace[1])
