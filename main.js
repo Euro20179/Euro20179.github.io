@@ -20,6 +20,17 @@ textEditor.style.color = document.getElementById("text-editor-text-color").value
 preview.style.backgroundColor = document.getElementById("preview-color").value
 preview.style.color = document.getElementById("preview-text-color").value
 
+const urlParams = new URLSearchParams(location.search.replace("*", "#"))
+for(let queary of urlParams){
+    [queary, value] = queary
+    switch(queary){
+        case "editor":
+            textEditor.style.backgroundColor = value; break;
+        case "editortext": textEditor.style.color = value; break;
+        case "darkmode": DarkMode = true; break;
+        case "lightmode": DarkMode = false; break;
+    }
+}
 setDarkMode()
 function setDarkMode(){
     const body = document.getElementsByTagName("body")[0]

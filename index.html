@@ -297,12 +297,18 @@
             <span class="divider"></span>
             <label>Includes</label>
             <select name="includes" id="includes" title="elements" oninput="addTextTypeInTextArea(`\\INCLUDE:${this.value}\\`)">
-                <option value="BLINK" title="&lt;blink> element">Blink</option>
-                <option value="SOFTBLINK" title="&lt;softblink> element">Soft Blink</option>
-                <option value="PLACEHOLDER" title="&lt;placeholder> element">Placeholder</option>
-                <option value="SHADOW" title="&lt;shadow> element">Shadow</option>
-                <option value="LIMARKER" title="&lt;li marker=''> element">Li Maker</option>
-                <option value="KEYBOARD" title="makes the kbd element nicer">Kbd</option>
+                <optgroup label="Elements">
+                    <option value="BLINK" title="&lt;blink> element">Blink</option>
+                    <option value="SOFTBLINK" title="&lt;softblink> element">Soft Blink</option>
+                    <option value="PLACEHOLDER" title="&lt;placeholder> element">Placeholder</option>
+                    <option value="SHADOW" title="&lt;shadow> element">Shadow</option>
+                    <option value="LIMARKER" title="&lt;li marker=''> element">Li Maker</option>
+                    <option value="CMD" title="&lt;cmd> element">Cmd element</option>
+                </optgroup>
+                <optgroup label="Element Styling">
+                    <option value="KEYBOARD" title="makes the kbd element nicer">Kbd</option>
+                    <option value="SAMP" title="makes the samp element look like command line">samp</option>
+                </optgroup>
             </select>
             <wbr>
             <span class="divider" style="border-style:dashed;"></span>

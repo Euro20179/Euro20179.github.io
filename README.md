@@ -2,6 +2,13 @@
 
 I wanted to add some "features" to markdown so I put a bunch of regular expressions in a list and ran input from a textarea through that.
 
+# Queary Strings
+* \* or %23 = #
+* lightmode: sets to lightmode
+* darkmode: sets to darkmode
+* editor=color: the color of the editor
+* editortext=color: the color of the text of the editor
+
 # Documentation
 
 ## Text
