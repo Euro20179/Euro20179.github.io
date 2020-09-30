@@ -490,11 +490,12 @@ textEditor.addEventListener('keydown', e=>{
             case "s": typeInTextarea('~~~~', 2); e.preventDefault(); break;
             case "p": addTextTypeInTextArea(">PRO: ");e.preventDefault();break;
             case "1": fileTab.tabTitle.click();e.preventDefault(); break
-            case "2": homeTab.tabTitle.click();e.preventDefault();break;
-            case "3": insertTab.tabTitle.click();e.preventDefault();break;
-            case "4": helpTab.tabTitle.click();e.preventDefault();break;
-            case "5": UIOptionsTab.tabTitle.click();e.preventDefault();break;
-            case "6": optionsTab.tabTitle.click();e.preventDefault();break;
+            case "2": countTab.tabTitle.click();e.preventDefault();break;
+            case "3": homeTab.tabTitle.click();e.preventDefault();break;
+            case "4": insertTab.tabTitle.click();e.preventDefault();break;
+            case "5": helpTab.tabTitle.click();e.preventDefault();break;
+            case "6": UIOptionsTab.tabTitle.click();e.preventDefault();break;
+            case "7": optionsTab.tabTitle.click();e.preventDefault();break;
             case "k": startEndTypeInTextArea("[](", ")", {cursor: 1}); e.preventDefault();break
             case "y": startEndTypeInTextArea("[", "]:()", {cursor:-1, defaultCursor:1});e.preventDefault();break;
             case "'":
