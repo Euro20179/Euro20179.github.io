@@ -129,8 +129,8 @@ I wanted to add some "features" to markdown so I put a bunch of regular expressi
 * 1\/2 makes it look like 1⁄2
 
 ## NOT RECOMMENDED (usually causes lag)
-* \RAND\: random number from 1 to 100
-* \RAND{50 56}: random number from 1 to 56
+* \RAND\\: random number from 1 to 100
+* \RAND{50 56}\\: random number from 1 to 56
 * \[VAR:x=2]: will replace any \[x] with 2
 
 ### Find Replace
