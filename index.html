@@ -7,7 +7,7 @@
     <link rel="stylesheet" type="text/css" media="screen" href="./main.css">
     <link rel="stylesheet" type="text/css" media="screen" href="./normalize.css">
     <link rel="shortcut icon" type="image/png" href="./fav.png">
-    <link rel="stylesheet" type="text/css" href="overlineunderlinecss.css">
+    <link rel="stylesheet" type="text/css" href="hidden-buttons.css">
 </head>
 <body ondrop="dropHandler(event)" ondragover="dragOverHandler(event)">
     <div class="editing-bar" id="editing-bar" style="visibility: visible;" title="Ctrl + Shift + E">
@@ -129,7 +129,6 @@
             </button>
             <span class="divider"></span>
             <wbr>
-            <button class="editing-button" onclick='startEndTypeInTextArea("[](", ")", {cursor: 1})' title="Link">📎</button>
             <button class="editing-button" onclick='startEndTypeInTextArea("[", "]:()", {cursor:-1})' title="Definition Layout"><u>A</u>:<i>a</i></button>
             <button class="editing-button" onclick="typeInTextarea(`''''`, 2)" title="Quotation, (ctrl + q)">"A"</button>
             <span class="divider" style="border-style: dashed;"></span>
