@@ -1,0 +1,14 @@
+.editing-button.popup-button-trigger:hover + .editing-button.popup-button{
+    display:inline;
+    visibility: visible;
+}
+
+.editing-button.popup-button:hover{
+    display:inline;
+    visibility: visible;
+}
+
+.editing-button.popup-button{
+    display: none;
+    visibility: hidden;
+}

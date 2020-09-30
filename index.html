@@ -7,6 +7,7 @@
     <link rel="stylesheet" type="text/css" media="screen" href="./main.css">
     <link rel="stylesheet" type="text/css" media="screen" href="./normalize.css">
     <link rel="shortcut icon" type="image/png" href="./fav.png">
+    <link rel="stylesheet" type="text/css" href="overlineunderlinecss.css">
 </head>
 <body ondrop="dropHandler(event)" ondragover="dragOverHandler(event)">
     <div class="editing-bar" id="editing-bar" style="visibility: visible;" title="Ctrl + Shift + E">
@@ -103,26 +104,29 @@
             <label style="color:blue" id="color-label">A</label><input type="color" oninput="if(Preview){document.getElementById('color-label').style.color=this.value}" onload="document.getElementById('color-label').style.color=this.value" value="#0000ff" id="text-color" title="Text color (#0000ff), (ctrl + shift + z)" oninput="this.title=`Text color, (${this.value}), (alt + c)`">
             <label style="background-color:orange" id="background-color-label">A</label><input oninput="if(Preview){document.getElementById('background-color-label').style.backgroundColor=this.value}" onload="document.getElementById('background-color-label').style.backgroundColor=this.value" type="color" value="#ffaa00" id="background-color" title="Background color (#ffaa00), (ctrl + shift + alt + z)" oninput="this.title=`Background color (${this.value}), (alt + g)`">
             <span class="divider" style="border-style: dashed;"></span>
-            <label>Text align</label>
-            <select id="text-alignment" value="center" oninput="switch(this.value){case 'right':startEndTypeInTextArea('|->', '|');break; case 'center': startEndTypeInTextArea('|->', '<-|')}">
-                <option value="right" title="ctrl + shift + ]">Right</option>
-                <option value="center" title="ctrl + shift + \">Center</option>
-            </select>
+            <img src="src/center-dark.png" title="center, (ctrl + shift + |)" onclick="startEndTypeInTextArea('|->', '<-|')" class="img-button dark">
+            <img src="src/center-light.png" title="center, (ctrl + shift + |)" onclick="startEndTypeInTextArea('|->', '<-|')" class="img-button light">
+            <img src="src/right-dark.png" title="right, (ctrl + shift + ])" onclick="startEndTypeInTextArea('|->', '|')" class="img-button dark">
+            <img src="src/right-light.png" title="right, (ctrl + shift + ])" onclick="startEndTypeInTextArea('|->', '|')" class="img-button light">
             <span class="divider"></span>
             <button class="editing-button" onclick="typeInTextarea('**')" title="Italic, (ctrl + i)"><i>i</i></button>
             <button class="editing-button" onclick="typeInTextarea('****', 2)" title="Bold, (ctrl + b)"><b>b</b></button>
-            <button class="editing-button" onclick="typeInTextarea('__')" title="Underline, (ctrl + u)"><u>u</u></button>
             <button class="editing-button" onclick="typeInTextarea('~~~~', 2)" title="Strikethrough, (ctrl + s)"><s>s</s></button>
             <button class="editing-button" onclick="typeInTextarea('*--*', endSpot=2)" title="Highlight, (ctrl + h)"><mark>h</mark></button>
             <span class="divider" style="border-style: dashed;"></span>
             <wbr>
-            <button class="editing-button" onclick="typeInTextarea('^__^', 2)" title="Overline, (ctrl + shift + u)"><span style="text-decoration: overline;">o</span></button>
-            <button class="editing-button" onclick="typeInTextarea('~__~', 2)" title="Wavy underline, (ctrl + r)"><span style="text-decoration: underline wavy;">u</span></button>
-            <button class="editing-button" onclick="typeInTextarea('^~~^', 2)" title="Wavy overline, (ctrl + shfit + r)"><span style="text-decoration: overline wavy;">o</span></button>
-            <button class="editing-button" onclick="typeInTextarea('.__.', 2)" title="Wavy underline, (ctrl + d)"><span style="text-decoration: underline dotted;">u</span></button>
-            <button class="editing-button" onclick="typeInTextarea('^..^', 2)" title="Wavy overline, (ctrl + shift + d)"><span style="text-decoration: overline dotted;">o</span></button>
-            <button class="editing-button" onclick="typeInTextarea('____', 2)" title="Double underline, (ctrl + alt + u)"><span style="text-decoration: underline double;">uu</span></button>
-            <button class="editing-button" onclick="typeInTextarea('^^__^^', 3)" title="Double overline, (ctrl + alt + shift + u)"><span style="text-decoration: overline double;">oo</span></button>
+            <button class="editing-button popup-button-trigger" onclick="typeInTextarea('__')" title="Underline, (ctrl + u)"><u>u</u>
+                <button class="editing-button popup-button" onclick="typeInTextarea('^__^', 2)" title="Overline, (ctrl + shift + u)"><span style="text-decoration: overline;">o</span></button>
+            </button>
+            <button class="editing-button popup-button-trigger" onclick="typeInTextarea('~__~', 2)" title="Wavy underline, (ctrl + r)"><span style="text-decoration: underline wavy;">u</span>
+                <button class="editing-button popup-button" onclick="typeInTextarea('^~~^', 2)" title="Wavy overline, (ctrl + shfit + r)"><span style="text-decoration: overline wavy;">o</span></button>
+            </button>
+            <button class="editing-button popup-button-trigger" onclick="typeInTextarea('.__.', 2)" title="Wavy underline, (ctrl + d)"><span style="text-decoration: underline dotted;">u</span>
+                <button class="editing-button popup-button" onclick="typeInTextarea('^..^', 2)" title="Wavy overline, (ctrl + shift + d)"><span style="text-decoration: overline dotted;">o</span></button>
+            </button>
+            <button class="editing-button popup-button-trigger" onclick="typeInTextarea('____', 2)" title="Double underline, (ctrl + alt + u)"><span style="text-decoration: underline double;">uu</span>
+                <button class="editing-button popup-button" onclick="typeInTextarea('^^__^^', 3)" title="Double overline, (ctrl + alt + shift + u)"><span style="text-decoration: overline double;">oo</span></button>
+            </button>
             <span class="divider"></span>
             <wbr>
             <button class="editing-button" onclick='startEndTypeInTextArea("[](", ")", {cursor: 1})' title="Link">📎</button>
@@ -132,14 +136,15 @@
             <button class="editing-button" onclick="startEndTypeInTextArea('\\^[', ']')" title="Superscript, (ctrl + .)">A<sup>a</sup></button>
             <button class="editing-button" onclick="startEndTypeInTextArea('\\_[', ']')" title="Subscript, (ctrl + ,)">A<sub>a</sub></button>
             <span class="divider" style="border-style: dashed;"></span>
-            <button class="editing-button" onclick="addTextTypeInTextArea('>PRO:')" title="Pro, (ctrl + p)"><span style="color:green">✓ A</span></button>
-            <button class="editing-button" onclick="addTextTypeInTextArea('>CON:')" title="Con, (ctrl + alt + p)"><span style="color:red">☒ A</span></button>
+            <button class="editing-button popup-button-trigger" onclick="addTextTypeInTextArea('>PRO:')" title="Pro, (ctrl + p)"><span style="color:green">✓ A</span>
+                <button class="editing-button popup-button" onclick="addTextTypeInTextArea('>CON:')" title="Con, (ctrl + alt + p)"><span style="color:red">☒ A</span></button>
+            </button>
             <span class="divider" style="border-style: dashed;"></span>
             <button title="keybaord key (yes they are different) (ctrl + shift + k)" class="editing-button" onclick="startEndTypeInTextArea('{key:', '}')"><kbd>A</kbd></button>
             <button title="command text (yes they are different) (ctrl + shift + ;)" class="editing-button" onclick="startEndTypeInTextArea('{cmd:', '}')"><samp>A</samp></button>
             <span class="divider"></span>
-            <button class="editing-button" onclick="let more = document.getElementById('text-more');if(more.style.visibility === 'visible'){more.style.visibility = 'hidden';more.style.height=0;more.style.marginTop='0%'}else{more.style.visibility = 'visible';more.style.height='initial';more.style.marginTop='1%'}" id="more-button">More</button>
-            <div id="text-more" style="visibility:hidden;height:0px;margin-top:0%;"> 
+            <button class="editing-button" onclick="let more = document.getElementById('text-more');if(more.style.visibility === 'visible'){more.style.visibility = 'hidden';more.style.height=0;more.style.marginTop='0%';more.style.display='none'}else{more.style.visibility = 'visible';more.style.height='initial';more.style.marginTop='1%';more.style.display='block'}" id="more-button">More</button>
+            <div id="text-more" style="visibility:hidden;height:0px;margin-top:0%;display:none;margin-bottom:0%"> 
                 <label>Border Options</label>
                     <select name="direction" value="" id="border-direction" title="line side" oninput="updateBorderButton()">
                         <option value="" title="all sides">All Sides</option>

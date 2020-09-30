@@ -151,7 +151,8 @@ span.divider[dashed]{
   background-color: #1055bd;
 }
 
-.darkmode .editing-button:hover{
+.darkmode .editing-button:hover,
+.darkmode .img-button:hover{
   background-color: #dbd8d8;
   color: black;
 }
@@ -199,4 +200,50 @@ span.divider[dashed]{
 input[type=number]{
   width:75px;
   height:25px;
+}
+
+.img-button{
+  vertical-align: middle;
+}
+
+.img-button.light{
+  visibility: visible;
+  border:2px outset black;
+  background-color:white;
+  width:1.7em;
+  display:inline;
+}
+.img-button.light:hover{
+  background-color:lightgreen;
+}
+.darkmode .img-button.light{
+  visibility: hidden;
+  width:0;
+  display: none;
+}
+
+.img-button.dark{
+  border:2px outset white;
+  background-color: #474747;
+  visibility: hidden;
+  width:0;
+  display:none;
+}
+
+.darkmode .img-button.dark{
+  visibility: visible;
+  width:1.7em;
+  display:inline;
+}
+
+.img-button{
+  cursor: pointer;
+  vertical-align: middle;
+}
+
+.bar-section-off .img-button.dark{
+  display:none;
+}
+.bar-section-off .img-button.light{
+  display:none;
 }
