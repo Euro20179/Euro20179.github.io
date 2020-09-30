@@ -143,6 +143,7 @@ I wanted to add some "features" to markdown so I put a bunch of regular expressi
 * 1\/2 makes it look like 1⁄2
 * "summary"...details
 * "text"\[title]
+* \\;comment\\
 
 ## NOT RECOMMENDED (usually causes lag)
 * \RAND\\: random number from 1 to 100
