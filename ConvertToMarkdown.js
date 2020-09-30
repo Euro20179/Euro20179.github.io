@@ -362,8 +362,8 @@ NUMBERS
 (_, disabled, min, max, value)=> `${min}<input type="range" min="${min}" max="${max}" value="${value}" ${!disabled ? "disabled" : ""}>${max}`
 ],
 [
-/(?<!\\)\[(.+)\]: ?(?:\[|\()(.*)(?:\)|\])/g,
-"<u>$1</u>:<br><dfn style='margin-left:1.5em;display:block'>$2</dfn>"
+/(?<!\\)\[(.+)\](?: ?(.*))?:(?: |\n(?: |    )?)?(?:\[|\()(.*)(?:\)|\])/g,
+(_, word, speech, def)=>`<u>${word}</u>${speech ? " (" + speech + ")" : ""}:<br><dfn style='margin-left:1.5em;display:block'>${def}</dfn>`
 ],
 [
 /(?<!\\)#\[([^\]]*)\]([^\n]*)/g,
