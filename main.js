@@ -682,9 +682,6 @@ textEditor.addEventListener('input', (e)=>{
         preview.innerHTML = convert(value, custom=cusotmMdChkbx.checked)
     }
 })
-textEditor.addEventListener('click', (e)=>{
-    textEditor.dispatchEvent(new Event('input'))
-})
 
 document.getElementById("color-picker-menu-item").addEventListener("click", (e)=>{
     let left = e.clientX;

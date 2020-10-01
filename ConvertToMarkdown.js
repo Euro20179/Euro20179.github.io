@@ -256,8 +256,8 @@ NUMBERS
 (_, checked)=> `<input type="radio" ${checked === "*" ? "checked" : ""} disabled>`
 ],
 [
-/(?<!\\)\{(?:\*|style|css)"(.+)" ?([^\}]+)\}/g,
-"<span style='$1'>$2</span>"
+/(?<!\\)\{(?:\*|style|css)('|")(.+)\1 ?([^\}]+)\}/g,
+"<span style='$2'>$3</span>"
 ],
 [
 /(?<!\\)\[(\.)?( |x)\]\s?(?!\()/g,
@@ -402,7 +402,7 @@ NUMBERS
 '<span style="text-decoration:underline double $1" title="$3">$2</span>'
 ],
 [
-/(?<!\\|!?\[.*\]\(.*|:.*)(?:\[([^\]]+)\])?_([^_\n]+)_(?:\[([^\n\]]+)\])?(?!.*:)/g,
+/(?<!\\|:.*)(?:\[([^\]]+)\])?_([^_\n]+)_(?:\[([^\n\]]+)\])?(?!.*:)/g,
 "<u style='text-decoration:underline $1' title='$3'>$2</u>"
 ],
 [
@@ -648,7 +648,7 @@ ${include}::selection{
     if(Re){
          return [...preview.textContent.matchAll(search)].length
     }
-    return preview.textContent.split(search).length - 1
+    return preview.textContent.split(search).length
 }
 ],
 [
@@ -670,7 +670,7 @@ ${include}::selection{
 ]
 function convert(value, custom=true){
     if(custom){
-        for(let x of value.matchAll(/(?:\[|<)(?:var:|\$)([^=]*)=(.*)(?:\]|>)/g)){
+        for(let x of value.matchAll(/(?:\[|<)(?:var:|\$)([^=]*)=([^\]]+)(?:\]|>)/g)){
             regex = new RegExp(`(?:\\[|<)${x[1]}(?:>|\\])`, "g")
             value = value.replace(x[0], "")
             value = value.replace(regex, x[2])
