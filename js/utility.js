@@ -95,6 +95,7 @@ function typeInTextarea(newText, endSpot=1){
     el.setRangeText(newText.substring(endSpot, newText.length), end + endSpot, end + endSpot)
     if(start != end) end += endSpot
     el.setSelectionRange(end + endSpot, end + endSpot)
+    preview.innerHTML = convert(el.value, custom=cusotmMdChkbx.checked)
 }
 /**
  * 
@@ -129,6 +130,7 @@ function startEndTypeInTextArea(startText, endText, options=null){
         }
     }
     el.setSelectionRange(cursorStart, cursorStart)
+    preview.innerHTML = convert(el.value, custom=cusotmMdChkbx.checked)
 }
 
 function addTextTypeInTextArea(text, selectType="end"){
