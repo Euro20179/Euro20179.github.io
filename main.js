@@ -704,14 +704,19 @@ function saveFile(){
     downloadB.download = "converted.md"
 }
 function savePDF(){
-    preview.style.width = "992px"
+    preview.style.width = "1026px"
     html2pdf()
     .set({
         image: {type: "png"},
+        html2canvas: {scale: 2},
+        jsPDF: {
+            unit: "in",
+            orientation: "landscape"
+        },
+
     })
     .from(preview)
     .save()
-    preview.style.width = "50%"
 }
 function savePlain(){
     const downloadB = document.getElementById("download-plain")
