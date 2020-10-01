@@ -237,6 +237,7 @@ textEditor.addEventListener('keydown', e=>{
             addToCurrElem(e)
         }
     }
+    //non-combo key presses
     if(!e.ctrlKey && !e.altKey && !e.shiftKey){
         switch (e.key) {
             case "Tab":
@@ -266,7 +267,7 @@ textEditor.addEventListener('keydown', e=>{
                 break;
         }
     }
-    //ctrl + shift + key
+    //ctrl + key
     else if(e.ctrlKey  && !e.shiftKey && !e.altKey){
         switch(e.key){
             case "q": typeInTextarea("''''", 2); e.preventDefault(); break;                
@@ -295,6 +296,30 @@ textEditor.addEventListener('keydown', e=>{
             case "'":
                 addOLULInclude()
                 e.preventDefault();break;
+        }
+    }
+    //alt key
+    else if(e.altKey && !e.shiftKey && !e.ctrlKey){
+        switch(e.key){
+            case "p":
+                contextMenuColorpicker.click();
+                e.preventDefault();break;
+            case "i":
+                typeInTextarea("``")
+                e.preventDefault();
+                break
+            case "s":
+                addShadow()
+                e.preventDefault()
+                break
+            case "h":
+                addSpace();
+                e.preventDefault()
+                break;
+            case "b":
+                addBorder()
+                e.preventDefault()
+                break;
         }
     }
     //ctrl + shift + key
@@ -378,35 +403,7 @@ textEditor.addEventListener('keydown', e=>{
             case "i":startEndTypeInTextArea("```\n", "\n```");e.preventDefault();break;
         }
     }
-    else if(e.altKey && e.ctrlKey && e.shiftKey && e.key == "U"){
-        typeInTextarea("^^__^^", 3),
-        e.preventDefault();
-    }
-    else if(e.altKey && e.ctrlKey && e.shiftKey && e.key == "F"){
-        addTextTypeInTextArea("\\FONT: arial\\\n")
-        e.preventDefault();
-    }
-    else if(e.altKey && e.key == "p"){
-        contextMenuColorpicker.click();
-    }
-    else if(e.altKey && e.key == "i"){
-        typeInTextarea("``")
-        e.preventDefault();
-    }
-    else if(e.altKey && e.key === "s"){
-        addShadow()
-        e.preventDefault()
-    }
-    else if(e.altKey && e.key == "h"){
-        addSpace();
-        e.preventDefault()
-    }
-    else if(e.altKey &&e.key == "b"){
-        addBorder()
-        e.preventDefault()
-    }
-
-    //alt + shift + key
+    //alt + shift + ctrl + key
     else if(e.altKey && e.shiftKey && e.ctrlKey){
         switch(e.key){
             case "O": document.getElementById('fileReader').click(); e.preventDefault(); break; 
@@ -415,10 +412,19 @@ textEditor.addEventListener('keydown', e=>{
                 startEndTypeInTextArea(`[${currBGColorSelected}]*-`, "-*")
                 e.preventDefault()           
                 break;  
+            case "F":
+                addTextTypeInTextArea("\\FONT: arial\\\n")
+                e.preventDefault();
+                break;
+            case "U":
+                typeInTextarea("^^__^^", 3),
+                e.preventDefault();
+                break;
         }
     }    
 })
 
+//when changing the settings for the space insert, this changes the A next to it
 function updateSpaceButton(){
     if(Preview){
         let color = document.getElementById("space-color").value;
@@ -430,6 +436,7 @@ function updateSpaceButton(){
     }
 }
 
+//when changing the settings for the border insert, this changes the A next to it
 function updateBorderButton(){
     if(Preview){
         let size=document.getElementById('border-size').value; 
@@ -454,6 +461,7 @@ function updateBorderButton(){
     }
 }
 
+//when changing the settings for the shadow insert, this changes the A next to it
 function updateShadowButton(){
     if(Preview){
         let unit = document.getElementById('shadow-dir-unit').value;
@@ -466,6 +474,8 @@ function updateShadowButton(){
         shadowButton.style.textShadow = `${right}${unit} ${down}${unit} ${blur}${blurUnit} ${color}`
     }
 }
+
+//updates the preview when switching between non-custom and custom markdown
 cusotmMdChkbx.addEventListener('click', e=>{
     if(InterprateLive){
         let value  = textEditor.value
@@ -473,6 +483,7 @@ cusotmMdChkbx.addEventListener('click', e=>{
     }
 })
 
+//updates the preview when the texteditor value changes
 textEditor.addEventListener('input', (e)=>{
     if(InterprateLive){
         let { value } = e.target;
@@ -481,6 +492,7 @@ textEditor.addEventListener('input', (e)=>{
     }
 })
 
+//when ctrl + right click, opens color picker
 textEditor.addEventListener("contextmenu", (e)=>{
     if(e.ctrlKey){
         contextMenuColorpicker.click()
@@ -488,6 +500,7 @@ textEditor.addEventListener("contextmenu", (e)=>{
     }
 })
 
+//triggers when a file is added to the page
 fileReader.addEventListener("change", (e)=>{
     const fr = new FileReader();
     fr.onload=()=>{
@@ -498,16 +511,8 @@ fileReader.addEventListener("change", (e)=>{
 
 })
 
-function insertAtCurosr(text, el=document.activeElement, selectMode="end"){
-    const [start, end] = [el.selectionStart, el.selectionEnd]
-    el.setRangeText(text, start, end, selectMode)
-}
-
-function checkBox(elementId) {
-    const inputE = document.getElementById(elementId)
-    inputE.checked = !inputE.checked
-}
-
+//syncs the scrolling of preview and text-editor if that's on
+//so that it doesn't scroll on it's own
 var pScroll = false;
 var eScroll = false;
 

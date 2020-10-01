@@ -675,6 +675,7 @@ ${include}::selection{
 ]
 function convert(value, custom=true){
     if(custom){
+        //handles the [$x=2] thing
         for(let x of value.matchAll(/(?:\[|<)(?:var:|\$)([^=]*)=([^\]]+)(?:\]|>)/g)){
             regex = new RegExp(`(?:\\[|<)${x[1]}(?:>|\\])`, "g")
             value = value.replace(x[0], "")
@@ -682,12 +683,15 @@ function convert(value, custom=true){
         }
         let replaces = [...value.matchAll(/(?<!\\)\\replace:?(.+)\n(.*)((?:\n)re)?\\/g)]
         for(let match of replaces){
+            //makes it replace only the text after the declartation
             value = value.split(match[0])
+            //for regex replace
             if(match[3]){
                 value[1] = value[1].replace(new RegExp(match[1], "gm"), match[2])
-            }else value[1] = value[1].replaceAll(match[1], match[2])
+            }else value[1] = value[1].replaceAll(match[1], match[2]) //for non-regex replace
             value = value.join("")
         }
+        //loops through the lists of regexes
         for(let regexReplace of regexes){
             value = value.replace(regexReplace[0], regexReplace[1])
         }
