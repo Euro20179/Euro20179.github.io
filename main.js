@@ -388,6 +388,13 @@ document.addEventListener("keydown", e=>{
     }
 })
 
+document.getElementById("preview-search-count").addEventListener("keydown", (e)=>{
+    if(e.key === "Enter"){
+        document.getElementById("count-of-button").click()
+        e.preventDefault();
+    }
+})
+
 let PreviewMode = false;
 preview.addEventListener("click", e=>{
     if(e.altKey){
@@ -490,6 +497,8 @@ textEditor.addEventListener('keydown', e=>{
             case "s": typeInTextarea('~~~~', 2); e.preventDefault(); break;
             case "p": addTextTypeInTextArea(">PRO: ");e.preventDefault();break;
             case "1": fileTab.tabTitle.click();e.preventDefault(); break
+            case "f": countTab.tabTitle.click();document.getElementById("find-search").focus();e.preventDefault();break;
+            case "g": countTab.tabTitle.click();document.getElementById("preview-search-count").focus();e.preventDefault();break;
             case "2": countTab.tabTitle.click();e.preventDefault();break;
             case "3": homeTab.tabTitle.click();e.preventDefault();break;
             case "4": insertTab.tabTitle.click();e.preventDefault();break;
