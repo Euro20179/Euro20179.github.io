@@ -270,7 +270,7 @@ regexes = [
 }
 ],
 [
-/(?<!\\)\{s(?!\.|[a-z]):?([^ \n]+) ([^\}]*)\}/g,
+/(?<!\\)\{s(?!hadow):?([^ \n]+) ([^\}]*)\}/g,
 "<span style='font-size:$1'>$2</span>"
 ],
 [
@@ -402,12 +402,12 @@ regexes = [
 '<span style="text-decoration:underline wavy $1" title="$3">$2</span>'
 ],
 [
-/(?<!\\)(?:\[([^\]]+)\])?__([^__\n]+)__(?:\[([^\n\]]+)\])?/g,
-'<span style="text-decoration:underline double $1" title="$3">$2</span>'
+/(?<!\\|:.*|_)(?:\[([^\]]+)\])?_([^_\n]+)_(?:\[([^\n\]]+)\])?(?!.*:)/g,
+"<u style='text-decoration:underline $1' title='$3'>$2</u>"
 ],
 [
-/(?<!\\|:.*)(?:\[([^\]]+)\])?_([^_\n]+)_(?:\[([^\n\]]+)\])?(?!.*:)/g,
-"<u style='text-decoration:underline $1' title='$3'>$2</u>"
+/(?<!\\)(?:\[([^\]]+)\])?__([^__\n]+)__(?:\[([^\n\]]+)\])?/g,
+'<span style="text-decoration:underline double $1" title="$3">$2</span>'
 ],
 [
 /(?<!\\)\|->([^\|]+)<-\|/g,
