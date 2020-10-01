@@ -397,7 +397,7 @@ document.getElementById("preview-search-count").addEventListener("keydown", (e)=
 
 let PreviewMode = false;
 preview.addEventListener("click", e=>{
-    if(e.altKey){
+    if(e.altKey || (e.ctrlKey && e.shiftKey)){
         if(!PreviewMode){
             const editingBar = document.getElementById('editing-bar')
             editingBar.classList = "editing-bar-off"

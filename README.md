@@ -20,8 +20,8 @@ I wanted to add some "features" to markdown so I put a bunch of regular expressi
 * any text below \\SIZE:size\\ will be that size
 * {f'font' any text in here will be font}
 * {ssize any text in here will be of size size}
-* {#color any text in here will be color}
-* {bg:color any text in here will have a background color of color}
+* {#color any text in here will be color}\[title]
+* {bg:color any text in here will have a background color of color}\[title]
 * {cursor:type:text} any text will have a cursor of type
 <br>
 <br>
@@ -52,9 +52,9 @@ I wanted to add some "features" to markdown so I put a bunch of regular expressi
 
 * |->center<-|
 * |->right|
-* {->2em indented 2em at the left side}
-* {indented 2em at the right side <-2em}
-* {->2em indented 2em on both sides <-2em}
+* {->2em indented 2em left}
+* {indented 2em right <-2em}
+* {->2em indented 2em both <-2em}
 
 ---
 

@@ -264,9 +264,9 @@ regexes = [
 "<span style='background-image:linear-gradient($2, $3)'>$4</span>"
 ],
 [
-/(?<!\\)\{#:?([^ \n\}:]+)(?::| )?([^\}]*)\}/g,
-(_, color, content)=>{
-    return color.match(/(?:[0-f]{6}|[0-f]{8})/) ? `<span style="color:#${color}">${content}</span>` : `<span style="color:${color}">${content}</span>`
+/(?<!\\)\{#:?([^ \n\}:]+)(?::| )?([^\}]*)\}(?:\[(.*)\])?/g,
+(_, color, content, title)=>{
+    return color.match(/(?:[0-f]{6}|[0-f]{8})/) ? `<span title="${title ? title : ""}" style="color:#${color}">${content}</span>` : `<span title="${title ? title : ""}" style="color:${color}">${content}</span>`
 }
 ],
 [
@@ -302,8 +302,8 @@ regexes = [
 "<span style='border-right: $2'>$3</span>"
 ],
 [
-/(?<!\\)\{bg(?:#|:)?([^ \n]+)(.*)\}/g,
-'<span style="background-color:$1">$2</span>'
+/(?<!\\)\{bg(?:#|:)?([^ \n]+)(.*)\}(?:\[(.*)\])?/g,
+'<span style="background-color:$1" title="$3">$2</span>'
 ],
 [
 /(?<!\\)\((C|R)\)/g,
@@ -643,8 +643,8 @@ ${include}::selection{
 }
 ],
 [
-/(?<!\\)\{cur(?:sor)?:? ?([^\n:]*):([^\}]+)\}/g,
-'<span style="cursor:$1">$2</span>'
+/(?<!\\)\{cur(?:sor)?:? ?([^\n:]*):([^\}]+)\}(?:\[(.*)\])?/g,
+'<span style="cursor:$1" title="$3">$2</span>'
 ],
 [
 /(?<!\\)\\count:([^\n]+)((?:\n)re)?\\/g,
