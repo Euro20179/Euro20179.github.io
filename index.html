@@ -40,7 +40,7 @@
                 <button class="editing-button" onclick="if(document.getElementById('find-regex').checked){textEditor.value = textEditor.value.replace(new RegExp(document.getElementById('find-search').value), document.getElementById('find-replace').value)}else{textEditor.value = textEditor.value.replace(document.getElementById('find-search').value, document.getElementById('find-replace').value)}">replace 1</button>
                 <button class="editing-button" onclick="if(document.getElementById('find-regex').checked){textEditor.value = textEditor.value.replace(new RegExp(document.getElementById('find-search').value, 'gm'), document.getElementById('find-replace').value)}else{textEditor.value = textEditor.value.replaceAll(document.getElementById('find-search').value, document.getElementById('find-replace').value)}">replace all</button>
                 <span class="divider"></span>
-                <label>Count of <input type="search" id="preview-search-count" style="width:15vw"></label>
+                <label>Count of <input type="search" id="preview-search-count" style="width:10vw"></label>
                 <input type="checkbox" id="preview-search-count-regex"><label>use regex?</label>
                 <button id="count-of-button" class="editing-button" onclick="let count;if(document.getElementById('preview-search-count-regex').checked){count = [...preview.textContent.matchAll(document.getElementById('preview-search-count').value)].length}else{count= preview.textContent.split(document.getElementById('preview-search-count').value).length}alert(count)">Get Count</button> 
                 <span class="divider" dashed></span>
