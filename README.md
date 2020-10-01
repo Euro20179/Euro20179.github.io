@@ -52,6 +52,9 @@ I wanted to add some "features" to markdown so I put a bunch of regular expressi
 
 * |->center<-|
 * |->right|
+* {->2em indented 2em at the left side}
+* {indented 2em at the right side <-2em}
+* {->2em indented 2em on both sides <-2em}
 
 ---
 

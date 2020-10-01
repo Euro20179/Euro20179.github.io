@@ -151,7 +151,6 @@ const EMOJIS = {
     shrug: "¯\\&lowbar;(ツ)\_/¯",
     upsidedown_e: "¡",
     upsidedown_q: "¿",
-    spooky_scary_skeletons: "<img src='https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fmedia.tenor.com%2Fimages%2Fdfea95af83f35a6ed84129a62c41b87e%2Ftenor.gif&f=1&nofb=1' width='80m'>"
 }
 const imgEmotes = {
     java: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.softexia.com%2Fwp-content%2Fuploads%2F2017%2F04%2FJava-logo.png&f=1&nofb=1",
@@ -164,6 +163,9 @@ const imgEmotes = {
     css: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fmaxcdn.icons8.com%2FShare%2Ficon%2FLogos%2Fcss31600.png&f=1&nofb=1",
     autohotkey: "https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fcdn.warer.com%2Fmedia%2Fauto_hotkey-logo.png&f=1&nofb=1",
     
+}
+const hiddenEmotes = {
+    spooky_scary_skeletons: "<img src='https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fmedia.tenor.com%2Fimages%2Fdfea95af83f35a6ed84129a62c41b87e%2Ftenor.gif&f=1&nofb=1' width='80m'>",
 }
 regexes = [
 [
@@ -187,18 +189,6 @@ regexes = [
 ()=>{
     return String.fromCodePoint(Math.floor(Math.random() * (129003 - 127744) + 127744))
 }
-],
-[
-/(?<!\\)\\UPPER\\/g,
-UPPER
-],
-[
-/(?<!\\)\\LOWER\\/g,
-LOWER
-],
-[
-/(?<!\\)\\NUMBERS\\/g,
-NUMBERS
 ],
 [
 /(?<!\\)([0-9\.]+)\/\/([0-9\.]+)/g, //fractions
@@ -332,6 +322,18 @@ NUMBERS
 ":regional&lowbar;indicator_$1:"
 ],
 [
+/(?<!\\)\{(?:->|lindent) ?([^ \n\}]*) ([^\}]+) (?:<-|rindent)([^ \n\}]*)\}/g,
+"<span style='display:block;margin-left:$1;margin-right:$3'>$2</span>"
+],
+[
+/(?<!\\)\{(?:->|lindent) ?([^ \n\}]*) ([^\}]+)\}/g,
+"<span style='display:block;margin-left:$1'>$2</span>"  
+],
+[
+/(?<!\\)\{([^\}]+) (?:<-|rindent)([^ \n\}]*)\}/g,
+"<span style='display:block;margin-right:$2'>$1</span>"  
+],
+[
 /(?<!\\)(?:\[([^\n\]]*)\])?\\(\^|_)\[([^\]\n]*)\](?:\[([^\]\n]*)\])?/g,
 (_, color, upDown, contents, title)=> `<${upDown === "^" ? "sup" : "sub"} style='color:${color ? color : ""}' title='${title ? title : ""}'>${contents}</${upDown === "^" ? "sup" : "sub"}>`
 ],
@@ -340,7 +342,7 @@ NUMBERS
 '<span title="$4">$1$3</span>'
 ],
 [
-/(?<!\\)"(.+)"\s*\.{3}(.*)/g,
+/(?<!\\)"(.+)"\s?\.{3}(.*)/g,
 "<details><summary>$1</summary>$2</details>"
 ],
 [
@@ -617,7 +619,7 @@ ${include}::selection{
 ],
 [
 /(?<!\\)\{id:? ?([^\n\}]+)\}/g,
-'<span id="$1"></PRIVATE-BLANK-ELEMENT>'
+'<BLANK id="$1"></BLANK>'
 ],
 [
 /(?<!\\)\\(FONT|SIZE|COLOR|CUSTOM):(.*)\\/g,
@@ -662,13 +664,14 @@ ${include}::selection{
 (_, name)=>{
     if(EMOJIS[name]) return EMOJIS[name]
     else if(imgEmotes[name]) return `<img src="${imgEmotes[name]}" align="absmiddle" style="width:1em">`
+    else if(hiddenEmotes[name]) return hiddenEmotes[name]
     return `:${name}:`
 }
 ],
 [
-/(?<!\\)\\(?:(?:S|s(?:pecial)?)|c(?:ustom)?)\\/g,
+/(?<!\\)\\s\\/g,
 ""
-]
+],
 ]
 function convert(value, custom=true){
     if(custom){
