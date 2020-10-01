@@ -191,6 +191,15 @@ regexes = [
 }
 ],
 [
+/(?<!\\):([a-z0-9_]+):/g,
+(_, name)=>{
+    if(EMOJIS[name]) return EMOJIS[name]
+    else if(imgEmotes[name]) return `<img src="${imgEmotes[name]}" align="absmiddle" style="width:1em">`
+    else if(hiddenEmotes[name]) return hiddenEmotes[name]
+    return `:${name}:`
+}
+],
+[
 /(?<!\\)([0-9\.]+)\/\/([0-9\.]+)/g, //fractions
 "$1⁄$2"
 ],
@@ -402,7 +411,7 @@ regexes = [
 '<span style="text-decoration:underline wavy $1" title="$3">$2</span>'
 ],
 [
-/(?<!\\|:.*|_)(?:\[([^\]]+)\])?_([^_\n]+)_(?:\[([^\n\]]+)\])?(?!.*:)/g,
+/(?<!\\|_)(?:\[([^\]]+)\])?_([^_\n]+)_(?:\[([^\n\]]+)\])?/g,
 "<u style='text-decoration:underline $1' title='$3'>$2</u>"
 ],
 [
@@ -658,15 +667,6 @@ ${include}::selection{
 [
 /(?<!\\)\\;(.*)\\/g,
 "<!--$1-->"
-],
-[
-/(?<!\\):([a-z0-9_]+):/g,
-(_, name)=>{
-    if(EMOJIS[name]) return EMOJIS[name]
-    else if(imgEmotes[name]) return `<img src="${imgEmotes[name]}" align="absmiddle" style="width:1em">`
-    else if(hiddenEmotes[name]) return hiddenEmotes[name]
-    return `:${name}:`
-}
 ],
 [
 /(?<!\\)\\s\\/g,
