@@ -682,12 +682,11 @@ function convert(value, custom=true){
         }
         let replaces = [...value.matchAll(/(?<!\\)\\replace:?(.+)\n(.*)((?:\n)re)?\\/g)]
         for(let match of replaces){
-            value = value.replace(match[0], "")
-        }
-        for(let match of replaces){
+            value = value.split(match[0])
             if(match[3]){
-                value = value.replace(new RegExp(match[1], "gm"), match[2])
-            }else value = value.replaceAll(match[1], match[2])
+                value[1] = value[1].replace(new RegExp(match[1], "gm"), match[2])
+            }else value[1] = value[1].replaceAll(match[1], match[2])
+            value = value.join("")
         }
         for(let regexReplace of regexes){
             value = value.replace(regexReplace[0], regexReplace[1])
