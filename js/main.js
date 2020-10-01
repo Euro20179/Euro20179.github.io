@@ -335,6 +335,10 @@ textEditor.addEventListener('keydown', e=>{
             startEndTypeInTextArea(`{${currColorSelected}:`, "}")
             e.preventDefault()
             break; 
+        case "B":
+            typeInTextarea('> \'\'\'\'[author]', 4)
+            e.preventDefault()
+            break;
         case "T":
             startEndTypeInTextArea('|', '||\n|---|---|\n|||');e.preventDefault();break;
         case "K":
