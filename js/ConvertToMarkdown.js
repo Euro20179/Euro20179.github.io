@@ -264,9 +264,9 @@ regexes = [
 "<span style='background-image:linear-gradient($2, $3)'>$4</span>"
 ],
 [
-/(?<!\\)\{#:?([^ \n\}:]+)(?::| )?([^\}]*)\}(?:\[(.*)\])?/g,
+/(?<!\\)\{#:?([^ \n\}:]+)(?::| )([^\}]+)\}(?:\[(.*)\])?/g,
 (_, color, content, title)=>{
-    return color.match(/(?:[0-f]{6}|[0-f]{8})/) ? `<span title="${title ? title : ""}" style="color:#${color}">${content}</span>` : `<span title="${title ? title : ""}" style="color:${color}">${content}</span>`
+    return  `<span title="${title ? title : ""}" style="color:${color.match(/(?:[0-f]{6}|[0-f]{8})/) ? "#" + color : color}">${content}</span>`
 }
 ],
 [
