@@ -4,10 +4,10 @@
     <meta charset="utf-8">
     <title>Markdown</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" media="screen" href="./main.css">
-    <link rel="stylesheet" type="text/css" media="screen" href="./normalize.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="./css/main.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="./css/normalize.css">
     <link rel="shortcut icon" type="image/png" href="./fav.png">
-    <link rel="stylesheet" type="text/css" href="hidden-buttons.css">
+    <link rel="stylesheet" type="text/css" href="./css/hidden-buttons.css">
 </head>
 <body ondrop="dropHandler(event)" ondragover="dragOverHandler(event)">
     <div class="editing-bar" id="editing-bar" style="visibility: visible;" title="Ctrl + Shift + E">
@@ -122,10 +122,10 @@
             <label style="color:blue" id="color-label">A</label><input type="color" oninput="if(Preview){document.getElementById('color-label').style.color=this.value}" onload="document.getElementById('color-label').style.color=this.value" value="#0000ff" id="text-color" title="Text color (#0000ff), (ctrl + shift + z)" oninput="this.title=`Text color, (${this.value}), (alt + c)`">
             <label style="background-color:orange" id="background-color-label">A</label><input oninput="if(Preview){document.getElementById('background-color-label').style.backgroundColor=this.value}" onload="document.getElementById('background-color-label').style.backgroundColor=this.value" type="color" value="#ffaa00" id="background-color" title="Background color (#ffaa00), (ctrl + shift + alt + z)" oninput="this.title=`Background color (${this.value}), (alt + g)`">
             <span class="divider" style="border-style: dashed;"></span>
-            <img src="src/center-dark.png" title="center, (ctrl + shift + |)" onclick="startEndTypeInTextArea('|->', '<-|')" class="img-button dark">
-            <img src="src/center-light.png" title="center, (ctrl + shift + |)" onclick="startEndTypeInTextArea('|->', '<-|')" class="img-button light">
-            <img src="src/right-dark.png" title="right, (ctrl + shift + ])" onclick="startEndTypeInTextArea('|->', '|')" class="img-button dark">
-            <img src="src/right-light.png" title="right, (ctrl + shift + ])" onclick="startEndTypeInTextArea('|->', '|')" class="img-button light">
+            <img src="imgs/center-dark.png" title="center, (ctrl + shift + |)" onclick="startEndTypeInTextArea('|->', '<-|')" class="img-button dark">
+            <img src="imgs/center-light.png" title="center, (ctrl + shift + |)" onclick="startEndTypeInTextArea('|->', '<-|')" class="img-button light">
+            <img src="imgs/right-dark.png" title="right, (ctrl + shift + ])" onclick="startEndTypeInTextArea('|->', '|')" class="img-button dark">
+            <img src="imgs/right-light.png" title="right, (ctrl + shift + ])" onclick="startEndTypeInTextArea('|->', '|')" class="img-button light">
             <span class="divider"></span>
             <button class="editing-button" onclick="typeInTextarea('**')" title="Italic, (ctrl + i)"><i>i</i></button>
             <button class="editing-button" onclick="typeInTextarea('****', 2)" title="Bold, (ctrl + b)"><b>b</b></button>
@@ -347,15 +347,12 @@
         <textarea class="text-editor" style="resize:horizontal" id="text-editor" spellcheck placeholder="# text here" autofocus>\FONT: arial\</textarea>
         <div class="preview" style="resize: horizontal;overflow: auto;width:50%" id="preview"></div>
     </div>
-    <div class="context-menu">
-        <div class="context-menu-item" id="color-picker-menu-item">
-            Color Picker
-        </div>
-        <input type="color" id="context-menu-color-picker" class="context-menu-item" style="display:none;z-index:2" onsubmit="addTextTypeInTextArea(`${this.value}`)">
-    </div>
+    <input type="color" id="context-menu-color-picker" class="context-menu-item" style="display:none;z-index:2" oninput="addTextTypeInTextArea(contextMenuColorpicker.value.split('#')[1], 'select')">
     <script src="showdown.js"></script>
-    <script src="./ConvertToMarkdown.js"></script>
-    <script src="./main.js"></script>
+    <script src="./js/ConvertToMarkdown.js"></script>
+    <script src="./js/main.js"></script>
+    <script src="./js/DOMElements.js"></script>
+    <script src="./js/utility.js"></script>
     <script src="html2pdf.js"></script>
     <script>
         let TextEditorColorInversion = document.getElementById("text-editor-color-inversion").checked;
