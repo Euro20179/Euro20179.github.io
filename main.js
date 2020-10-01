@@ -218,8 +218,8 @@ class Rainbow extends HTMLElement{
 class Choose extends HTMLElement{
     connectedCallback(){
         if(this.items){
-            const choice = this.items.split("|")[Math.floor(Math.random() * this.items.split("|").length)]
-            this.innerHTML = this.innerHTML.replace(/(?:\{value\}|\$1)/g, choice)
+            const items = this.items.split("|")
+            this.innerHTML = this.innerHTML.replaceAll("$1", items[~~(items.length * Math.random())])
         }
     }
     get items(){

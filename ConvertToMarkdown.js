@@ -150,7 +150,8 @@ const EMOJIS = {
     jsmile: "&#12484;",
     shrug: "¯\\&lowbar;(ツ)\_/¯",
     upsidedown_e: "¡",
-    upsidedown_q: "¿"
+    upsidedown_q: "¿",
+    spooky_scary_skeletons: "<img src='https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fmedia.tenor.com%2Fimages%2Fdfea95af83f35a6ed84129a62c41b87e%2Ftenor.gif&f=1&nofb=1' width='80m'>"
 }
 const imgEmotes = {
     java: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.softexia.com%2Fwp-content%2Fuploads%2F2017%2F04%2FJava-logo.png&f=1&nofb=1",
@@ -161,7 +162,8 @@ const imgEmotes = {
     markdown: "fav.png",
     html: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Flogos-download.com%2Fwp-content%2Fuploads%2F2017%2F07%2FHTML5_badge.png&f=1&nofb=1",
     css: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fmaxcdn.icons8.com%2FShare%2Ficon%2FLogos%2Fcss31600.png&f=1&nofb=1",
-    autohotkey: "https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fcdn.warer.com%2Fmedia%2Fauto_hotkey-logo.png&f=1&nofb=1"
+    autohotkey: "https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fcdn.warer.com%2Fmedia%2Fauto_hotkey-logo.png&f=1&nofb=1",
+    
 }
 regexes = [
 [
@@ -242,7 +244,7 @@ NUMBERS
 /(?<!\\)> ?''(.*)''(?:\[([^\]]+)\])?/g,
 (_, quote, author=null)=>{
     if(author){
-        return `<blockquote>❝<i>${quote}</i>❞<br>&emsp;-<i>_${author}_</i></blockquote>`
+        return `<blockquote>❝<i>${quote}</i>❞<br><span style='display:block;margin-left:2em;'>-<i><u>${author}</u></i></span></blockquote>`
     }
     return `<blockquote>❝<i>${quote}</i>❞</blockquote>`
 }
