@@ -23,12 +23,15 @@
     height:0;
     display:none;
 }
+.hider .hider-option.hider-visible,
 .hider:hover .hider-option{
     visibility: visible;
     width:initial;
     height:initial;
     display:initial;
 }
+.hider-visible,
+.hider-option:active,
 .hider-option:hover,
 .hider-option:hover ~ .hider-option{
     visibility: visible;

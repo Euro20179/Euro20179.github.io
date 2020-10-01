@@ -170,8 +170,8 @@
             <span class="divider"></span>
             <button class="editing-button" onclick="let more = document.getElementById('text-more');if(more.style.visibility === 'visible'){more.style.visibility = 'hidden';more.style.height=0;more.style.marginTop='0%';more.style.display='none'}else{more.style.visibility = 'visible';more.style.height='initial';more.style.marginTop='1%';more.style.display='block'}" id="more-button">More</button>
             <div id="text-more" style="visibility:hidden;height:0px;margin-top:0%;display:none;margin-bottom:0%"> 
-                <label class="hider" style="padding:20px"><span style="text-decoration: underline dotted">Border Options</span>
-                    <div class="hider-option" style="padding:20px">
+                <label class="hider" style="padding:20px"><span style="text-decoration: underline dotted" onclick="const hidden = document.getElementById('hidden-border-options');if(hidden.classList.contains('hider-visible')){hidden.classList='hider-option'}else{hidden.classList='hider-option hider-visible'}">Border Options</span>
+                    <div class="hider-option" style="padding:20px" id="hidden-border-options">
                         <select name="direction" value="" id="border-direction" title="line side" oninput="updateBorderButton()">
                             <option value="" title="all sides">All Sides</option>
                             <option value="&lt;" title="left">Left</option>
@@ -214,8 +214,8 @@
                 </label>
                     <span class="divider"></span>
                     <wbr>
-                    <label class="hider"  style="padding:20px"><span style="text-decoration: underline dotted;">Shadow Options</span>
-                        <div class="hider-option" style="padding:20px">
+                    <label class="hider"  style="padding:20px"><span style="text-decoration: underline dotted;" onclick="const hidden = document.getElementById('hidden-shadow-options');if(hidden.classList.contains('hider-visible')){hidden.classList='hider-option'}else{hidden.classList='hider-option hider-visible'}">Shadow Options</span>
+                        <div class="hider-option" style="padding:20px" id="hidden-shadow-options">
                             <input type="number" value=.2 id="shadow-right" title="amount right" min=0 step=.1 oninput="updateShadowButton()">
                             <input type="number" value=.2 id="shadow-down" title="amount down" min=0 step=.1 oninput="updateShadowButton()">
                             <select name="unit" value="em" id="shadow-dir-unit" title="unit for right, down" oninput="updateShadowButton()">
@@ -259,8 +259,8 @@
                     </label>
                     <span class="divider"></span>
                     <wbr>
-                    <label title="adds whitespace, (alt + h)" class="hider" style="padding:20px"><span style="text-decoration: underline dotted;">Shadow</span>
-                        <div class="hider-option">
+                    <label title="adds whitespace, (alt + h)" class="hider" style="padding:20px"><span style="text-decoration: underline dotted;" onclick="const hidden = document.getElementById('hidden-spacer-options');if(hidden.classList.contains('hider-visible')){hidden.classList='hider-option'}else{hidden.classList='hider-option hider-visible'}">Spacer</span>
+                        <div class="hider-option" id="hidden-spacer-options">
                             <input type="color" value="#ffffffff" oninput="updateSpaceButton()" title="Color of space, (#000000)" id="space-color" oninput="this.title=`Color of space, (${this.value})`">
                             <input type="number" min=0 step="any" style="width:75;height:25px" value=1 id="space-amount" oninput="updateSpaceButton()">
                             <select name="unit" id="space-unit" value="ch" id="spacer-amount-unit" title="amount unit" oninput="updateSpaceButton()">
@@ -292,8 +292,6 @@
         <div id="insert" class="bar-section">
             <fieldset>
             <wbr>
-            <button class="editing-button" onclick="addTextTypeInTextArea('| | |\n|---|---|\n| | |')" title="Insert Table Frame, (ctrl + shift + t)">Table</button>
-            <span class="divider"></span>
             <label class="hider"><span style="text-decoration:underline dotted">Change Marker for Lists</span>
                 <div class="hider-option">
                     <select id="ul-ol" value="ul" title="type of list">
