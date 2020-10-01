@@ -477,7 +477,6 @@ textEditor.addEventListener('input', (e)=>{
     }
 })
 
-
 textEditor.addEventListener("contextmenu", (e)=>{
     if(e.ctrlKey){
         contextMenuColorpicker.click()

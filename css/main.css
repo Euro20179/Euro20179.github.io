@@ -112,11 +112,6 @@ span.divider[dashed]{
 
 .darkmode #text-more{
   background-color: transparent;
-  border-top:2px solid white;
-}
-
-#text-more{
-  border-top: 2px solid grey;
 }
 
 .bar-section-off{

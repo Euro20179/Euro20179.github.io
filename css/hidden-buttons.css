@@ -12,3 +12,24 @@
     display: none;
     visibility: hidden;
 }
+
+.hider{
+    display: inline;
+    cursor: pointer;
+}
+.hider-option{
+    visibility: hidden;
+    width:0;
+    height:0;
+    display:none;
+}
+.hider:hover .hider-option{
+    visibility: visible;
+    width:initial;
+    height:initial;
+    display:initial;
+}
+.hider-option:hover,
+.hider-option:hover ~ .hider-option{
+    visibility: visible;
+}

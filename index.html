@@ -10,7 +10,7 @@
     <link rel="stylesheet" type="text/css" href="./css/hidden-buttons.css">
 </head>
 <body ondrop="dropHandler(event)" ondragover="dragOverHandler(event)">
-    <div class="editing-bar" id="editing-bar" style="visibility: visible;" title="Ctrl + Shift + E">
+    <div class="editing-bar" id="editing-bar" style="visibility: visible;" title="open/close this Ctrl + Shift + E">
         <button id="file-title" class="bar-section-title" title="file">
             🗎
         </button>
@@ -133,18 +133,21 @@
             <button class="editing-button" onclick="typeInTextarea('*--*', endSpot=2)" title="Highlight, (ctrl + h)"><mark>h</mark></button>
             <span class="divider" style="border-style: dashed;"></span>
             <wbr>
-            <button class="editing-button popup-button-trigger" onclick="typeInTextarea('__')" title="Underline, (ctrl + u)"><u>u</u>
-                <button class="editing-button popup-button" onclick="typeInTextarea('^__^', 2)" title="Overline, (ctrl + shift + u)"><span style="text-decoration: overline;">o</span></button>
-            </button>
-            <button class="editing-button popup-button-trigger" onclick="typeInTextarea('~__~', 2)" title="Wavy underline, (ctrl + r)"><span style="text-decoration: underline wavy;">u</span>
-                <button class="editing-button popup-button" onclick="typeInTextarea('^~~^', 2)" title="Wavy overline, (ctrl + shfit + r)"><span style="text-decoration: overline wavy;">o</span></button>
-            </button>
-            <button class="editing-button popup-button-trigger" onclick="typeInTextarea('.__.', 2)" title="Dotted underline, (ctrl + d)"><span style="text-decoration: underline dotted;">u</span>
-                <button class="editing-button popup-button" onclick="typeInTextarea('^..^', 2)" title="Dotted overline, (ctrl + shift + d)"><span style="text-decoration: overline dotted;">o</span></button>
-            </button>
-            <button class="editing-button popup-button-trigger" onclick="typeInTextarea('____', 2)" title="Double underline, (ctrl + alt + u)"><span style="text-decoration: underline double;">uu</span>
-                <button class="editing-button popup-button" onclick="typeInTextarea('^^__^^', 3)" title="Double overline, (ctrl + alt + shift + u)"><span style="text-decoration: overline double;">oo</span></button>
-            </button>
+            <div class="hider">
+                <label style="text-decoration: underline;cursor:pointer;"><span style="text-decoration: overline wavy">U</span></label>
+                <button class="editing-button popup-button-trigger hider-option" onclick="typeInTextarea('__')" title="Underline, (ctrl + u)"><u>u</u>
+                    <button class="editing-button popup-button" onclick="typeInTextarea('^__^', 2)" title="Overline, (ctrl + shift + u)"><span style="text-decoration: overline;">o</span></button>
+                </button>
+                <button class="editing-button popup-button-trigger hider-option" onclick="typeInTextarea('~__~', 2)" title="Wavy underline, (ctrl + r)"><span style="text-decoration: underline wavy;">u</span>
+                    <button class="editing-button popup-button" onclick="typeInTextarea('^~~^', 2)" title="Wavy overline, (ctrl + shfit + r)"><span style="text-decoration: overline wavy;">o</span></button>
+                </button>
+                <button class="editing-button popup-button-trigger hider-option" onclick="typeInTextarea('.__.', 2)" title="Dotted underline, (ctrl + d)"><span style="text-decoration: underline dotted;">u</span>
+                    <button class="editing-button popup-button" onclick="typeInTextarea('^..^', 2)" title="Dotted overline, (ctrl + shift + d)"><span style="text-decoration: overline dotted;">o</span></button>
+                </button>
+                <button class="editing-button popup-button-trigger hider-option" onclick="typeInTextarea('____', 2)" title="Double underline, (ctrl + alt + u)"><span style="text-decoration: underline double;">uu</span>
+                    <button class="editing-button popup-button" onclick="typeInTextarea('^^__^^', 3)" title="Double overline, (ctrl + alt + shift + u)"><span style="text-decoration: overline double;">oo</span></button>
+                </button>
+            </div>
             <span class="divider"></span>
             <wbr>
             <button class="editing-button" onclick='startEndTypeInTextArea("[", "]:()", {cursor:-1})' title="Definition Layout"><u>A</u>:<i>a</i></button>
@@ -163,110 +166,119 @@
             <span class="divider"></span>
             <button class="editing-button" onclick="let more = document.getElementById('text-more');if(more.style.visibility === 'visible'){more.style.visibility = 'hidden';more.style.height=0;more.style.marginTop='0%';more.style.display='none'}else{more.style.visibility = 'visible';more.style.height='initial';more.style.marginTop='1%';more.style.display='block'}" id="more-button">More</button>
             <div id="text-more" style="visibility:hidden;height:0px;margin-top:0%;display:none;margin-bottom:0%"> 
-                <label>Border Options</label>
-                    <select name="direction" value="" id="border-direction" title="line side" oninput="updateBorderButton()">
-                        <option value="" title="all sides">All Sides</option>
-                        <option value="&lt;" title="left">Left</option>
-                        <option value="&gt;" title="right">right</option>
-                        <option value="^" title="top">top</option>
-                        <option value="v" title="bottom">bottom</option>
-                    </select>
-                    <input type="number" style="width:75;height:25px" value=1 id="border-size" title="line thickness" step="any" oninput="updateBorderButton()">
-                    <select name="unit" value="em" id="border-unit" title="line thickness unit" oninput="updateBorderButton()">
-                        <option value="px" tilte="pixles">px</option>
-                        <option value="pt" title="points">pt</option>
-                        <option value="em" title="relative to font size">em</option>
-                        <option value="%" title="relative to parent element">%</option>
-                        <option value="ex" title="relative to width of font">ex</option>
-                        <option value="rem" title="relative to font-size of root element">rem</option>
-                        <option value="vw" title="1% of width of viewport">vw</option>
-                        <option value="vh" title="1% of height of viewport">vh</option>
-                        <option value="vmin" title="1% of viewports smaller dimension">vmin</option>
-                        <option value="vmax" title="1% of viewports larger dimension">vmax</option>
-                        <option value="ch" title="relative to the width of the'0'(zero)">ch</option>
-                        <option value="cm" title="centimeters">cm</option>
-                        <option value="mm" title="milimeters">mm</option>
-                        <option value="in" title="inches">in</option>
-                        <option value="pc" title="picas">pc</option>
-                    </select>
-                    <select name="line types" id="border-line-types" title="line types" oninput="updateBorderButton()">
-                        <option value="solid">solid</option>
-                        <option value="dotted">dotted</option>
-                        <option value="dashed">dashed</option>
-                        <option value="double">double</option>
-                        <option value="groove">groove</option>
-                        <option value="ridge">ridge</option>
-                        <option value="inset">inset</option>
-                        <option value="outset">outset</option>
-                        <option value="hidden">hidden</option>
-                    </select>
-                    <input type="color" id="border-color" title="line color (#000000)" oninput="this.title=`line color (${this.value})`;updateBorderButton()">
-                    <button class='editing-button' onclick="addBorder()"><span style="border:1px solid black" id="border-button">A</span></button>
+                <label class="hider" style="padding:20px"><span style="text-decoration: underline dotted">Border Options</span>
+                    <div class="hider-option" style="padding:20px">
+                        <select name="direction" value="" id="border-direction" title="line side" oninput="updateBorderButton()">
+                            <option value="" title="all sides">All Sides</option>
+                            <option value="&lt;" title="left">Left</option>
+                            <option value="&gt;" title="right">right</option>
+                            <option value="^" title="top">top</option>
+                            <option value="v" title="bottom">bottom</option>
+                        </select>
+                        <input type="number" style="width:75;height:25px" value=1 id="border-size" title="line thickness" step="any" oninput="updateBorderButton()">
+                        <select name="unit" value="em" id="border-unit" title="line thickness unit" oninput="updateBorderButton()">
+                            <option value="px" tilte="pixles">px</option>
+                            <option value="pt" title="points">pt</option>
+                            <option value="em" title="relative to font size">em</option>
+                            <option value="%" title="relative to parent element">%</option>
+                            <option value="ex" title="relative to width of font">ex</option>
+                            <option value="rem" title="relative to font-size of root element">rem</option>
+                            <option value="vw" title="1% of width of viewport">vw</option>
+                            <option value="vh" title="1% of height of viewport">vh</option>
+                            <option value="vmin" title="1% of viewports smaller dimension">vmin</option>
+                            <option value="vmax" title="1% of viewports larger dimension">vmax</option>
+                            <option value="ch" title="relative to the width of the'0'(zero)">ch</option>
+                            <option value="cm" title="centimeters">cm</option>
+                            <option value="mm" title="milimeters">mm</option>
+                            <option value="in" title="inches">in</option>
+                            <option value="pc" title="picas">pc</option>
+                        </select>
+                        <select name="line types" id="border-line-types" title="line types" oninput="updateBorderButton()">
+                            <option value="solid">solid</option>
+                            <option value="dotted">dotted</option>
+                            <option value="dashed">dashed</option>
+                            <option value="double">double</option>
+                            <option value="groove">groove</option>
+                            <option value="ridge">ridge</option>
+                            <option value="inset">inset</option>
+                            <option value="outset">outset</option>
+                            <option value="hidden">hidden</option>
+                        </select>
+                        <input type="color" id="border-color" title="line color (#000000)" oninput="this.title=`line color (${this.value})`;updateBorderButton()">
+                        <button class='editing-button' onclick="addBorder()"><span style="border:1px solid black" id="border-button">A</span></button>
+                    </div>
+                </label>
                     <span class="divider"></span>
                     <wbr>
-                    <label>Shadow Options</label>
-                    <input type="number" value=.2 id="shadow-right" title="amount right" min=0 step=.1 oninput="updateShadowButton()">
-                    <input type="number" value=.2 id="shadow-down" title="amount down" min=0 step=.1 oninput="updateShadowButton()">
-                    <select name="unit" value="em" id="shadow-dir-unit" title="unit for right, down" oninput="updateShadowButton()">
-                        <option value="em" title="relative to font size">em</option>
-                        <option value="px" tilte="pixles">px</option>
-                        <option value="pt" title="points">pt</option>
-                        <option value="%" title="relative to parent element">%</option>
-                        <option value="ex" title="relative to width of font">ex</option>
-                        <option value="rem" title="relative to font-size of root element">rem</option>
-                        <option value="vw" title="1% of width of viewport">vw</option>
-                        <option value="vh" title="1% of height of viewport">vh</option>
-                        <option value="vmin" title="1% of viewports smaller dimension">vmin</option>
-                        <option value="vmax" title="1% of viewports larger dimension">vmax</option>
-                        <option value="ch" title="relative to the width of the'0'(zero)">ch</option>
-                        <option value="cm" title="centimeters">cm</option>
-                        <option value="mm" title="milimeters">mm</option>
-                        <option value="in" title="inches">in</option>
-                        <option value="pc" title="picas">pc</option>
-                    </select>
-                    <input type="number" style="width:75;height:25px" value=0 id="shadow-blur" title="blur amount" min=0 step=.1 oninput="updateShadowButton()">
-                    <select name="unit" value="px" id="shadow-blur-unit" title="blur unit" oninput="updateShadowButton()">
-                        <option value="px" tilte="pixles">px</option>
-                        <option value="em" title="relative to font size">em</option>
-                        <option value="pt" title="points">pt</option>
-                        <option value="%" title="relative to parent element">%</option>
-                        <option value="ex" title="relative to width of font">ex</option>
-                        <option value="rem" title="relative to font-size of root element">rem</option>
-                        <option value="vw" title="1% of width of viewport">vw</option>
-                        <option value="vh" title="1% of height of viewport">vh</option>
-                        <option value="vmin" title="1% of viewports smaller dimension">vmin</option>
-                        <option value="vmax" title="1% of viewports larger dimension">vmax</option>
-                        <option value="ch" title="relative to the width of the'0'(zero)">ch</option>
-                        <option value="cm" title="centimeters">cm</option>
-                        <option value="mm" title="milimeters">mm</option>
-                        <option value="in" title="inches">in</option>
-                        <option value="pc" title="picas">pc</option>
-                    </select>
-                    <input type="color" value="#d3d3d3" id="shadow-color" title="line color (#d3d3d3)" oninput="this.title=`line color (${this.value})`;updateShadowButton()">
-                    <button class="editing-button" title="Shadow, (alt + s)" onclick="addShadow()"><span style="text-shadow:.2em .2em 0px lightgrey" id="shadow-button">A</span></button>
+                    <label class="hider"  style="padding:20px"><span style="text-decoration: underline dotted;">Shadow Options</span>
+                        <div class="hider-option" style="padding:20px">
+                            <input type="number" value=.2 id="shadow-right" title="amount right" min=0 step=.1 oninput="updateShadowButton()">
+                            <input type="number" value=.2 id="shadow-down" title="amount down" min=0 step=.1 oninput="updateShadowButton()">
+                            <select name="unit" value="em" id="shadow-dir-unit" title="unit for right, down" oninput="updateShadowButton()">
+                                <option value="em" title="relative to font size">em</option>
+                                <option value="px" tilte="pixles">px</option>
+                                <option value="pt" title="points">pt</option>
+                                <option value="%" title="relative to parent element">%</option>
+                                <option value="ex" title="relative to width of font">ex</option>
+                                <option value="rem" title="relative to font-size of root element">rem</option>
+                                <option value="vw" title="1% of width of viewport">vw</option>
+                                <option value="vh" title="1% of height of viewport">vh</option>
+                                <option value="vmin" title="1% of viewports smaller dimension">vmin</option>
+                                <option value="vmax" title="1% of viewports larger dimension">vmax</option>
+                                <option value="ch" title="relative to the width of the'0'(zero)">ch</option>
+                                <option value="cm" title="centimeters">cm</option>
+                                <option value="mm" title="milimeters">mm</option>
+                                <option value="in" title="inches">in</option>
+                                <option value="pc" title="picas">pc</option>
+                            </select>
+                            <input type="number" style="width:75;height:25px" value=0 id="shadow-blur" title="blur amount" min=0 step=.1 oninput="updateShadowButton()">
+                            <select name="unit" value="px" id="shadow-blur-unit" title="blur unit" oninput="updateShadowButton()">
+                                <option value="px" tilte="pixles">px</option>
+                                <option value="em" title="relative to font size">em</option>
+                                <option value="pt" title="points">pt</option>
+                                <option value="%" title="relative to parent element">%</option>
+                                <option value="ex" title="relative to width of font">ex</option>
+                                <option value="rem" title="relative to font-size of root element">rem</option>
+                                <option value="vw" title="1% of width of viewport">vw</option>
+                                <option value="vh" title="1% of height of viewport">vh</option>
+                                <option value="vmin" title="1% of viewports smaller dimension">vmin</option>
+                                <option value="vmax" title="1% of viewports larger dimension">vmax</option>
+                                <option value="ch" title="relative to the width of the'0'(zero)">ch</option>
+                                <option value="cm" title="centimeters">cm</option>
+                                <option value="mm" title="milimeters">mm</option>
+                                <option value="in" title="inches">in</option>
+                                <option value="pc" title="picas">pc</option>
+                            </select>
+                            <input type="color" value="#d3d3d3" id="shadow-color" title="line color (#d3d3d3)" oninput="this.title=`line color (${this.value})`;updateShadowButton()">
+                            <button class="editing-button" title="Shadow, (alt + s)" onclick="addShadow()"><span style="text-shadow:.2em .2em 0px lightgrey" id="shadow-button">A</span></button>
+                        </div>
+                    </label>
                     <span class="divider"></span>
                     <wbr>
-                    <label title="adds whitespace, (alt + h)">Space</label>
-                    <input type="color" value="#ffffffff" oninput="updateSpaceButton()" title="Color of space, (#000000)" id="space-color" oninput="this.title=`Color of space, (${this.value})`">
-                    <input type="number" min=0 step="any" style="width:75;height:25px" value=1 id="space-amount" oninput="updateSpaceButton()">
-                    <select name="unit" id="space-unit" value="ch" id="spacer-amount-unit" title="amount unit" oninput="updateSpaceButton()">
-                        <option value="ch" title="relative to the width of the'0'(zero)">ch</option>
-                        <option value="pt" title="points">pt</option>
-                        <option value="em" title="relative to font size">em</option>
-                        <option value="px" tilte="pixles">px</option>
-                        <option value="%" title="relative to parent element">%</option>
-                        <option value="ex" title="relative to width of font">ex</option>
-                        <option value="rem" title="relative to font-size of root element">rem</option>
-                        <option value="vw" title="1% of width of viewport">vw</option>
-                        <option value="vh" title="1% of height of viewport">vh</option>
-                        <option value="vmin" title="1% of viewports smaller dimension">vmin</option>
-                        <option value="vmax" title="1% of viewports larger dimension">vmax</option>
-                        <option value="cm" title="centimeters">cm</option>
-                        <option value="mm" title="milimeters">mm</option>
-                        <option value="in" title="inches">in</option>
-                        <option value="pc" title="picas">pc</option>
-                    </select>
-                    <button class="editing-button" title="Space (alt + h)" onclick="addSpace()">A<span id="space-button" style="padding-left:1ch;background-color:black"></span>A</button></button>
+                    <label title="adds whitespace, (alt + h)" class="hider" style="padding:20px"><span style="text-decoration: underline dotted;">Shadow</span>
+                        <div class="hider-option">
+                            <input type="color" value="#ffffffff" oninput="updateSpaceButton()" title="Color of space, (#000000)" id="space-color" oninput="this.title=`Color of space, (${this.value})`">
+                            <input type="number" min=0 step="any" style="width:75;height:25px" value=1 id="space-amount" oninput="updateSpaceButton()">
+                            <select name="unit" id="space-unit" value="ch" id="spacer-amount-unit" title="amount unit" oninput="updateSpaceButton()">
+                                <option value="ch" title="relative to the width of the'0'(zero)">ch</option>
+                                <option value="pt" title="points">pt</option>
+                                <option value="em" title="relative to font size">em</option>
+                                <option value="px" tilte="pixles">px</option>
+                                <option value="%" title="relative to parent element">%</option>
+                                <option value="ex" title="relative to width of font">ex</option>
+                                <option value="rem" title="relative to font-size of root element">rem</option>
+                                <option value="vw" title="1% of width of viewport">vw</option>
+                                <option value="vh" title="1% of height of viewport">vh</option>
+                                <option value="vmin" title="1% of viewports smaller dimension">vmin</option>
+                                <option value="vmax" title="1% of viewports larger dimension">vmax</option>
+                                <option value="cm" title="centimeters">cm</option>
+                                <option value="mm" title="milimeters">mm</option>
+                                <option value="in" title="inches">in</option>
+                                <option value="pc" title="picas">pc</option>
+                            </select>
+                            <button class="editing-button" title="Space (alt + h)" onclick="addSpace()">A<span id="space-button" style="padding-left:1ch;background-color:black"></span>A</button></button>
+                        </div>
+                    </label>
                     <span class="divider"></span>
                 </div>
                 <wbr>
@@ -278,39 +290,42 @@
             <wbr>
             <button class="editing-button" onclick="addTextTypeInTextArea('| | |\n|---|---|\n| | |')" title="Insert Table Frame, (ctrl + shift + t)">Table</button>
             <span class="divider"></span>
-            <label>Change Marker for Lists</label>
-            <select id="ul-ol" value="ul" title="type of list">
-                <option value="ol" title="unordered list">ol</option>
-                <option value="ul" title="ordered list">ul</option>
-            </select>
-            <input type="number" min="1" step="1" title="layer" value="1" style="width:75px;height:25px" id="list-layer">
-            <input type="text" id="marker-text" title="the marker" style="height:25px;width:100px" oninput="document.getElementById('ul-ol-types').value = ''">
-            <label>Or pick a type</label>
-            <select id="ul-ol-types" value="" title="types">
-                <option value="" title="No Selection"></option>
-                <option value="disc" title="filled circled">Filled circle</option>
-                <option value="circle" title="circle">circle</option>
-                <option value="square" title="square">Square</option>
-                <option value="lower-alpha" title="alphabetical">alpha-lower</option>
-                <option value="decimal" title="number">Number</option>
-                <option value="decimal-leading-zero" title="number with 0 in front">0 Leading Number</option>
-                <option value="lower-greek" title="greek">greek-lower</option>
-                <option value="lower-latin" title="latin">latin-lower</option>
-                <option value="lower-roman" title="roman">roman numerals lower</option>
-                <option value="upper-alpha" title="alphabetical">ALPHA-UPPER</option>
-                <option value="upper-greek" title="greek">GREEK-UPPER</option>
-                <option value="upper-latin" title="latin">LATIN-UPPER</option>
-                <option value="armenian" title="traditional armenian numbering">Armenian</option>
-                <option value="cjk-ideographic" title="ideographic numbers">Ideographic Numbers idk</option>
-                <option value="georgian" title="Georgian Numbering">Georgian</option>
-                <option value="hebrew" title="Hebrew Numbering">Hebrew</option>
-                <option value="hiragana" title="Hiragana numbering">Hiragana</option>
-                <option value="hiragana-iroha" title="Hiragana Iroha numbering">Hiragana Iroha</option>
-                <option value="katakana" title="katakana numbering">Katakana</option>
-                <option value="katakana-iroha" title="katakana iroha numbering">Katakana Iroha</option>
-                <option value="none" title="no marker">None</option>
-            </select>
-            <button class="editing-button" onclick="addOLULInclude()">Add</button>
+            <label class="hider"><span style="text-decoration:underline dotted">Change Marker for Lists</span>
+                <div class="hider-option">
+                    <select id="ul-ol" value="ul" title="type of list">
+                        <option value="ol" title="unordered list">ol</option>
+                        <option value="ul" title="ordered list">ul</option>
+                    </select>
+                    <input type="number" min="1" step="1" title="layer" value="1" style="width:75px;height:25px" id="list-layer">
+                    <input type="text" id="marker-text" title="the marker" style="height:25px;width:100px" oninput="document.getElementById('ul-ol-types').value = ''">
+                    <label>Or pick a type</label>
+                    <select id="ul-ol-types" value="" title="types">
+                        <option value="" title="No Selection"></option>
+                        <option value="disc" title="filled circled">Filled circle</option>
+                        <option value="circle" title="circle">circle</option>
+                        <option value="square" title="square">Square</option>
+                        <option value="lower-alpha" title="alphabetical">alpha-lower</option>
+                        <option value="decimal" title="number">Number</option>
+                        <option value="decimal-leading-zero" title="number with 0 in front">0 Leading Number</option>
+                        <option value="lower-greek" title="greek">greek-lower</option>
+                        <option value="lower-latin" title="latin">latin-lower</option>
+                        <option value="lower-roman" title="roman">roman numerals lower</option>
+                        <option value="upper-alpha" title="alphabetical">ALPHA-UPPER</option>
+                        <option value="upper-greek" title="greek">GREEK-UPPER</option>
+                        <option value="upper-latin" title="latin">LATIN-UPPER</option>
+                        <option value="armenian" title="traditional armenian numbering">Armenian</option>
+                        <option value="cjk-ideographic" title="ideographic numbers">Ideographic Numbers idk</option>
+                        <option value="georgian" title="Georgian Numbering">Georgian</option>
+                        <option value="hebrew" title="Hebrew Numbering">Hebrew</option>
+                        <option value="hiragana" title="Hiragana numbering">Hiragana</option>
+                        <option value="hiragana-iroha" title="Hiragana Iroha numbering">Hiragana Iroha</option>
+                        <option value="katakana" title="katakana numbering">Katakana</option>
+                        <option value="katakana-iroha" title="katakana iroha numbering">Katakana Iroha</option>
+                        <option value="none" title="no marker">None</option>
+                    </select>
+                    <button class="editing-button" onclick="addOLULInclude()">Add</button>
+                </div>
+            </label>
             <span class="divider"></span>
             <label>Includes</label>
             <select name="includes" id="includes" title="elements" oninput="addTextTypeInTextArea(`\\INCLUDE:${this.value}\\`)">
