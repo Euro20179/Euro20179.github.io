@@ -133,21 +133,23 @@
             <button class="editing-button" onclick="typeInTextarea('*--*', endSpot=2)" title="Highlight, (ctrl + h)"><mark>h</mark></button>
             <span class="divider" style="border-style: dashed;"></span>
             <wbr>
-            <div class="hider">
-                <label style="text-decoration: underline;cursor:pointer;"><span style="text-decoration: overline wavy">U</span></label>
-                <button class="editing-button popup-button-trigger hider-option" onclick="typeInTextarea('__')" title="Underline, (ctrl + u)"><u>u</u>
-                    <button class="editing-button popup-button" onclick="typeInTextarea('^__^', 2)" title="Overline, (ctrl + shift + u)"><span style="text-decoration: overline;">o</span></button>
-                </button>
-                <button class="editing-button popup-button-trigger hider-option" onclick="typeInTextarea('~__~', 2)" title="Wavy underline, (ctrl + r)"><span style="text-decoration: underline wavy;">u</span>
-                    <button class="editing-button popup-button" onclick="typeInTextarea('^~~^', 2)" title="Wavy overline, (ctrl + shfit + r)"><span style="text-decoration: overline wavy;">o</span></button>
-                </button>
-                <button class="editing-button popup-button-trigger hider-option" onclick="typeInTextarea('.__.', 2)" title="Dotted underline, (ctrl + d)"><span style="text-decoration: underline dotted;">u</span>
-                    <button class="editing-button popup-button" onclick="typeInTextarea('^..^', 2)" title="Dotted overline, (ctrl + shift + d)"><span style="text-decoration: overline dotted;">o</span></button>
-                </button>
-                <button class="editing-button popup-button-trigger hider-option" onclick="typeInTextarea('____', 2)" title="Double underline, (ctrl + alt + u)"><span style="text-decoration: underline double;">uu</span>
-                    <button class="editing-button popup-button" onclick="typeInTextarea('^^__^^', 3)" title="Double overline, (ctrl + alt + shift + u)"><span style="text-decoration: overline double;">oo</span></button>
-                </button>
-            </div>
+            <span class="hider">
+                <span style="text-decoration: overline wavy"><span style="text-decoration: underline;cursor:pointer" onclick="let hider = document.getElementById('underline-overline-hider');if(hider.classList.contains('hider-visible')){hider.classList='hider-option'}else{hider.classList='hider-option hider-visible'}">U</span></span>
+                <span class="hider-option" id="underline-overline-hider">
+                    <button class="editing-button popup-button-trigger" onclick="typeInTextarea('__')" title="Underline, (ctrl + u)"><u>u</u>
+                        <button class="editing-button popup-button" onclick="typeInTextarea('^__^', 2)" title="Overline, (ctrl + shift + u)"><span style="text-decoration: overline;">o</span></button>
+                    </button>
+                    <button class="editing-button popup-button-trigger" onclick="typeInTextarea('~__~', 2)" title="Wavy underline, (ctrl + r)"><span style="text-decoration: underline wavy;">u</span>
+                        <button class="editing-button popup-button" onclick="typeInTextarea('^~~^', 2)" title="Wavy overline, (ctrl + shfit + r)"><span style="text-decoration: overline wavy;">o</span></button>
+                    </button>
+                    <button class="editing-button popup-button-trigger" onclick="typeInTextarea('.__.', 2)" title="Dotted underline, (ctrl + d)"><span style="text-decoration: underline dotted;">u</span>
+                        <button class="editing-button popup-button" onclick="typeInTextarea('^..^', 2)" title="Dotted overline, (ctrl + shift + d)"><span style="text-decoration: overline dotted;">o</span></button>
+                    </button>
+                    <button class="editing-button popup-button-trigger" onclick="typeInTextarea('____', 2)" title="Double underline, (ctrl + alt + u)"><span style="text-decoration: underline double;">uu</span>
+                        <button class="editing-button popup-button" onclick="typeInTextarea('^^__^^', 3)" title="Double overline, (ctrl + alt + shift + u)"><span style="text-decoration: overline double;">oo</span></button>
+                    </button>
+                </span>
+            </span>
             <span class="divider"></span>
             <wbr>
             <button class="editing-button" onclick='startEndTypeInTextArea("[", "]:()", {cursor:-1})' title="Definition Layout"><u>A</u>:<i>a</i></button>
