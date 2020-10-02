@@ -460,7 +460,6 @@ regexes = [
 [
 /(?<!\\)\\olm(?:arker)?:([0-9]+)\\?([^\n\\]+)\\/g,
 (_, layer, to)=>{
-    console.log(layer, to)
     let selector = "ol"
     layer = parseInt(layer)
     for(let i = 0; i < layer;i++){
@@ -491,7 +490,6 @@ ${selector} li{
 [
 /(?<!\\)\\ulm(?:arker)?:([0-9]+)\\?([^\n\\]+)\\/g,
 (_, layer, to)=>{
-    console.log(layer, to)
     let selector = "ul"
     layer = parseInt(layer)
     for(let i = 0; i < layer;i++){
@@ -654,6 +652,10 @@ ${include}::selection{
 [
 /(?<!\\)\{cur(?:sor)?:? ?([^\n:]*):([^\}]+)\}(?:\[(.*)\])?/g,
 '<span style="cursor:$1" title="$3">$2</span>'
+],
+[
+/(?<!\\)\*\[([^\]\n]+)\] (.*)/g,
+"<li marker='$1&nbsp;'>$2</li>"
 ],
 [
 /(?<!\\)\\count:([^\n]+)((?:\n)re)?\\/g,
