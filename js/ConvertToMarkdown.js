@@ -663,7 +663,7 @@ ${include}::selection{
     if(Re){
          return [...preview.textContent.matchAll(search)].length
     }
-    return preview.textContent.split(search).length
+    return preview.textContent.split(search).length - 1
 }
 ],
 [
