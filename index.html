@@ -70,7 +70,7 @@
                 <label class="option-item"><input title="(F4)" type="checkbox" id="custom" checked>Custom markdown?</label>
                 <span class="divider"></span>
                 <label class="option-item"><input type="checkbox" id="syncscrolling" onclick="SyncScrolling = !SyncScrolling">Sync Scrolling?</label>                    <span class="divider"></span>
-                <label class="option-item" style="cursor:help" title="stuff like the background color picker changes the A next to it"><input type="checkbox" id="previews" checked="checked" onclick="Preview=!Preview">Previews?</label>
+                <label class="option-item" style="cursor:help" title="stuff like the background color puts the value in the editor on update"><input type="checkbox" id="previews" checked="checked" onclick="Preview=!Preview">Previews?</label>
                 <span class="divider"></span>
                 <label class="option-item"><input type="checkbox" id="autocomplete-elements" onclick="AutoCompleteElements=!AutoCompleteElements">Autocomplete Elements?</label>
             </fieldset>
@@ -101,8 +101,8 @@
         </div>
         <div id="home" class="bar-section">
             <fieldset>
-            <label>A<span style="font-size:1.5em" id="font-size-A">A</span></label><input step="any" type="number" id="text-size" title="Text size, (ctrl + shift + s)" size="1" value="12" placeholder="12">
-            <select id="text-units" value="pt" oninput="document.getElementById('font-size-A').style.fontSize=`${document.getElementById('text-size').value}${this.value}`">
+            <label>A<span style="font-size:1.5em" id="font-size-A">A</span></label><input step="any" type="number" id="text-size" title="Text size, (ctrl + shift + s)" size="1" value="12" placeholder="12" oninput="addTextTypeInTextArea(`${this.value}${document.getElementById('text-units').value}`, 'select')">
+            <select id="text-units" value="pt" oninput="if(preview){addTextTypeInTextArea(`${document.getElementById('text-size').value}${this.value}`, 'select')}">
                 <option value="pt" title="points">pt</option>
                 <option value="em" title="relative to font size">em</option>
                 <option value="px" tilte="pixles">px</option>
@@ -119,8 +119,8 @@
                 <option value="ch" title="relative to the width of the'0'(zero)">ch</option>
                 <option value="pc" title="picas">pc</option>
             </select>
-            <label style="color:blue" id="color-label">A</label><input type="color" oninput="if(Preview){document.getElementById('color-label').style.color=this.value}" onload="document.getElementById('color-label').style.color=this.value" value="#0000ff" id="text-color" title="Text color (#0000ff), (ctrl + shift + z)" oninput="this.title=`Text color, (${this.value}), (alt + c)`">
-            <label style="background-color:orange" id="background-color-label">A</label><input oninput="if(Preview){document.getElementById('background-color-label').style.backgroundColor=this.value}" onload="document.getElementById('background-color-label').style.backgroundColor=this.value" type="color" value="#ffaa00" id="background-color" title="Background color (#ffaa00), (ctrl + shift + alt + z)" oninput="this.title=`Background color (${this.value}), (alt + g)`">
+            <label style="color:blue" id="color-label">A</label><input type="color" oninput="this.title=`Text color, (${this.value}), (alt + c)`;if(preview){addTextTypeInTextArea(this.value.split('#')[1], 'select')};document.getElementById('color-label').style.color=this.value" onload="document.getElementById('color-label').style.color=this.value" value="#0000ff" id="text-color" title="Text color (#0000ff), (ctrl + shift + z)">
+            <label style="background-color:orange" id="background-color-label">A</label><input oninput="this.title=`Background color (${this.value}), (alt + g)`;if(preview){addTextTypeInTextArea(this.value.split('#')[1], 'select')};document.getElementById('background-color-label').style.backgroundColor=this.value" onload="document.getElementById('background-color-label').style.backgroundColor=this.value" type="color" value="#ffaa00" id="background-color" title="Background color (#ffaa00), (ctrl + shift + alt + z)">
             <span class="divider" style="border-style: dashed;"></span>
             <img src="imgs/center-dark.png" title="center, (ctrl + shift + |)" onclick="startEndTypeInTextArea('|->', '<-|')" class="img-button dark">
             <img src="imgs/center-light.png" title="center, (ctrl + shift + |)" onclick="startEndTypeInTextArea('|->', '<-|')" class="img-button light">
@@ -167,7 +167,7 @@
             <button title="samp text (yes they are different)" class="editing-button" onclick="startEndTypeInTextArea('{samp:', '}')"><samp>A</samp></button>
             <span class="divider"></span>
             <input id="unicode-character-copy-area" value="&#12484;" type="text" style="width:0;height:0;background-color: transparent;color: transparent;border-color: transparent;border-style: none;">
-            <label title="unicode character, clicking puts on clipboard, and in editor"><input type="number" value="12484" oninput="document.getElementById('unicode-character').textContent = String.fromCodePoint(this.value)"><label id="unicode-character" style="padding:5px;border:1px inset black;background-color:white;color:black;cursor: pointer;" onclick="let copyArea = document.getElementById('unicode-character-copy-area');copyArea.value=this.textContent;copyArea.select();document.execCommand('copy');addTextTypeInTextArea(this.textContent);">&#12484;</label></label>
+            <label title="unicode character, clicking puts on clipboard"><input type="number" value="12484" oninput="document.getElementById('unicode-character').textContent = String.fromCodePoint(this.value)"><label id="unicode-character" style="padding:5px;border:1px inset black;background-color:white;color:black;cursor: pointer;" onclick="let copyArea = document.getElementById('unicode-character-copy-area');copyArea.value=this.textContent;copyArea.select();document.execCommand('copy');">&#12484;</label></label>
             <span class="divider"></span>
             <button class="editing-button" onclick="let more = document.getElementById('text-more');if(more.style.visibility === 'visible'){more.style.visibility = 'hidden';more.style.height=0;more.style.marginTop='0%';more.style.display='none'}else{more.style.visibility = 'visible';more.style.height='initial';more.style.marginTop='1%';more.style.display='block'}" id="more-button">More</button>
             <div id="text-more" style="visibility:hidden;height:0px;margin-top:0%;display:none;margin-bottom:0%"> 
