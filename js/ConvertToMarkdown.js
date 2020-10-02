@@ -698,6 +698,6 @@ function convert(value, custom=true){
             value = value.replace(regexReplace[0], regexReplace[1])
         }
     }
-    return converter.makeHtml(value)
+    return marked(converter.makeHtml(value))
 }
 
