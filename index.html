@@ -260,7 +260,7 @@
                     </label>
                     <span class="divider"></span>
                     <wbr>
-                    <label title="adds whitespace, (alt + h)" class="hider" style="padding:20px"><span style="text-decoration: underline dotted;" onclick="const hidden = document.getElementById('hidden-spacer-options');if(hidden.classList.contains('hider-visible')){hidden.classList='hider-option'}else{hidden.classList='hider-option hider-visible'}">Spacer</span>
+                    <span title="adds whitespace, (alt + h)" class="hider" style="padding:20px"><span style="text-decoration: underline dotted;" onclick="const hidden = document.getElementById('hidden-spacer-options');if(hidden.classList.contains('hider-visible')){hidden.classList='hider-option'}else{hidden.classList='hider-option hider-visible'}">Spacer</span>
                         <div class="hider-option" id="hidden-spacer-options">
                             <input type="color" value="#ffffffff" oninput="updateSpaceButton()" title="Color of space, (#000000)" id="space-color" oninput="this.title=`Color of space, (${this.value})`">
                             <input type="number" min=0 step="any" style="width:75;height:25px" value=1 id="space-amount" oninput="updateSpaceButton()">
@@ -283,7 +283,7 @@
                             </select>
                             <button class="editing-button" title="Space (alt + h)" onclick="addSpace()">A<span id="space-button" style="padding-left:1ch;background-color:black"></span>A</button></button>
                         </div>
-                    </label>
+                    </span>
                     <span class="divider"></span>
                 </div>
                 <wbr>

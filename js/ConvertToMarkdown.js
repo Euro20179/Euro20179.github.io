@@ -359,7 +359,7 @@ regexes = [
 (_, type, contents)=>`<${type != "k" && type != "key" ? type : "kbd"}>${contents}</${type != "k" && type != "key" ? type : "kbd"}>`
 ],
 [
-/(?<!\\)(?:\[(.*)\])?\*-([^-\*]+)-\*(?:\[([^\]\n]+)\])?/g,
+/(?<!\\)(?:\[([^\n\]]*)\])?\*-([^-\*]+)-\*(?:\[([^\]\n]+)\])?/g,
 "<mark title='$3' style='background-color:$1'>$2</mark>"
 ],
 [
