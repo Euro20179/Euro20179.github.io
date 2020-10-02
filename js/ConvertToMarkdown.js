@@ -518,17 +518,9 @@ ${selector} li{
 }
 ],
 [
-/(?<!\\)\\INCLUDE:(SHADOW|LIMARKER|SOFTBLINK|BLINK|PLACEHOLDER|KBD|SAMP|CMD)\\/g,
+/(?<!\\)\\INCLUDE:(LIMARKER|SOFTBLINK|BLINK|PLACEHOLDER|KBD|SAMP|CMD)\\/g,
 (_, include)=>{
     switch(include){
-        case "SHADOW":
-            return `
-<style>
-shadow{
-text-shadow: .2em .2em 2px lightgrey;
-}
-</style>
-`
         case "LIMARKER":
             return `
 <style>

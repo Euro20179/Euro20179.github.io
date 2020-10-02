@@ -184,6 +184,23 @@ class Spacer extends HTMLElement{
         return this.getAttribute("amount")
     }
 }
+class Shadow extends HTMLElement{
+    connectedCallback(){
+        this.style.textShadow = `${this.left} ${this.down} ${this.blur} ${this.color}`
+    }
+    get left(){
+        return this.getAttribute("left") ? this.getAttribute("left") : ".2em"
+    }
+    get down(){
+        return this.getAttribute("down") ? this.getAttribute("down") : ".2em"
+    }
+    get blur(){
+        return this.getAttribute("blur") ? this.getAttribute("blur") : "2px"
+    }
+    get color(){
+        return this.getAttribute("color") ? this.getAttribute("color") : "lightgrey"
+    }
+}
 
 customElements.define('c-upsidedown', Upsidedown)
 customElements.define('c-circled', Circled)
@@ -193,3 +210,4 @@ customElements.define("c-choose", Choose)
 customElements.define("c-random", Rand)
 customElements.define("c-unicode", Unicode)
 customElements.define("c-spacer", Spacer)
+customElements.define("c-shadow", Shadow)
