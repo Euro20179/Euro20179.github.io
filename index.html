@@ -133,7 +133,7 @@
             <span class="divider" style="border-style: dashed;"></span>
             <wbr>
             <span class="hider">
-                <span style="text-decoration: overline wavy"><span style="text-decoration: underline;cursor:pointer" onclick="let hider = document.getElementById('underline-overline-hider');if(hider.classList.contains('hider-visible')){hider.classList='hider-option'}else{hider.classList='hider-option hider-visible'}">U</span></span>
+                <span style="text-decoration: overline wavy"><span style="text-decoration: underline;cursor:pointer" onclick="let hider = document.getElementById('underline-overline-hider');if(hider.classList.contains('hider-visible')){hider.classList='hider-option'}else{hider.classList='hider-option hider-visible'}" id="underline-hider-display">U</span></span>
                 <span class="hider-option" id="underline-overline-hider">
                     <button class="editing-button popup-button-trigger" onclick="typeInTextarea('__')" title="Underline, (ctrl + u)"><u>u</u>
                         <button class="editing-button popup-button" onclick="typeInTextarea('^__^', 2)" title="Overline, (ctrl + shift + u)"><span style="text-decoration: overline;">o</span></button>
@@ -172,7 +172,7 @@
             <span class="divider"></span>
             <button class="editing-button" onclick="let more = document.getElementById('text-more');if(more.style.visibility === 'visible'){more.style.visibility = 'hidden';more.style.height=0;more.style.marginTop='0%';more.style.display='none'}else{more.style.visibility = 'visible';more.style.height='initial';more.style.marginTop='1%';more.style.display='block'}" id="more-button">More</button>
             <div id="text-more" style="visibility:hidden;height:0px;margin-top:0%;display:none;margin-bottom:0%"> 
-                <label class="hider" style="padding:20px"><span style="text-decoration: underline dotted" onclick="const hidden = document.getElementById('hidden-border-options');if(hidden.classList.contains('hider-visible')){hidden.classList='hider-option'}else{hidden.classList='hider-option hider-visible'}">Border Options</span>
+                <label class="hider" style="padding:20px"><span style="text-decoration: underline dotted" onclick="const hidden = document.getElementById('hidden-border-options');if(hidden.classList.contains('hider-visible')){hidden.classList='hider-option'}else{hidden.classList='hider-option hider-visible'}" id="border-hider-display">Border Options</span>
                     <div class="hider-option" style="padding:20px" id="hidden-border-options">
                         <select name="direction" value="" id="border-direction" title="line side" oninput="updateBorderButton()">
                             <option value="" title="all sides">All Sides</option>
@@ -216,7 +216,7 @@
                 </label>
                     <span class="divider"></span>
                     <wbr>
-                    <label class="hider"  style="padding:20px"><span style="text-decoration: underline dotted;" onclick="const hidden = document.getElementById('hidden-shadow-options');if(hidden.classList.contains('hider-visible')){hidden.classList='hider-option'}else{hidden.classList='hider-option hider-visible'}">Shadow Options</span>
+                    <label class="hider"  style="padding:20px"><span style="text-decoration: underline dotted;" onclick="const hidden = document.getElementById('hidden-shadow-options');if(hidden.classList.contains('hider-visible')){hidden.classList='hider-option'}else{hidden.classList='hider-option hider-visible'}" id="shadow-hider-display">Shadow Options</span>
                         <div class="hider-option" style="padding:20px" id="hidden-shadow-options">
                             <input type="number" value=.2 id="shadow-right" title="amount right" min=0 step=.1 oninput="updateShadowButton()">
                             <input type="number" value=.2 id="shadow-down" title="amount down" min=0 step=.1 oninput="updateShadowButton()">
@@ -261,7 +261,7 @@
                     </label>
                     <span class="divider"></span>
                     <wbr>
-                    <span title="adds whitespace, (alt + h)" class="hider" style="padding:20px"><span style="text-decoration: underline dotted;" onclick="const hidden = document.getElementById('hidden-spacer-options');if(hidden.classList.contains('hider-visible')){hidden.classList='hider-option'}else{hidden.classList='hider-option hider-visible'}">Spacer</span>
+                    <span title="adds whitespace, (alt + h)" class="hider" style="padding:20px"><span style="text-decoration: underline dotted;" onclick="const hidden = document.getElementById('hidden-spacer-options');if(hidden.classList.contains('hider-visible')){hidden.classList='hider-option'}else{hidden.classList='hider-option hider-visible'}" id="spacer-hider-display">Spacer</span>
                         <div class="hider-option" id="hidden-spacer-options">
                             <input type="color" value="#ffffffff" oninput="updateSpaceButton()" title="Color of space, (#000000)" id="space-color" oninput="this.title=`Color of space, (${this.value})`">
                             <input type="number" min=0 step="any" style="width:75;height:25px" value=1 id="space-amount" oninput="updateSpaceButton()">

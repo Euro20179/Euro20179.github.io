@@ -37,3 +37,16 @@
     visibility: visible;
 }
 
+.darkmode #border-hider-display:hover,
+.darkmode #shadow-hider-display:hover,
+.darkmode #spacer-hider-display:hover,
+.darkmode #underline-hider-display:hover{
+    color:blue;
+}
+
+#border-hider-display:hover,
+#shadow-hider-display:hover,
+#spacer-hider-display:hover,
+#underline-hider-display:hover{
+    color:rgb(233, 15, 233);
+}
