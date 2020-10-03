@@ -80,15 +80,6 @@ let currTab = homeTab
 turnOffAllOtherTabs(currTab)
 
 var SyncScrolling = document.getElementById("syncscrolling").checked;
-const converter = new showdown.Converter({
-    tables: true,
-    strikethrough: true,
-    simplifiedAutoLink:true,
-    tables: true,
-    ghCodeBlocks: true,
-    emoji:true,
-    parseImgDimensions:true
-})
 
 function addBorder(){
     let size=document.getElementById('border-size').value; 
