@@ -78,95 +78,6 @@ for(let x = 1; x < 52; x++){
     circleLetters[CHARS[x]] = circleLetters["A"] + x
 }
 
-const EMOJIS = {
-    bking: "\u265a",
-    bqueen: "\u265b",
-    brook: "\u265c",
-    bbishop: "\u265d",
-    bknight: "\u265e",
-    bpawn: "\u265f",
-    wking: "\u2654",
-    wqueen: "\u2655",
-    wrook: "\u2656",
-    wbishop: "\u2657",
-    wknight: "\u2658",
-    wpawn: "\u2659",
-    dice: "🎲",
-    dice1: "\u2680",
-    dice2: "\u2681",
-    dice3: "\u2682",
-    dice4: "\u2683",
-    dice5: "\u2684",
-    dice6: "\u2685",
-    card_spade: "\u2660",
-    card_club: "\u2663",
-    card_heart: "\u2665",
-    card_diamond: "\u2666",
-    card_hollow_spade: "\u2664",
-    card_hollow_club: "\u2667",
-    card_hollow_heart: "\u2661",
-    card_hollow_diamond: "\u2662",
-    male: "\u2642",
-    female: "\u2640",
-    middot: "\u00b7",
-    degree: "\u00b0",
-    quarter_note: "\u2669",
-    eighth_note: "\u266a",
-    beamed_eighth_note: "\u266b",
-    beamed_sixteenth_note: "\u266c",
-    g_cleff: "&#119070;",
-    quarter_rest: "&#119101;",
-    eighth_rest: "&#119102;",
-    whole_note: "&#119133;",
-    half_note: "&#119134;",
-    sixteenth_note: "&#119137;",
-    paragraph: "\u00b6",
-    cent: "\u00a2",
-    bitcoin: "\u20bf",
-    euro_sign: "\u20ac",
-    pound_sign: "\u00a3",
-    world_map: "&#128506;",
-    waffle: "🧇",
-    ice: "🧊",
-    brown_square: "🟫",
-    purple_square: "🟪",
-    blue_square: "🟦",
-    yellow_square: "🟨",
-    orange_square: "🟧",
-    green_square: "🟩",
-    red_square: "🟥",
-    brown_circle: "🟤",
-    purplse_circle: "🟣",
-    green_circle: "🟢",
-    yellow_circle: "🟡",
-    orange_circle: "🟠",
-    axe: "🪓",
-    kite: "🪁",
-    light_skin: "🏻",
-    medium_light_skin: "🏼",
-    medium_skin: "🏽",
-    medium_dark_skin: "🏾",
-    dark_skin: "🏿",
-    jsmile: "&#12484;",
-    shrug: "¯\\&lowbar;(ツ)\_/¯",
-    upsidedown_e: "¡",
-    upsidedown_q: "¿",
-}
-const imgEmotes = {
-    java: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.softexia.com%2Fwp-content%2Fuploads%2F2017%2F04%2FJava-logo.png&f=1&nofb=1",
-    c: 'https://cdn.iconscout.com/icon/free/png-256/c-programming-569564.png',
-    cpp: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fsdtimes.com%2Fwp-content%2Fuploads%2F2018%2F03%2Fcpppp.png&f=1&nofb=1',
-    javascript: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fthumb%2F9%2F99%2FUnofficial_JavaScript_logo_2.svg%2F1200px-Unofficial_JavaScript_logo_2.svg.png&f=1&nofb=1',
-    python: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcode.fb.com%2Fwp-content%2Fuploads%2F2016%2F05%2F2000px-Python-logo-notext.svg_.png&f=1&nofb=1',
-    markdown: "fav.png",
-    html: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Flogos-download.com%2Fwp-content%2Fuploads%2F2017%2F07%2FHTML5_badge.png&f=1&nofb=1",
-    css: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fmaxcdn.icons8.com%2FShare%2Ficon%2FLogos%2Fcss31600.png&f=1&nofb=1",
-    autohotkey: "https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fcdn.warer.com%2Fmedia%2Fauto_hotkey-logo.png&f=1&nofb=1",
-    
-}
-const hiddenEmotes = {
-    spooky_scary_skeletons: "<img src='https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fmedia.tenor.com%2Fimages%2Fdfea95af83f35a6ed84129a62c41b87e%2Ftenor.gif&f=1&nofb=1' width='80m'>",
-}
 regexes = [
 [
 /(?<!\\)\\RAND(?:\{([0-9]+) ([0-9]+)\})?\\/g,
@@ -690,6 +601,6 @@ function convert(value, custom=true){
             value = value.replace(regexReplace[0], regexReplace[1])
         }
     }
-    return marked(converter.makeHtml(value))
+    return marked(value)
 }
 
