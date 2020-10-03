@@ -151,7 +151,7 @@ regexes = [
 "↑"
 ],
 [
-/(?<!\\)> ?''(.*)''(?:\[([^\]]+)\])?/g,
+/(?<!\\)> ?''(.*)''(?:\[(.+?)\])?/g,
 (_, quote, author=null)=>{
     if(author){
         return `<blockquote>❝<i>${quote}</i>❞<br><span style='display:block;margin-left:2em;'>-<i><u>${author}</u></i></span></blockquote>`
@@ -168,7 +168,7 @@ regexes = [
 (_, checked)=> `<input type="radio" ${checked === "*" ? "checked" : ""} disabled>`
 ],
 [
-/(?<!\\)\{(?:\*|style|css)('|")(.+)\1 ?([^\}]+)\}/g,
+/(?<!\\)\{(?:\*|style|css)('|")(.+?)\1 ?(.+?)\}/g,
 "<span style='$2'>$3</span>"
 ],
 [
@@ -184,45 +184,45 @@ regexes = [
 "<span style='background-image:linear-gradient($2, $3)'>$4</span>"
 ],
 [
-/(?<!\\)\{#:?([^ \n\}:]+)(?::| )([^\}]+)\}(?:\[(.*)\])?/g,
+/(?<!\\)\{#:?(.+?)(?::| )(.+?)\}(?:\[(.*?)\])?/g,
 (_, color, content, title)=>{
     return  `<span title="${title ? title : ""}" style="color:${color.match(/(?:[0-f]{6}|[0-f]{8})/) ? "#" + color : color}">${content}</span>`
 }
 ],
 [
-/(?<!\\)\{s(?!hadow|pace|amp):?([^ \n]+) ([^\}]*)\}/g,
+/(?<!\\)\{s(?!hadow|pace|amp):?([^ \n]+) (.*?)\}/g,
 "<span style='font-size:$1'>$2</span>"
 ],
 [
-/(?<!\\)\{f(?:"|')([^"'\n]+)(?:"|')(?::| )?([^\}]*)\}/g,
+/(?<!\\)\{f(?:"|')(.+?)(?:"|')(?::| )?(.*?)\}/g,
 "<span style='font-family:$1'>$2</span>"
 ],
 [
-/(?<!\\)(\[|\|)\=([0-9]+)(?: ?out ?| ?outof ?)([0-9]+)\=(?:\]|\|)(?:\[(.+)\])?/g,
+/(?<!\\)(\[|\|)\=([0-9]+)(?: ?out ?| ?outof ?)([0-9]+)\=(?:\]|\|)(?:\[(.+?)\])?/g,
 (_, meterOrProgress, value, max, title)=> `<${meterOrProgress === '|' ? "meter" : "progress"} value="${value}" max="${max}" title="${title ? title : ""}"></${meterOrProgress === '|' ? "meter" : "progress"}>`
 ],
 [
-/(?<!\\)\{b('|")([^\n"']*)\1 ?([^\}]*)\}/g,
+/(?<!\\)\{b('|")(.*?)\1 ?(.*?)\}/g,
 "<span style='border: $2'>$3</span>"
 ],
 [
-/(?<!\\)\{b\^:?('|")([^"'\n]*)\1 ?([^\}]*)\}/g,
+/(?<!\\)\{b\^:?('|")(.*?)\1 ?(.*?)\}/g,
 "<span style='border-top: $2'>$3</span>"
 ],
 [
-/(?<!\\)\{bv:?('|")([^"'\n]*)\1 ?([^\}]*)\}/g,
+/(?<!\\)\{bv:?('|")(.*?)\1 ?(.*?)\}/g,
 "<span style='border-bottom: $2'>$3</span>"
 ],
 [
-/(?<!\\)\{b(?:l|<):?('|")([^"'\n]*)\1 ?([^\}]*)\}/g,
+/(?<!\\)\{b(?:l|<):?('|")(.*?)\1 ?(.*?)\}/g,
 "<span style='border-left: $2'>$3</span>"
 ],
 [
-/(?<!\\)\{b>:?('|")([^"'\n]*)\1 ?([^\}]*)\}/g,
+/(?<!\\)\{b>:?('|")(.*?)\1 ?(.*?)\}/g,
 "<span style='border-right: $2'>$3</span>"
 ],
 [
-/(?<!\\)\{bg(?:#|:)?([^ \n]+)(.*)\}(?:\[(.*)\])?/g,
+/(?<!\\)\{bg(?:#|:)?([^ \n]+)(.*?)\}(?:\[(.*?)\])?/g,
 '<span style="background-color:$1" title="$3">$2</span>'
 ],
 [
@@ -242,43 +242,43 @@ regexes = [
 ":regional&lowbar;indicator_$1:"
 ],
 [
-/(?<!\\)\{(?:->|lindent) ?([^ \n\}]*) ([^\}]+) (?:<-|rindent)([^ \n\}]*)\}/g,
+/(?<!\\)\{(?:->|lindent) ?([^ \n\}]*) (.+?) (?:<-|rindent)(.*?)\}/g,
 "<span style='display:block;margin-left:$1;margin-right:$3'>$2</span>"
 ],
 [
-/(?<!\\)\{(?:->|lindent) ?([^ \n\}]*) ([^\}]+)\}/g,
+/(?<!\\)\{(?:->|lindent) ?([^ \n\}]*) (.+?)\}/g,
 "<span style='display:block;margin-left:$1'>$2</span>"  
 ],
 [
-/(?<!\\)\{([^\}]+) (?:<-|rindent)([^ \n\}]*)\}/g,
+/(?<!\\)\{(.+?) (?:<-|rindent)([^ \n\}]*)\}/g,
 "<span style='display:block;margin-right:$2'>$1</span>"  
 ],
 [
-/(?<!\\)(?:\[([^\n\]]*)\])?\\(\^|_)\[([^\]\n]*)\](?:\[([^\]\n]*)\])?/g,
-(_, color, upDown, contents, title)=> `<${upDown === "^" ? "sup" : "sub"} style='color:${color ? color : ""}' title='${title ? title : ""}'>${contents}</${upDown === "^" ? "sup" : "sub"}>`
+/(?<!\\)\\(\^|_)\[(.*?)\](?:\[(.*?)\])?/g,
+(_, upDown, contents, title)=> `<${upDown === "^" ? "sup" : "sub"} title='${title ? title : ""}'>${contents}</${upDown === "^" ? "sup" : "sub"}>`
 ],
 [
-/(?<!\\)(?:D(?:ISP(?:LAY)?)?=? ?\[(.*)\]|("|')([^\n\2]+)\2)\s*?T?(?:OOL)?T?(?:IP)?=? ?\[(.*)\]/g,
+/(?<!\\)(?:D(?:ISP(?:LAY)?)?=? ?\[(.*?)\]|("|')(.+?)\2)\s*?T?(?:OOL)?T?(?:IP)?=? ?\[(.*?)\]/g,
 '<span title="$4">$1$3</span>'
 ],
 [
-/(?<!\\)"(.+)"\s?\.{3}(.*)/g,
+/(?<!\\)"(.+?)"\s?\.{3}(.*)/g,
 "<details><summary>$1</summary>$2</details>"
 ],
 [
-/(?<!\\)\{(k(?:ey)?|(?:cmd|samp|k(?:ey)?)):([^\}]+)\}/g,
+/(?<!\\)\{(k(?:ey)?|(?:cmd|samp|k(?:ey)?)):(.+?)\}/g,
 (_, type, contents)=>`<${type != "k" && type != "key" ? type : "kbd"}>${contents}</${type != "k" && type != "key" ? type : "kbd"}>`
 ],
 [
-/(?<!\\)(?:\[([^\n\]]*)\])?\*-([^-\*]+)-\*(?:\[([^\]\n]+)\])?/g,
+/(?<!\\)(?:\[(.*?)\])?\*-(.+?)-\*(?:\[(.+?)\])?/g,
 "<mark title='$3' style='background-color:$1'>$2</mark>"
 ],
 [
-/(?<!\\)#([^ \-\n]+)(?:-{3,}|<hr>)/g,
+/(?<!\\)([A-z]+|[#0-f]{6,8})(?:-{3,}|<hr>)/g,
 '<hr style="background-color:$1;color:$1" />'
 ],
 [
-/(?<![\\#])(#{1,6}) ?(.+) \[#([^\]]+)\]/g,
+/(?<![\\#])(#{1,6}) ?(.+) \[#(.+?)\]/g,
 (_, heading, contents, id)=> `<h${heading.length} id=${id}>${contents}`
 ],
 [
@@ -286,67 +286,67 @@ regexes = [
 (_, disabled, min, max, value)=> `${min}<input type="range" min="${min}" max="${max}" value="${value}" ${!disabled ? "disabled" : ""}>${max}`
 ],
 [
-/(?<!\\)\[(.+)\](?: ?(.*))?:(?: |\n(?: |    )?)?(?:\[|\()(.*)(?:\)|\])/g,
+/(?<!\\)\[(.+?)\](?: ?(.*))?:(?: |\n(?: |    )?)?(?:\[|\()(.*)(?:\)|\])/g,
 (_, word, speech, def)=>`<u>${word}</u>${speech ? " (" + speech + ")" : ""}:<br><dfn style='margin-left:1.5em;display:block'>${def}</dfn>`
 ],
 [
-/(?<!\\)#\[([^\]]*)\]([^\n]*)/g,
-"<span id='$1'>$2</span>"
+/(?<!\\)#\[(.*?)\]/g,
+"<span id='$1'></span>"
 ], 
 [
-/(?<!\\|!)\[([^\]]*)\]\(([^ \)]+) ([^\)]*)\)/g, //here because it doesn't do titles
+/(?<!\\|!)\[(.*?)\]\((.+?)(?: |\n)(.*?)\)/g, //here because it doesn't do titles
 '<a title="$3" href="$2">$1</a>'
 ],
 [
-/(?<!\\)(?:\[([^\]]+)\])?\^\^_([^_\^\^\n]*)_\^\^(?:\[([^\n\]]+)\])?/g,
+/(?<!\\)(?:\[(.+?)\])?\^\^_(.*?)_\^\^(?:\[(.+?)\])?/g,
 '<span style="text-decoration:overline double $1" title="$3">$2</span>'
 ],
 [
-/(?<!\\)(?:\[([^\]]+)\])?\^_([^_\^\n]*)_\^(?:\[([^\n\]]+)\])?/g,
+/(?<!\\)(?:\[(.+?)\])?\^_(.*?)_\^(?:\[(.+?)\])?/g,
 '<span style="text-decoration:overline $1" title="$3">$2</span>'
 ],
 [
-/(?<!\\)(?:\[([^\]]+)\])?\^\.([^\.\^\n]*)\.\^(?:\[([^\n\]]+)\])?/g,
+/(?<!\\)(?:\[(.+?)\])?\^\.(.*?)\.\^(?:\[(.+?)\])?/g,
 '<span style="text-decoration:overline dotted $1" title="$3">$2</span>'
 ],
 [
-/(?<!\\)(?:\[([^\]]+)\])?\^~([^~\^\n]*)~\^(?:\[([^\n\]]+)\])?/g,
+/(?<!\\)(?:\[(.+?)\])?\^~(.*?)~\^(?:\[(.+?)\])?/g,
 '<span style="text-decoration:overline wavy $1" title="$3">$2</span>'
 ],
 [
-/(?<!\\)(?:\[([^\]]+)\])?\._([^_\.\n]+)_\.(?:\[([^\n\]]+)\])?/g,
+/(?<!\\)(?:\[(.+?)\])?\._(.+?)_\.(?:\[(.+?)\])?/g,
 '<span style="text-decoration:underline dotted $1" title="$3">$2</span>'
 ],
 [
-/(?<!\\)(?:\[([^\]]+)\])?~_([^_~\n]+)_~(?:\[([^\n\]]+)\])?/g,
+/(?<!\\)(?:\[(.+?)\])?~_(.+?)_~(?:\[(.+?)\])?/g,
 '<span style="text-decoration:underline wavy $1" title="$3">$2</span>'
 ],
 [
-/(?<!\\|_)(?:\[([^\]]+)\])?_([^_\n]+)_(?:\[([^\n\]]+)\])?/g,
-"<u style='text-decoration:underline $1' title='$3'>$2</u>"
-],
-[
-/(?<!\\)(?:\[([^\]]+)\])?__([^__\n]+)__(?:\[([^\n\]]+)\])?/g,
+/(?<!\\)(?:\[(.+?)\])?__(.+?)__(?:\[(.+?)\])?/g,
 '<span style="text-decoration:underline double $1" title="$3">$2</span>'
 ],
 [
-/(?<!\\)\|->([^\|]+)<-\|/g,
+/(?<!\\|_)(?:\[(.+?)\])?_(.+?)_(?:\[(.+?)\])?/g,
+"<u style='text-decoration:underline $1' title='$3'>$2</u>"
+],
+[
+/(?<!\\)\|->(.+?)<-\|/g,
 "<center>$1</center>"
 ],
 [
-/(?<!\\)\|->([^\|]+)\|/g,
+/(?<!\\)\|->(.+?)\|/g,
 "<p style='text-align:right'>$1</p>"
 ],
 [
-/(?<!\\)\|([^\|]+)<-\|/g,
+/(?<!\\)\|(.+?)<-\|/g,
 "<p style='text-align:left'>$1</p>"
 ],
 [
-/(?<!\\)\{shadow:?(?:('|")([^\1\n]+)\1)? ?([^\}]*)\}/g,
+/(?<!\\)\{shadow:?(?:('|")(.+?)\1)? ?(.*?)\}/g,
 "<span style='text-shadow:$2'>$3</span>"
 ],
 [
-/(?<!\\)\{(?:\.|class)("|')([^\n"']+)\1 ?([^\}]+)\}/g,
+/(?<!\\)\{(?:\.|class)("|')(.+?)\1 ?(.+?)\}/g,
 '<span class="$2">$3</span>'
 ],
 [
@@ -357,19 +357,19 @@ regexes = [
 }
 ],
 [
-/(?<!\\)A!\[([^\n\]]+)\]/g,
+/(?<!\\)A!\[(.+?)\]/g,
 "<audio controls='controls' src='$1'>"
 ],
 [
-/(?<!\\)\{(?:scroll|move|shift):?\[?(?:(?:dir)?:?(?:"|')([^\n"]+)(?:"|'))? ?(?:w?(?:idth)?:?(?:"|')([^\n"]+)(?:"|'))? ?(?:h?(?:eight)?:?(?:"|')([^\n"]+)(?:"|'))? ?(?:s?(?:croll)?(?:amount)?(?:peed)?:?(?:"|')([^\n"]+)(?:"|'))?\]?:? ?([^\n\}]+)\}/g, //this is the craziest regexp i've ever made it doesn't even do that much lmao
+/(?<!\\)\{(?:scroll|move|shift):?\[?(?:(?:dir)?:?(?:"|')(.+?)(?:"|'))? ?(?:w?(?:idth)?:?(?:"|')(.+?)(?:"|'))? ?(?:h?(?:eight)?:?(?:"|')(.+?)(?:"|'))? ?(?:s?(?:croll)?(?:amount)?(?:peed)?:?(?:"|')(.+?)(?:"|'))?\]?:? ?(.+?)\}/g, //this is the craziest regexp i've ever made it doesn't even do that much lmao
 "<marquee direction='$1' height='$3' width='$2' scrollamount='$4'>$5</marquee>"
 ],
 [
-/(?<!\\)\{(?:white)?space:? ?(?:([^\n ]+))?(?:(?: a:?)?([^\n\}]+))?\}/g,
+/(?<!\\)\{(?:white)?space:? ?(?:([^\n ]+))?(?:(?: a:?)?(.+?))?\}/g,
 "<c-spacer color='$1' amount='$2'></c-spacer>"
 ],
 [
-/(?<!\\)\\olm(?:arker)?:([0-9]+)\\?([^\n\\]+)\\/g,
+/(?<!\\)\\olm(?:arker)?:([0-9]+)\\?(.+?)\\/g,
 (_, layer, to)=>{
     let selector = "ol"
     layer = parseInt(layer)
@@ -399,7 +399,7 @@ ${selector} li{
 }
 ],
 [
-/(?<!\\)\\ulm(?:arker)?:([0-9]+)\\?([^\n\\]+)\\/g,
+/(?<!\\)\\ulm(?:arker)?:([0-9]+)\\?(.+?)\\/g,
 (_, layer, to)=>{
     let selector = "ul"
     layer = parseInt(layer)
@@ -553,11 +553,11 @@ ${include}::selection{
 }
 ],
 [
-/(?<!\\)\{cur(?:sor)?:? ?([^\n:]*):([^\}]+)\}(?:\[(.*)\])?/g,
+/(?<!\\)\{cur(?:sor)?:? ?([^\n:]*):(.+?)\}(?:\[(.*?)\])?/g,
 '<span style="cursor:$1" title="$3">$2</span>'
 ],
 [
-/(?<!\\)\*\[([^\]\n]+)\] (.*)/g,
+/(?<!\\)\*\[(.+?)\] (.*)/g,
 "<li marker='$1&nbsp;'>$2</li>"
 ],
 [
@@ -570,7 +570,7 @@ ${include}::selection{
 }
 ],
 [
-/(?<!\\)\\;(.*)\\/g,
+/(?<!\\)\\;(.*?)\\/g,
 "<!--$1-->"
 ],
 [
