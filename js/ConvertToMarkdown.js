@@ -279,7 +279,7 @@ regexes = [
 }
 ],
 [
-/(?<!\\)\{s(?!hadow|pace):?([^ \n]+) ([^\}]*)\}/g,
+/(?<!\\)\{s(?!hadow|pace|amp):?([^ \n]+) ([^\}]*)\}/g,
 "<span style='font-size:$1'>$2</span>"
 ],
 [
