@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" charset="utf-8">
+    <title>snake</title>
+    <style>
+        body{
+            height: 100vh;
+            width:100vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            background-color: black;
+            font-family:arial;
+            color:white
+        }
+        #game-board{
+            background-color: #ccc;
+            width:100vmin;
+            height:100vmin;
+            display: grid;
+            grid-template-rows: repeat(51, 1fr);
+            grid-template-columns: repeat(51, 1fr);
+        }
+        .snake{
+            background-color: hsl(200, 100%, 50%);
+            border:.25vmin solid black;
+        }
+        .food{
+            background-color: hsl(50, 100%, 50%);
+            border:.25vmin solid black;
+        }
+        #info{
+            position: absolute;
+            left:0;
+            font:2em arial, sans-serif;
+        }
+        #options{
+            font-size:1.5em;
+            z-index:2;
+            color:white;
+            position:absolute;
+            left:0;
+            top:0;
+            font-family: arial;
+            border:2px inset white;
+        }
+        #options label{
+            display: inline-block;
+            margin-bottom:20px;
+        }
+        #game-board button{
+            background-color: green;
+            left:50%;/*literally*/
+            transform:translateX(-50%) translateY(50%);/*just*/
+            bottom:50%;/*centers*/
+            position: absolute;/*the damn button*/
+            font-size:20em;
+        }
+    </style>
+    <script src="game.js" defer type="module"></script>
+</head>
+<body>
+    <div id="info">
+        <div id="score"></div>
+        <div id="time">Time:</div>
+    </div>
+    <div id="options">
+        <label id="get-faster-label">Get Faster?</label><input type="checkbox" id="get-faster" checked>
+        <br>
+        <label id="snake-speed-label">Snake Speed</label><input type="number" step="any" id="snake-speed" value="10" min="1">
+        <br>
+        <label>Snake Speed bonus incroment</label><input type="number" step="any" id="bonus-snake-speed" value="0" min="0">
+        <br>
+        <label id="food-amount-label">Food Amount</label><input type="number" step="1" id="food-amount" value="1" min="1">
+        <br>
+        <label>Snake Eat Increase</label><input type="number" step="1" min="1" id="snake-eat-increase" value="1">
+        <br>
+        <label>Walls Kill?</label><input type="checkbox" id="walls-deadly" checked>
+        <br>
+        <label>Grid Size</label><input type="number" id="grid-size" value="51">
+    </div>
+    <div id="game-board"></div>
+</body>
+</html>
