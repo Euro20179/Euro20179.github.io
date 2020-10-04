@@ -4,6 +4,7 @@ import {gridSize} from "./grid.js"
 const getFaster = document.getElementById("get-faster")
 const snakeSpeedInput = document.getElementById("snake-speed")
 const snakeSpeedBonusIncromentInput = document.getElementById('bonus-snake-speed')
+const snakeColor = document.getElementById("snake-color")
 export let snakeSpeed = Number(snakeSpeedInput.value) // how many times the snake moves per second
 const snakeBody = [
     {x: 11, y:11},
@@ -27,13 +28,13 @@ export function draw(gameBoard){
         const snakeElement = document.createElement("div")
         snakeElement.style.gridRowStart = segment.y;
         snakeElement.style.gridColumnStart = segment.x;
+        snakeElement.style.backgroundColor = snakeColor.value
         snakeElement.classList.add("snake")
         gameBoard.appendChild(snakeElement)
     })
 }
 
 export function expandSnake(amount){
-    new Audio("./src/e a t.mp3").play()
     newSegments += amount
     if(getFaster.checked){
         snakeSpeed += Math.random() + Number(snakeSpeedBonusIncromentInput.value)
@@ -44,6 +45,7 @@ export function expandSnake(amount){
 export function onSnake(position, {ignoreHead = false} = {}){
     return snakeBody.some((segment, index) => {
         if(ignoreHead && index === 0) return false;
+        
         return equalPositions(segment, position)
     })
 }

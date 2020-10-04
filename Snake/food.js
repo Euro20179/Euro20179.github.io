@@ -3,6 +3,7 @@ import {randomGridPosition} from './grid.js'
 
 const expansionRateInput = document.getElementById("snake-eat-increase")
 const foodAmountInput = document.getElementById('food-amount')
+const foodColor = document.getElementById("food-color")
 let foods = []
 for(let i = 0; i < Number(foodAmountInput.value); i++){
     foods.push(getRandomFoodPos())
@@ -27,6 +28,7 @@ export function draw(gameBoard){
         const foodElement = document.createElement("div")
         foodElement.style.gridRowStart = food.y;
         foodElement.style.gridColumnStart = food.x;
+        foodElement.style.backgroundColor = foodColor.value
         foodElement.classList.add("food")
         gameBoard.appendChild(foodElement)
     }

@@ -25,16 +25,17 @@
             grid-template-columns: repeat(51, 1fr);
         }
         .snake{
-            background-color: hsl(200, 100%, 50%);
+            background-color: #00aaff;
             border:.25vmin solid black;
         }
         .food{
-            background-color: hsl(50, 100%, 50%);
+            background-color: #ffd500;
             border:.25vmin solid black;
         }
         #info{
             position: absolute;
-            left:0;
+            right:0;
+            top:0;
             font:2em arial, sans-serif;
         }
         #options{
@@ -80,7 +81,13 @@
         <br>
         <label>Walls Kill?</label><input type="checkbox" id="walls-deadly" checked>
         <br>
-        <label>Grid Size</label><input type="number" id="grid-size" value="51">
+        <label>Board Size</label><input type="number" id="grid-size" value="51">
+        <br>
+        <label>Board color</label><input type="color" id="board-color" value="#cccccc" oninput="document.getElementById('game-board').style.backgroundColor=this.value">
+        <br>
+        <label>Snake color</label><input type="color" id="snake-color" value="#00aaff">
+        <br>
+        <label>Food color</label><input type="color" id="food-color" value="#ffd500">
     </div>
     <div id="game-board"></div>
 </body>
