@@ -47,7 +47,6 @@ function saveFile(){
     downloadB.download = "converted.md"
 }
 function savePDF(){
-    preview.style.width = "1026px"
     html2pdf()
     .set({
         image: {type: "png"},
