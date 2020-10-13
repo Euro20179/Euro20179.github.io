@@ -503,7 +503,6 @@ document.addEventListener("keypress", e=>{
     typing = true
 })
 document.addEventListener("keydown", e=>{
-    console.log(e.key)
     if(e.key == "Escape"){
         search.value = ""
         for(let item of inventory){
