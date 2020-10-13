@@ -3,11 +3,13 @@ const ctx = canv.getContext("2d")
 let astroidSpeed = 1;
 let score = 0;
 let astroidsAtOnce = 1;
+
 class Lazar{
     color = "red"
     speed = 20;
     width = 3;
     height = 30;
+    id = String(Math.random())
     constructor(x, y){
         this.x = x;
         this.y = y;
@@ -16,12 +18,13 @@ class Lazar{
         return new Lazar(firerer.x + (firerer.width / 2), firerer.y - firerer.height)
     }
     draw(){
-        ctx.fillStyle = this.color;
-        ctx.fillRect(this.x, this.y, this.width, this.height)
+        ctx.drawRect(this.color, this.x, this.y, this.width, this.height)
         this.y -= this.speed
         if(this.y < 0){
-            lazars.pop(lazars.indexOf(this))
+            delete lazars[this.id]
+            return false;
         }
+        return true;
     }
 }
 
@@ -36,8 +39,7 @@ class Astroid{
         this.speed = speed;
     }
     draw(){
-        ctx.fillStyle = this.color
-        ctx.fillRect(this.x, this.y, this.width, this.height)
+        ctx.drawRect(this.color, this.x, this.y, this.width, this.height)
         this.y += this.speed
         if(this.y > canv.height){
             delete astroids[this.id]
@@ -60,10 +62,12 @@ function lazarCollideAstroid(astroid, lazar){
         //changes the speed of the shooter thing
         //if random > .7 (30%) speed decreases instead of increases
         if(Math.random() > .7) firerer.changeSpeed(Math.random() * -Math.random());
-        else firerer.changeSpeed(Math.random() * Math.random());
-        lazars.pop(lazars.indexOf(lazar))
+        else firerer.changeSpeed(Math.random() * (Math.random() / 1.5));
+        delete lazars[lazar.id]
         delete astroids[astroid.id]
+        return true;
     }
+    return false;
 }
 
 let firerer = {
@@ -92,15 +96,14 @@ let firerer = {
         }
     },
     draw(){
-        ctx.fillStyle = firerer.color
-        ctx.fillRect(firerer.x, firerer.y, firerer.width, firerer.height)
+        ctx.drawRect(firerer.color, firerer.x, firerer.y, firerer.width, firerer.height)
     },
     changeSpeed(amnt){
         firerer.speed += amnt;
     },
 }
 
-let lazars = []
+let lazars = {}
 let astroids = {}
 
 document.addEventListener("keydown", e=>{
@@ -112,19 +115,21 @@ document.addEventListener("keydown", e=>{
             firerer.moveing = "right"
             break;
         case " ":
-            lazars.append(Lazar.shoot())
+            if(Object.keys(lazars).length < astroidsAtOnce){
+                let l = Lazar.shoot()
+                lazars[l.id] = l
+            }
     }
 })
 
-let lastFrame = 0;
-function main(time){
+function main(){
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
     firerer.move()
     firerer.draw()
-    for(let lazar of lazars){
-        lazar.draw()
+    for(let lazar in lazars){
+        if(!lazars[lazar].draw()) continue;
         for(let i in astroids){
-            lazarCollideAstroid(astroids[i], lazar)
+            if(lazarCollideAstroid(astroids[i], lazars[lazar])) break;
         }
     }
     for(let key in astroids){
@@ -136,11 +141,13 @@ function main(time){
         astroids[astroid.id] = astroid
     }
     window.requestAnimationFrame(main)
-    lastFrame = time
 }
-
 
 window.requestAnimationFrame(main)
 
 Array.prototype.append = Array.prototype.push
 Astroid.prototype.width = 50
+CanvasRenderingContext2D.prototype.drawRect = (color, x, y, width, height)=>{
+    ctx.fillStyle = color;
+    ctx.fillRect(x, y, width, height)
+}

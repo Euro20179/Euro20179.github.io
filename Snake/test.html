@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" charset="utf-8">
+    <title>snake</title>
+    <style>
+        body{
+            height: 100vh;
+            width:100vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            background-color: black;
+            font-family:arial;
+            color:white
+        }
+        #game-board{
+            background-color: #ccc;
+            margin-left:25vmin;
+            width:100vmin;
+            height:100vmin;
+            display: grid;
+            grid-template-rows: repeat(51, 1fr);
+            grid-template-columns: repeat(51, 1fr);
+        }
+        .snake{
+            background-color: #00aaff;
+            border:.25vmin solid black;
+        }
+        .food{
+            background-color: #ffd500;
+            border:.25vmin solid black;
+        }
+        #info{
+            position: absolute;
+            right:0;
+            top:0;
+            font:1.5em arial, sans-serif;
+        }
+        #options{
+            font-size:2.5vmin;
+            z-index:2;
+            color:white;
+            position:absolute;
+            left:0;
+            top:0;
+            font-family: arial;
+            border:2px inset white;
+        }
+        #options label{
+            display: inline-block;
+            margin-bottom:20px;
+        }
+        #game-board button{
+            background-color: green;
+            font-size:20vmin;
+        }
+    </style>
+    <script src="game.js" defer type="module"></script>
+</head>
+<body>
+    <div id="info">
+        <div id="score"></div>
+        <div id="time">Time:</div>
+    </div>
+    <div id="options">
+        <label id="get-faster-label">Get Faster?</label><input type="checkbox" id="get-faster" checked>
+        <br>
+        <label id="snake-speed-label">Snake Speed</label><input type="number" step="any" id="snake-speed" value="10" min="1">
+        <br>
+        <label>Snake Speed bonus incroment</label><input type="number" step="any" id="bonus-snake-speed" value="0" min="0">
+        <br>
+        <label id="food-amount-label">Food Amount</label><input type="number" step="1" id="food-amount" value="1" min="1">
+        <br>
+        <label>Snake Eat Increase</label><input type="number" step="1" min="1" id="snake-eat-increase" value="1">
+        <br>
+        <label>Walls Kill?</label><input type="checkbox" id="walls-deadly" checked>
+        <br>
+        <label>Board Size</label><input type="number" id="grid-size" value="51">
+        <br>
+        <label>Board color</label><input type="color" id="board-color" value="#cccccc" oninput="document.getElementById('game-board').style.backgroundColor=this.value">
+        <br>
+        <label>Snake color</label><input type="color" id="snake-color" value="#00aaff">
+        <br>
+        <label>Food color</label><input type="color" id="food-color" value="#ffd500">
+    </div>
+    <div id="game-board"></div>
+</body>
+<script>
+const getFaster = document.getElementById("get-faster")
+const snakeSpeedInput = document.getElementById("snake-speed")
+const snakeSpeedBonusIncromentInput = document.getElementById('bonus-snake-speed')
+const snakeColor = document.getElementById("snake-color")
+let snakeSpeed = Number(snakeSpeedInput.value) // how many times the snake moves per second
+const snakeBody = [
+    {x: 11, y:11},
+]
+let newSegments = 0;
+
+function update(){
+    addSegments()
+    snakeSpeed = Number(snakeSpeedInput.value)
+    const inputDir = getInputDirection()
+    for(let i = snakeBody.length - 2; i >= 0; i--){
+        snakeBody[i + 1] = {...snakeBody[i]} // {...snakeBody[i]} creates a new object instead of a reference
+    }
+
+    snakeBody[0].x += inputDir.x
+    snakeBody[0].y += inputDir.y
+}
+
+function draw(gameBoard){
+    snakeBody.forEach(segment =>{
+        const snakeElement = document.createElement("div")
+        snakeElement.style.gridRowStart = segment.y;
+        snakeElement.style.gridColumnStart = segment.x;
+        snakeElement.style.backgroundColor = snakeColor.value
+        snakeElement.classList.add("snake")
+        gameBoard.appendChild(snakeElement)
+    })
+}
+
+function expandSnake(amount){
+    newSegments += amount
+    if(getFaster.checked){
+        snakeSpeed += Math.random() + Number(snakeSpeedBonusIncromentInput.value)
+        snakeSpeedInput.value = snakeSpeed
+    }
+}
+
+function onSnake(position, {ignoreHead = false} = {}){
+    return snakeBody.some((segment, index) => {
+        if(ignoreHead && index === 0) return false;
+        
+        return equalPositions(segment, position)
+    })
+}
+
+function getSnakeHead(){
+    return snakeBody[0]
+}
+
+function snakeIntersection(){
+    return onSnake(getSnakeHead(), {ignoreHead: true})
+}
+
+function getSnake(){
+    return snakeBody
+}
+function putSnakeHeadOnOppositeSide(){
+    if(snakeBody[0].x < 1){
+        snakeBody[0].x = gridSize
+    }
+    else if(snakeBody[0].x > gridSize){
+        snakeBody[0].x = 1;
+    }
+    else if(snakeBody[0].y > gridSize){
+        snakeBody[0].y = 1
+    }
+    else if(snakeBody[0].y < 1){
+        snakeBody[0].y = gridSize
+    }
+}
+
+function getSnakeSpeed(){
+    return snakeSpeedInput.value;
+}
+
+function equalPositions(position1, position2){
+    return position1.x === position2.x && position1.y === position2.y
+}
+
+function addSegments(){
+    for(let i = 0; i < newSegments; i++){
+        snakeBody.push({...snakeBody[snakeBody.length - 1]})
+    }
+    newSegments = 0;
+}
+let inputDirection = {x: 0, y: 0}
+let lastInputDirection = {x: 0, y: 0}
+
+window.addEventListener('keydown', e=>{
+    switch(e.key){
+        case "ArrowUp":
+            if(lastInputDirection.y !== 0) break;
+            inputDirection = {x:0, y:-1}
+            break;
+        case "ArrowDown":
+            if(lastInputDirection.y !== 0) break;
+            inputDirection = {x: 0, y:1}
+            break;
+        case "ArrowLeft":
+            if(lastInputDirection.x !== 0) break;
+            inputDirection = {x: -1, y:0}
+            break;
+        case "ArrowRight":
+            if(lastInputDirection.x !== 0) break;
+            inputDirection = {x: 1, y: 0}
+            break;
+        case " ":
+            e.preventDefault()
+            alert("paused")
+    }
+})
+
+function getInputDirection(){
+    lastInputDirection = inputDirection
+    return inputDirection
+}
+
+let gridSize = 51;
+
+function randomGridPosition(){
+    return {
+        x: Math.floor(Math.random() * gridSize) + 1,
+        y: Math.floor(Math.random() * gridSize) + 1,
+    }
+}
+
+function outsideGrid(position){
+    return (
+        position.x < 1 || position.x > gridSize ||
+        position.y < 1 || position.y > gridSize
+    )
+}
+
+function setGridSize(size){
+    gridSize = size;
+}
+
+
+const wallsDeadly = document.getElementById("walls-deadly")
+
+let lastRenderTime = 0;
+let gameOver = false
+const gameBoard = document.getElementById('game-board')
+const score = document.getElementById("score")
+const timeElem = document.getElementById('time')
+
+function main(currTime){
+    if(gameOver){
+        if(confirm(`You lose\nFINAL SCORE: ${getSnake().length}\nFinal Time: ${Math.floor(currTime / 1000)} seconds\nFinal Speed: ${getSnakeSpeed()}\npress ok to continue`)){
+            window.location = "/Snake/index.html"
+        }
+        return
+    }
+
+    window.requestAnimationFrame(main)
+    const secondsSinceLastRender = (currTime - lastRenderTime) / 1000
+    if(secondsSinceLastRender < 1 / snakeSpeed){ //if seconds since last render is less than .5 or 1 seconds / snake speed, return
+        return
+    }
+    lastRenderTime = currTime;
+    timeElem.innerHTML = `Time: ${Math.floor(currTime / 1000)} seconds`
+    update()
+    draw()
+}
+
+function update(){
+    updateSnake()
+    updateFood(gameBoard)
+    checkDeath()
+}
+
+function draw(){
+    gameBoard.innerHTML = '' // clears everything
+    drawSnake(gameBoard)
+    drawFood(gameBoard)
+    score.innerHTML = `Score: ${getSnake().length}`
+}
+
+function checkDeath(){
+    if(outsideGrid(getSnakeHead()) && !wallsDeadly.checked){
+        putSnakeHeadOnOppositeSide()
+    }
+    gameOver = snakeIntersection() ||(wallsDeadly.checked && outsideGrid(getSnakeHead()))
+}
+
+function start(){
+    let gridSizeInput = Number(document.getElementById("grid-size").value)
+    gameBoard.style.gridTemplateRows = `repeat(${gridSizeInput}, 1fr)`
+    gameBoard.style.gridTemplateColumns = `repeat(${gridSizeInput}, 1fr)`
+    setGridSize(gridSizeInput)
+    window.requestAnimationFrame(main)
+}
+
+const startButton = document.createElement('button')
+startButton.innerHTML = "Start"
+startButton.onclick = ()=>start()
+gameBoard.appendChild(startButton)
+
+
+
+const expansionRateInput = document.getElementById("snake-eat-increase")
+const foodAmountInput = document.getElementById('food-amount')
+const foodColor = document.getElementById("food-color")
+let foods = []
+for(let i = 0; i < Number(foodAmountInput.value); i++){
+    foods.push(getRandomFoodPos())
+}
+
+export function update(){
+    for(let i = 0; i < Number(foodAmountInput.value); i++){
+        let food = foods[i]
+        if(!food){
+            foods[i] = getRandomFoodPos()
+            continue;
+        }
+        if(onSnake(food)){
+            expandSnake(Number(expansionRateInput.value))
+            foods[i] = getRandomFoodPos()
+        }
+    }
+}
+
+export function draw(gameBoard){
+    for(let food of foods){
+        const foodElement = document.createElement("div")
+        foodElement.style.gridRowStart = food.y;
+        foodElement.style.gridColumnStart = food.x;
+        foodElement.style.backgroundColor = foodColor.value
+        foodElement.classList.add("food")
+        gameBoard.appendChild(foodElement)
+    }
+}
+
+function getRandomFoodPos(){
+    let newFoodPos;
+    while(newFoodPos == null || onSnake(newFoodPos)){
+        newFoodPos = randomGridPosition()
+    }
+    return newFoodPos
+}
+</script>
+</html><!DOCTYPE html>\n<html lang="en">\n<head>\n    <meta charset="UTF-8">\n    <meta name="viewport" charset="utf-8">\n    <title>snake</title>\n    <style>\n        body{\n            height: 100vh;\n            width:100vw;\n            display: flex;\n            justify-content: center;\n            align-items: center;\n            margin: 0;\n            background-color: black;\n            font-family:arial;\n            color:white\n        }\n        #game-board{\n            background-color: #ccc;\n            margin-left:25vmin;\n            width:100vmin;\n            height:100vmin;\n            display: grid;\n            grid-template-rows: repeat(51, 1fr);\n            grid-template-columns: repeat(51, 1fr);\n        }\n        .snake{\n            background-color: #00aaff;\n            border:.25vmin solid black;\n        }\n        .food{\n            background-color: #ffd500;\n            border:.25vmin solid black;\n        }\n        #info{\n            position: absolute;\n            right:0;\n            top:0;\n            font:1.5em arial, sans-serif;\n        }\n        #options{\n            font-size:2.5vmin;\n            z-index:2;\n            color:white;\n            position:absolute;\n            left:0;\n            top:0;\n            font-family: arial;\n            border:2px inset white;\n        }\n        #options label{\n            display: inline-block;\n            margin-bottom:20px;\n        }\n        #game-board button{\n            background-color: green;\n            font-size:20vmin;\n        }\n    </style>\n    <script src="game.js" defer type="module"></script>\n</head>\n<body>\n    <div id="info">\n        <div id="score"></div>\n        <div id="time">Time:</div>\n    </div>\n    <div id="options">\n        <label id="get-faster-label">Get Faster?</label><input type="checkbox" id="get-faster" checked>\n        <br>\n        <label id="snake-speed-label">Snake Speed</label><input type="number" step="any" id="snake-speed" value="10" min="1">\n        <br>\n        <label>Snake Speed bonus incroment</label><input type="number" step="any" id="bonus-snake-speed" value="0" min="0">\n        <br>\n        <label id="food-amount-label">Food Amount</label><input type="number" step="1" id="food-amount" value="1" min="1">\n        <br>\n        <label>Snake Eat Increase</label><input type="number" step="1" min="1" id="snake-eat-increase" value="1">\n        <br>\n        <label>Walls Kill?</label><input type="checkbox" id="walls-deadly" checked>\n        <br>\n        <label>Board Size</label><input type="number" id="grid-size" value="51">\n        <br>\n        <label>Board color</label><input type="color" id="board-color" value="#cccccc" oninput="document.getElementById('game-board').style.backgroundColor=this.value">\n        <br>\n        <label>Snake color</label><input type="color" id="snake-color" value="#00aaff">\n        <br>\n        <label>Food color</label><input type="color" id="food-color" value="#ffd500">\n    </div>\n    <div id="game-board"></div>\n</body>\n<script>\nconst getFaster = document.getElementById("get-faster")\nconst snakeSpeedInput = document.getElementById("snake-speed")\nconst snakeSpeedBonusIncromentInput = document.getElementById('bonus-snake-speed')\nconst snakeColor = document.getElementById("snake-color")\nlet snakeSpeed = Number(snakeSpeedInput.value) // how many times the snake moves per second\nconst snakeBody = [\n    {x: 11, y:11},\n]\nlet newSegments = 0;\n\nfunction update(){\n    addSegments()\n    snakeSpeed = Number(snakeSpeedInput.value)\n    const inputDir = getInputDirection()\n    for(let i = snakeBody.length - 2; i >= 0; i--){\n        snakeBody[i + 1] = {...snakeBody[i]} // {...snakeBody[i]} creates a new object instead of a reference\n    }\n\n    snakeBody[0].x += inputDir.x\n    snakeBody[0].y += inputDir.y\n}\n\nfunction draw(gameBoard){\n    snakeBody.forEach(segment =>{\n        const snakeElement = document.createElement("div")\n        snakeElement.style.gridRowStart = segment.y;\n        snakeElement.style.gridColumnStart = segment.x;\n        snakeElement.style.backgroundColor = snakeColor.value\n        snakeElement.classList.add("snake")\n        gameBoard.appendChild(snakeElement)\n    })\n}\n\nfunction expandSnake(amount){\n    newSegments += amount\n    if(getFaster.checked){\n        snakeSpeed += Math.random() + Number(snakeSpeedBonusIncromentInput.value)\n        snakeSpeedInput.value = snakeSpeed\n    }\n}\n\nfunction onSnake(position, {ignoreHead = false} = {}){\n    return snakeBody.some((segment, index) => {\n        if(ignoreHead && index === 0) return false;\n        \n        return equalPositions(segment, position)\n    })\n}\n\nfunction getSnakeHead(){\n    return snakeBody[0]\n}\n\nfunction snakeIntersection(){\n    return onSnake(getSnakeHead(), {ignoreHead: true})\n}\n\nfunction getSnake(){\n    return snakeBody\n}\nfunction putSnakeHeadOnOppositeSide(){\n    if(snakeBody[0].x < 1){\n        snakeBody[0].x = gridSize\n    }\n    else if(snakeBody[0].x > gridSize){\n        snakeBody[0].x = 1;\n    }\n    else if(snakeBody[0].y > gridSize){\n        snakeBody[0].y = 1\n    }\n    else if(snakeBody[0].y < 1){\n        snakeBody[0].y = gridSize\n    }\n}\n\nfunction getSnakeSpeed(){\n    return snakeSpeedInput.value;\n}\n\nfunction equalPositions(position1, position2){\n    return position1.x === position2.x && position1.y === position2.y\n}\n\nfunction addSegments(){\n    for(let i = 0; i < newSegments; i++){\n        snakeBody.push({...snakeBody[snakeBody.length - 1]})\n    }\n    newSegments = 0;\n}\nlet inputDirection = {x: 0, y: 0}\nlet lastInputDirection = {x: 0, y: 0}\n\nwindow.addEventListener('keydown', e=>{\n    switch(e.key){\n        case "ArrowUp":\n            if(lastInputDirection.y !== 0) break;\n            inputDirection = {x:0, y:-1}\n            break;\n        case "ArrowDown":\n            if(lastInputDirection.y !== 0) break;\n            inputDirection = {x: 0, y:1}\n            break;\n        case "ArrowLeft":\n            if(lastInputDirection.x !== 0) break;\n            inputDirection = {x: -1, y:0}\n            break;\n        case "ArrowRight":\n            if(lastInputDirection.x !== 0) break;\n            inputDirection = {x: 1, y: 0}\n            break;\n        case " ":\n            e.preventDefault()\n            alert("paused")\n    }\n})\n\nfunction getInputDirection(){\n    lastInputDirection = inputDirection\n    return inputDirection\n}\n\nlet gridSize = 51;\n\nfunction randomGridPosition(){\n    return {\n        x: Math.floor(Math.random() * gridSize) + 1,\n        y: Math.floor(Math.random() * gridSize) + 1,\n    }\n}\n\nfunction outsideGrid(position){\n    return (\n        position.x < 1 || position.x > gridSize ||\n        position.y < 1 || position.y > gridSize\n    )\n}\n\nfunction setGridSize(size){\n    gridSize = size;\n}\n\n\nconst wallsDeadly = document.getElementById("walls-deadly")\n\nlet lastRenderTime = 0;\nlet gameOver = false\nconst gameBoard = document.getElementById('game-board')\nconst score = document.getElementById("score")\nconst timeElem = document.getElementById('time')\n\nfunction main(currTime){\n    if(gameOver){\n        if(confirm(`You lose\nFINAL SCORE: ${getSnake().length}\nFinal Time: ${Math.floor(currTime / 1000)} seconds\nFinal Speed: ${getSnakeSpeed()}\npress ok to continue`)){\n            window.location = "/Snake/index.html"\n        }\n        return\n    }\n\n    window.requestAnimationFrame(main)\n    const secondsSinceLastRender = (currTime - lastRenderTime) / 1000\n    if(secondsSinceLastRender < 1 / snakeSpeed){ //if seconds since last render is less than .5 or 1 seconds / snake speed, return\n        return\n    }\n    lastRenderTime = currTime;\n    timeElem.innerHTML = `Time: ${Math.floor(currTime / 1000)} seconds`\n    update()\n    draw()\n}\n\nfunction update(){\n    updateSnake()\n    updateFood(gameBoard)\n    checkDeath()\n}\n\nfunction draw(){\n    gameBoard.innerHTML = '' // clears everything\n    drawSnake(gameBoard)\n    drawFood(gameBoard)\n    score.innerHTML = `Score: ${getSnake().length}`\n}\n\nfunction checkDeath(){\n    if(outsideGrid(getSnakeHead()) && !wallsDeadly.checked){\n        putSnakeHeadOnOppositeSide()\n    }\n    gameOver = snakeIntersection() ||(wallsDeadly.checked && outsideGrid(getSnakeHead()))\n}\n\nfunction start(){\n    let gridSizeInput = Number(document.getElementById("grid-size").value)\n    gameBoard.style.gridTemplateRows = `repeat(${gridSizeInput}, 1fr)`\n    gameBoard.style.gridTemplateColumns = `repeat(${gridSizeInput}, 1fr)`\n    setGridSize(gridSizeInput)\n    window.requestAnimationFrame(main)\n}\n\nconst startButton = document.createElement('button')\nstartButton.innerHTML = "Start"\nstartButton.onclick = ()=>start()\ngameBoard.appendChild(startButton)\n\n\n\nconst expansionRateInput = document.getElementById("snake-eat-increase")\nconst foodAmountInput = document.getElementById('food-amount')\nconst foodColor = document.getElementById("food-color")\nlet foods = []\nfor(let i = 0; i < Number(foodAmountInput.value); i++){\n    foods.push(getRandomFoodPos())\n}\n\nexport function update(){\n    for(let i = 0; i < Number(foodAmountInput.value); i++){\n        let food = foods[i]\n        if(!food){\n            foods[i] = getRandomFoodPos()\n            continue;\n        }\n        if(onSnake(food)){\n            expandSnake(Number(expansionRateInput.value))\n            foods[i] = getRandomFoodPos()\n        }\n    }\n}\n\nexport function draw(gameBoard){\n    for(let food of foods){\n        const foodElement = document.createElement("div")\n        foodElement.style.gridRowStart = food.y;\n        foodElement.style.gridColumnStart = food.x;\n        foodElement.style.backgroundColor = foodColor.value\n        foodElement.classList.add("food")\n        gameBoard.appendChild(foodElement)\n    }\n}\n\nfunction getRandomFoodPos(){\n    let newFoodPos;\n    while(newFoodPos == null || onSnake(newFoodPos)){\n        newFoodPos = randomGridPosition()\n    }\n    return newFoodPos\n}\n</script>\n</html>

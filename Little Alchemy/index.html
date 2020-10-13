@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Little Alchemy</title>
+    <script src="lodash.js"></script>
+    <style>
+        canvas{
+            position:fixed;
+            border: 1px solid black;
+            float:left;
+        }
+        body{
+            height: 100%;
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        #inv{
+            float:right;
+            margin: 0;
+            overflow-y:auto;
+            border: 1px solid black;
+        }
+        #inv p{
+            line-height: 0;
+            padding-bottom:1em;
+            padding-top:1em;
+            font-size:2em;
+            cursor: pointer;
+            user-select:none;
+        }
+        #inv p:hover{
+            background-color:#00ff0033;
+        }
+        #clear-button{
+            float:right;
+            color:red;
+            background-color:white;
+            border:2px outset black;
+            font-size:3em;
+            position: fixed;       
+            left:800px;
+        }
+        #search{
+            float:right;
+            right:15vw;
+            top:0;
+            position: fixed;
+            font-size: 2.5vmin;
+        }
+        #inv-search{
+            font-size:1em;
+        }
+        #item-count{
+            font-size:2em;
+            position: fixed;
+        }
+    </style>
+</head>
+<body id="body">
+    <button id="clear-button">
+        Clear
+    </button>
+    <canvas id="canv">
+    </canvas>
+    <div id="inv"><h1 style="font-size:3em;float:top;border:1px solid orange;user-select: none;cursor:pointer" id="reset">Inventory</h1></div>
+    <div id="search">
+        Search
+        <input type="text" id="inv-search">
+    </div>
+    <span id="item-count">
+    </span>
+</body>
+    <script src="./items.js"></script>
+    <script src="./main.js"></script>
+</html>
