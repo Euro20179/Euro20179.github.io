@@ -490,6 +490,8 @@ document.addEventListener("mousemove", e=>{
     }
 })
 let typing = false
+search.addEventListener("focusin", e=>typing = true)
+search.addEventListener("focusout", e=>typing = false)
 document.addEventListener("keypress", e=>{
     if(!typing){
         search.value = e.key
@@ -497,7 +499,7 @@ document.addEventListener("keypress", e=>{
     search.focus()
     typing = true
 })
-document.addEventListener("click", e=>typing=false)
+
 
 //wrapper around putting a rectangle on a canvas
 CanvasRenderingContext2D.prototype.drawRect = (color, x, y, width, height)=>{
