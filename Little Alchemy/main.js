@@ -7,6 +7,11 @@ const inventoryDiv = document.getElementById("inv")
 const clearButton = document.getElementById("clear-button")
 const itemCountDispaly = document.getElementById("item-count")
 const colorPicker = document.getElementById("color-picker")
+const search = document.getElementById('inv-search')
+
+console.log(inventoryDiv.clientWidth, inventoryDiv.clientHeight, inventoryDiv.style.width, inventoryDiv.style.height)
+
+search.style.width = inventoryDiv.clientWidth - 4 + "px"
 
 let params = new URLSearchParams(window.location.search)
 let canvColor = params.get("color")
@@ -436,7 +441,7 @@ function reverse(array){
     return newArray
 }
 
-const search = document.getElementById('inv-search')
+
 search.addEventListener('input', e=>{
     if(search.value == ""){
         //when there is nothing in the search this resets it back to the initial order
