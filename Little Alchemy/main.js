@@ -417,7 +417,7 @@ search.addEventListener('input', e=>{
         if(item.name.indexOf(search.value) < 0){
             removeFromSideBar(item)
         }
-        else if(item.name.indexOf(search.value) > 0){
+        else if(item.name.indexOf(search.value) >= 0){
             updateInventory(item)
         }
     }
@@ -502,7 +502,17 @@ document.addEventListener("keypress", e=>{
     search.focus()
     typing = true
 })
-
+document.addEventListener("keydown", e=>{
+    console.log(e.key)
+    if(e.key == "Escape"){
+        search.value = ""
+        for(let item of inventory){
+            if(item.name.indexOf(search.value) >= 0){
+                updateInventory(item)
+            }
+        }
+    }
+})
 
 //wrapper around putting a rectangle on a canvas
 CanvasRenderingContext2D.prototype.drawRect = (color, x, y, width, height)=>{

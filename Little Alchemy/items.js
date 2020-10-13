@@ -501,7 +501,7 @@ var items = [
     },
     {
         name: "neighborhood",
-        color: "skykblue",
+        color: "skyblue",
         recipe: [
             ["house", "house"]
         ]
