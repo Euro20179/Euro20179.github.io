@@ -10,6 +10,7 @@
             position:fixed;
             border: 1px solid black;
             float:left;
+            background-color: linen;
         }
         body{
             height: 100%;
@@ -44,13 +45,15 @@
         }
         #search{
             float:right;
-            right:15vw;
             top:0;
             position: fixed;
-            font-size: 2.5vmin;
+            font-size: 1.5em;
+            right:0;
         }
         #inv-search{
             font-size:1em;
+            width:8.9em;
+            background-color:linen;
         }
         #item-count{
             font-size:2em;
@@ -71,6 +74,7 @@
     </div>
     <span id="item-count">
     </span>
+    <input type="color" style="display: none;" id="color-picker">
 </body>
     <script src="./items.js"></script>
     <script src="./main.js"></script>

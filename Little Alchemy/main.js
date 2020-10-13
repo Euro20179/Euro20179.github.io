@@ -6,14 +6,24 @@ const ctx = canv.getContext("2d")
 const inventoryDiv = document.getElementById("inv")
 const clearButton = document.getElementById("clear-button")
 const itemCountDispaly = document.getElementById("item-count")
+const colorPicker = document.getElementById("color-picker")
+
+let params = new URLSearchParams(window.location.search)
+let canvColor = params.get("color")
+if(canvColor){
+    canvColor = canvColor.replace("*", "#")
+    canv.style.backgroundColor = canvColor
+}
 
 let itemCount = 0;
+
 let generatedLocalItems = localStorage.getItem("localitems") ? JSON.parse(localStorage.getItem("localitems")) : []
 let totalItems = generatedLocalItems.length ? generatedLocalItems.length : 0
 for(let i of items){
     if(!i.secretItem)
         totalItems += 1;
 }
+
 let recentlyDragged = null;
 
 clearButton.onclick = ()=>{
@@ -24,6 +34,15 @@ clearButton.onclick = ()=>{
         }
     }
     itemsOnScreen = {}
+}
+
+itemCountDispaly.addEventListener("click", e=>{
+    colorPicker.click()
+})
+
+colorPicker.oninput = ()=>{
+    canv.style.backgroundColor = colorPicker.value
+    itemCountDispaly.style.color = "#" + invertHex(colorPicker.value.replace("#", ""))
 }
 
 function removeChildren(element){
@@ -508,10 +527,13 @@ document.addEventListener("mousemove", e=>{
     }
 })
 let typing = false
-search.addEventListener("focusin", e=>typing = true)
+search.addEventListener("focusin", e=>{
+    e.preventDefault()
+    typing = true
+})
 search.addEventListener("focusout", e=>typing = false)
 document.addEventListener("keypress", e=>{
-    if(!typing){
+    if(!typing && !isBrowser(/chrome/)){
         search.value = e.key
     }
     search.focus()
@@ -619,3 +641,11 @@ window.addEventListener("resize", e=>{
     canv.width = window.innerWidth / 2
     canv.height = window.innerHeight
 })
+
+function invertHex(hex) {
+  return (Number(`0x1${hex}`) ^ 0xFFFFFF).toString(16).substr(1).toUpperCase()
+}
+
+function isBrowser(browserId){
+    return browserId.test(navigator.userAgent.toLocaleLowerCase())
+}
