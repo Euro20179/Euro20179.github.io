@@ -276,13 +276,28 @@ function updateInventory(item){
                 }
             }
             let style = document.createElement('style')
-            style.appendChild(document.createTextNode(`p#${item.name}{color: ${item.sidebarColor ? item.sidebarColor : item.color};${!item.overrideStyling ? `${isReal? "" : `text-decoration:underline wavy orange;cursor:help;`}${inRecipe ? "" : item.notInRecipeStyling ? item.notInRecipeStyling : "font-style: italic;cursor:help;"}` : ""}}`))
+            let styleNode = `p#${item.name}{color: ${item.sidebarColor ? item.sidebarColor : item.color};`
+            if(!item.overrideStyling){
+                if(!isReal)
+                    styleNode += item.notRealStyle ? item.notRealStyle : `text-decoration:underline wavy orange;cursor:help;`
+                if(!inRecipe ){
+                    styleNode += item.notInRecipeStyle ? item.notInRecipeStyle : "font-style: italic;cursor:help;"
+                }
+            }
+            else{
+                if(!isReal)
+                    styleNode += item.notRealStyle ? item.notRealStyle : ""
+                if(!inRecipe)
+                    styleNode += item.notInRecipeStyle ? item.notInRecipeStyle : ""
+            }
+            styleNode += "}"
             if(item.hoverStyle){
-                style.appendChild(document.createTextNode(`p#${item.name}:hover{${item.hoverStyle}}`)) 
+                styleNode += `p#${item.name}:hover{${item.hoverStyle}}` 
             }
             if(item.selectionStyle){
-                style.appendChild(document.createTextNode(`p#${item.name}::selection{${item.selectionStyle}}`)) 
+                styleNode += `p#${item.name}::selection{${item.selectionStyle}}` 
             }
+            style.appendChild(document.createTextNode(styleNode))
             inventoryDiv.appendChild(style)
             elem = document.createElement("p")
             title = ""
