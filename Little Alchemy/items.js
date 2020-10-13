@@ -478,6 +478,7 @@ var items = [
     },
     {
         name: "house",
+        color: "skyblue",
         recipe: [
             ["family", "building"],
             ["human", "building"]
