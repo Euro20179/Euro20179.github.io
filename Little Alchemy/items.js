@@ -540,7 +540,7 @@ var items = [
     },
     {
         name: "shovel",
-        color: "lightbrown",
+        color: "brown",
         recipe: ["tool", "earth"]
     },
     {
@@ -552,9 +552,9 @@ var items = [
     },
     {
         name: "worm",
-        color: "lightbrown",
+        color: "brown",
         textColor: "white",
-        sidebarColor: "lightbrown",
+        sidebarColor: "brown",
         recipe: [
             ["land-animal", "dirt"],
             ["life", "dirt"]
@@ -619,6 +619,14 @@ var items = [
     {
         name: "bread",
         color: "wheat",
-        recipe: ["wheat", "wheat"]
+        recipe: [
+            ["wheat", "wheat"],
+            ["baker", "wheat"]
+        ]
+    },
+    {
+        name: "baker",
+        color: "wheat",
+        recipe: ["bread", "human"]
     }
 ];
