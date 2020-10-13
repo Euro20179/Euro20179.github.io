@@ -1,6 +1,3 @@
-//TODO: * in a recipe means any item
-
-//TODO: allow a special item with a recipe of item1, * that returns an item that automatically combinds item1s name and * name
 const canv = document.getElementById("canv")
 const ctx = canv.getContext("2d")
 const inventoryDiv = document.getElementById("inv")
@@ -11,7 +8,7 @@ const search = document.getElementById('inv-search')
 
 console.log(inventoryDiv.clientWidth, inventoryDiv.clientHeight, inventoryDiv.style.width, inventoryDiv.style.height)
 
-search.style.width = inventoryDiv.clientWidth - 4 + "px"
+search.style.width = inventoryDiv.clientWidth + "px"
 
 let params = new URLSearchParams(window.location.search)
 let canvColor = params.get("color")
@@ -547,10 +544,12 @@ document.addEventListener("keypress", e=>{
 document.addEventListener("keydown", e=>{
     if(e.key == "Escape"){
         search.value = ""
+        //when there is nothing in the search this resets it back to the initial order
         for(let item of inventory){
-            if(item.name.indexOf(search.value) >= 0){
-                updateInventory(item)
-            }
+            removeFromSideBar(item)
+        }
+        for(let item of inventory){
+            updateInventory(item)
         }
     }
 })
