@@ -246,9 +246,18 @@ function isInInventory(item){
     }
 }
 
+function getTimeStampFromItem(item){
+    let createdAt = item.timeCreated
+    let [mdy, hms] = createdAt.split(" at ")
+    let [month, d, y] = mdy.split("/")
+    let [h, m, s] = hms.split(":")
+    let date = new Date(y, month, d, h, m, s)
+    return Date.parse(date.toString())
+}
+
 function addToInventory(item){
     let d = new Date()
-    item.timeCreated = `${d.getMonth() + 1}/${d.getDate()}/${d.getFullYear()} at ${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}` //a formatted timestamp
+    item.timeCreated = `${d.getMonth() + 1}/${d.getDate()}/${d.getFullYear()} at ${d.getHours()}:${String(d.getMinutes()).length > 1 ? d.getMinutes() : "0" + d.getMinutes()}:${String(d.getSeconds()).length > 1 ? d.getSeconds() : "0" + d.getSeconds()}` //a formatted timestamp
 
     inventory.push(item) //add to inventory
     localStorage.setItem("inventory", JSON.stringify(inventory)) //add to local storage
@@ -542,17 +551,34 @@ document.addEventListener("keypress", e=>{
     typing = true
 })
 document.addEventListener("keydown", e=>{
-    if(e.key == "Escape"){
+    if(e.ctrlKey){
+        switch(e.key){
+            case "1": inventory.sort((a, b)=>a.name > b.name); break;
+            case "2": inventory.sort((a, b)=>a.name < b.name); break;
+            case "3": inventory.sort((a, b)=>getTimeStampFromItem(a) > getTimeStampFromItem(b)); break;
+            case "4": inventory.sort((a, b)=>getTimeStampFromItem(a) < getTimeStampFromItem(b)); break;
+            case "5": inventory.sort((a, b)=>VisualItem.itemInRecipeCount(a) > VisualItem.itemInRecipeCount(b)); break;
+            case "6": inventory.sort((a, b)=>VisualItem.itemInRecipeCount(a) < VisualItem.itemInRecipeCount(b))
+            case "/":
+                alert("ctrl + 1: alphabetical sort\nctrl + 2: reverse alphabetical\nctrl + 3: oldest-newest\nctrl + 4: newest-oldest\nctrl + 5: used in most recipes\nctrl + 6: used in least recipes")
+        }
+        e.preventDefault()
+        resetSideBar()
+    }
+    else if(e.key == "Escape"){
         search.value = ""
-        //when there is nothing in the search this resets it back to the initial order
-        for(let item of inventory){
-            removeFromSideBar(item)
-        }
-        for(let item of inventory){
-            updateInventory(item)
-        }
+        resetSideBar()
     }
 })
+
+function resetSideBar(){
+    for(let item of inventory){
+        removeFromSideBar(item)
+    }
+    for(let item of inventory){
+        updateInventory(item)
+    }
+}
 
 //wrapper around putting a rectangle on a canvas
 CanvasRenderingContext2D.prototype.drawRect = (color, x, y, width, height)=>{
