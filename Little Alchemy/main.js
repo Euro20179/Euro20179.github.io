@@ -435,7 +435,10 @@ canv.addEventListener("click", e=>{
                 break;
             }
             else if(itemBeingDragged == item){ //if the item currently being dragged is this item
-                item.stopDragging() //stop from dragging
+                if(item.item.onstopdragging)
+                    item.item.onstopdragging({event: e, inventory: inventory, itemsOnScreen: itemsOnScreen, item: item, canvas: canv})
+                if(!item.item.overrideStopDragging)
+                    item.stopDragging() //stop from dragging
                 break;
             } 
         }

@@ -499,4 +499,23 @@ var items = [
             alert("sacrafise\nsacrafise\nsacrafise\nsacrafise\nsacrafise\nsacrafise\nsacrafise\nsacrafise\nsacrafise\nsacrafise\nsacrafise\nsacrafise\n");
         }
     },
+    {
+        name: "neighborhood",
+        color: "skykblue",
+        recipe: [
+            ["house", "house"]
+        ]
+    },
+    {
+        name: "flying-fish",
+        displayName: "flying fish",
+        color: "skyblue",
+        textColor: "orange",
+        sidebarColor: "orange",
+        recipe: [
+            ["fish", "atmosphere"],
+            ["fish", "sky"],
+            ["fish", "air"]
+        ]
+    }
 ];
