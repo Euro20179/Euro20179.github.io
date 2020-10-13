@@ -282,7 +282,10 @@ var items = [
     {
         name: "human",
         color: "gainsboro",
-        recipe: ["land-animal", "building"]
+        recipe: [
+            ["land-animal", "building"],
+            ["building", "life"]
+        ]
     },
     {
         name: "love",
@@ -518,5 +521,104 @@ var items = [
             ["fish", "sky"],
             ["fish", "air"]
         ]
+    },
+    {
+        name: "bird",
+        color: "black",
+        textColor: "white",
+        sidebarColor: "black",
+        recipe: ["life", "air"]
+    },
+    {
+        name: "tool",
+        color: "grey",
+        textColor: "white",
+        sidebarColor: "grey",
+        recipe: [
+            ["stone", "human"]
+        ]
+    },
+    {
+        name: "shovel",
+        color: "lightbrown",
+        recipe: ["tool", "earth"]
+    },
+    {
+        name: "dirt",
+        color: "darkgoldenrod",
+        textColor: "beige",
+        sidebarColor: "darkgoldenrod",
+        recipe: ["shovel", "earth"]
+    },
+    {
+        name: "worm",
+        color: "lightbrown",
+        textColor: "white",
+        sidebarColor: "lightbrown",
+        recipe: [
+            ["land-animal", "dirt"],
+            ["life", "dirt"]
+        ]
+    },
+    {
+        name: "grass",
+        color: "green",
+        recipe: ["earth", "life"]
+    },
+    {
+        name: "field",
+        color: "limegreen",
+        textColor: "black",
+        sidebarColor: "limegreen",
+        recipe: ["grass", "grass"]
+    },
+    {
+        name: "farmer",
+        color: "lightgrey",
+        textColor: "black",
+        sidebarColor: "black",
+        recipe: ["human", "field"]
+    },
+    {
+        name: "wheat",
+        color: "wheat",
+        recipe: [
+            ["farmer", "field"]
+        ]
+    },
+    {
+        name: "cow",
+        color: "brown",
+        textColor: "white",
+        sidebarColor: "brown",
+        recipe: ["land-animal", "grass"]
+    },
+    {
+        name: "milk",
+        color: "white",
+        textColor: "black",
+        sidebarColor: "black",
+        recipe: [
+            ["cow", "tool"]
+        ]
+    },
+    {
+        name: "butcher",
+        color: "red",
+        recipe: [
+            ["human", "cow"]
+        ]
+    },
+    {
+        name: "meat",
+        color: "red",
+        recipe: [
+            ["cow", "butcher"]
+        ]
+    },
+    {
+        name: "bread",
+        color: "wheat",
+        recipe: ["wheat", "wheat"]
     }
 ];
