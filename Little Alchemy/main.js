@@ -169,6 +169,19 @@ class VisualItem{
             else if(i.recipe.includes(item.name))
                 recipeCount++
         }
+        for(let i of generatedLocalItems){
+            if(!i.recipe) continue;
+            if(typeof i.recipe == "object"){
+                for(let r of i.recipe){
+                    if(r.includes(item.name)){
+                        recipeCount++
+                        break;
+                    }
+                }
+            }
+            else if(i.recipe.includes(item.name))
+                recipeCount++
+        }
         return recipeCount
     }
 }
@@ -451,12 +464,7 @@ function reverse(array){
 search.addEventListener('input', e=>{
     if(search.value == ""){
         //when there is nothing in the search this resets it back to the initial order
-        for(let item of inventory){
-            removeFromSideBar(item)
-        }
-        for(let item of inventory){
-            updateInventory(item)
-        }
+        resetSideBar()
     }
     for(let item of inventory){
         if(item.name.indexOf(search.value) < 0){
@@ -553,16 +561,16 @@ document.addEventListener("keypress", e=>{
 document.addEventListener("keydown", e=>{
     if(e.ctrlKey){
         switch(e.key){
-            case "1": inventory.sort((a, b)=>a.name > b.name); break;
-            case "2": inventory.sort((a, b)=>a.name < b.name); break;
-            case "3": inventory.sort((a, b)=>getTimeStampFromItem(a) > getTimeStampFromItem(b)); break;
-            case "4": inventory.sort((a, b)=>getTimeStampFromItem(a) < getTimeStampFromItem(b)); break;
-            case "5": inventory.sort((a, b)=>VisualItem.itemInRecipeCount(a) > VisualItem.itemInRecipeCount(b)); break;
-            case "6": inventory.sort((a, b)=>VisualItem.itemInRecipeCount(a) < VisualItem.itemInRecipeCount(b))
+            case "1": inventory.sort((a, b)=>a.name > b.name); e.preventDefault();break;
+            case "2": inventory.sort((a, b)=>a.name < b.name); e.preventDefault();break;
+            case "3": inventory.sort((a, b)=>getTimeStampFromItem(a) > getTimeStampFromItem(b)); e.preventDefault();break;
+            case "4": inventory.sort((a, b)=>getTimeStampFromItem(a) < getTimeStampFromItem(b)); e.preventDefault();break;
+            case "5": inventory.sort((a, b)=>VisualItem.itemInRecipeCount(a) > VisualItem.itemInRecipeCount(b)); e.preventDefault();break;
+            case "6": inventory.sort((a, b)=>VisualItem.itemInRecipeCount(a) < VisualItem.itemInRecipeCount(b)); e.preventDefault();break;
             case "/":
-                alert("ctrl + 1: alphabetical sort\nctrl + 2: reverse alphabetical\nctrl + 3: oldest-newest\nctrl + 4: newest-oldest\nctrl + 5: used in most recipes\nctrl + 6: used in least recipes")
+                alert("ctrl + 1: alphabetical sort\nctrl + 2: reverse alphabetical\nctrl + 3: oldest-newest\nctrl + 4: newest-oldest\nctrl + 5: used in most recipes\nctrl + 6: used in least recipes"); e.preventDefault();
         }
-        e.preventDefault()
+        
         resetSideBar()
     }
     else if(e.key == "Escape"){
