@@ -629,5 +629,33 @@ var items = [
         name: "baker",
         color: "wheat",
         recipe: ["bread", "human"]
+    },
+    {
+        name: "sandwich",
+        color: "khaki",
+        textColor: "black",
+        sidebarColor: "khaki",
+        recipe: ["bread", "meat"],
+        "return": function (item, item2) {
+            var types = ["balogna", "turkey", "chicken", "ham"];
+            var choice = types[Math.floor(Math.random() * types.length)];
+            return {
+                name: choice + "-sandwich",
+                displayName: choice + " sandwich",
+                color: "coral",
+                recipe: ["bread", "meat"],
+                overrideStyling: true,
+                notInRecipeStyle: "font-style: italic"
+            };
+        }
     }
 ];
+function getItemByName(name) {
+    var item;
+    for (var _i = 0, items_1 = items; _i < items_1.length; _i++) {
+        item = items_1[_i];
+        if (item.name == name) {
+            return item;
+        }
+    }
+}
