@@ -547,27 +547,27 @@ document.addEventListener("keydown", e => {
     if (e.ctrlKey) {
         switch (e.key) {
             case "1":
-                inventory.sort((a, b) => a.name > b.name ? 1 : 0);
+                inventory.sort((a, b) => a.name >= b.name ? 1 : -1);
                 e.preventDefault();
                 break;
             case "2":
-                inventory.sort((a, b) => a.name < b.name ? 1 : 0);
+                inventory.sort((a, b) => a.name <= b.name ? 1 : -1);
                 e.preventDefault();
                 break;
             case "3":
-                inventory.sort((a, b) => getTimeStampFromItem(a) > getTimeStampFromItem(b) ? 1 : 0);
+                inventory.sort((a, b) => getTimeStampFromItem(a) >= getTimeStampFromItem(b) ? 1 : -1);
                 e.preventDefault();
                 break;
             case "4":
-                inventory.sort((a, b) => getTimeStampFromItem(a) < getTimeStampFromItem(b) ? 1 : 0);
+                inventory.sort((a, b) => getTimeStampFromItem(a) <= getTimeStampFromItem(b) ? 1 : -1);
                 e.preventDefault();
                 break;
             case "5":
-                inventory.sort((a, b) => VisualItem.itemInRecipeCount(a) > VisualItem.itemInRecipeCount(b) ? 1 : 0);
+                inventory.sort((a, b) => VisualItem.itemInRecipeCount(a) >= VisualItem.itemInRecipeCount(b) ? 1 : -1);
                 e.preventDefault();
                 break;
             case "6":
-                inventory.sort((a, b) => VisualItem.itemInRecipeCount(a) < VisualItem.itemInRecipeCount(b) ? 1 : 0);
+                inventory.sort((a, b) => VisualItem.itemInRecipeCount(a) <= VisualItem.itemInRecipeCount(b) ? 1 : -1);
                 e.preventDefault();
                 break;
             case "/":
