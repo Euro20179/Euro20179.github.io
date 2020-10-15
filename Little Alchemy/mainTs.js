@@ -33,9 +33,6 @@ clearButton.onclick = () => {
     }
     itemsOnScreen = {};
 };
-itemCountDispaly.addEventListener("click", e => {
-    colorPicker.click();
-});
 colorPicker.oninput = () => {
     canv.style.backgroundColor = colorPicker.value;
     itemCountDispaly.style.color = "#" + invertHex(colorPicker.value.replace("#", ""));
@@ -97,13 +94,14 @@ class VisualItem {
         this.x = x;
         this.y = y;
         this.dragging = false;
-        this.onclick = this.item.onclick ? this.item.onclick : () => { };
+        this.onclick = this.item.onclick;
         this.oncreate = this.item.oncreate;
         this.onremove = this.item.onremove;
         this.onusedinrecipe = this.item.onusedinrecipe;
         this.ondblclick = this.item.ondblclick;
         this.onboardclear = this.item.onboardclear;
         this.onmove = this.item.onmove;
+        this.hovering = false;
     }
     draw() {
         if (this.item.img) {
@@ -472,7 +470,8 @@ canv.addEventListener("click", e => {
         item = itemsOnScreen[item];
         if (item.pointCollide(e.offsetX, e.offsetY)) { //makes sure mouse collides with item
             if (!itemBeingDragged) { //if there is no item being dragged currently
-                item.onclick({ event: e, inventory: inventory, itemsOnScreen: itemsOnScreen, item: item, canvas: canv }); //trigger the item on click event
+                if (item.onclick)
+                    item.onclick({ event: e, inventory: inventory, itemsOnScreen: itemsOnScreen, item: item, canvas: canv }); //trigger the item on click event
                 if (!item.item.overrideClick)
                     item.startDragging(); //make the item drag
                 break;
@@ -516,7 +515,9 @@ canv.addEventListener("contextmenu", e => {
             if (i.onremove) {
                 i.onremove({ event: e, inventory: inventory, itemsOnScreen: itemsOnScreen, item: i, canvas: canv });
             }
-            delete itemsOnScreen[item];
+            if (!i.item.overrideRemove) {
+                delete itemsOnScreen[item];
+            }
         }
     }
 });
@@ -530,11 +531,21 @@ document.addEventListener("mousemove", e => {
     itemTitleElement.innerHTML = "";
     for (let i in itemsOnScreen) {
         let item = itemsOnScreen[i];
-        if (item.pointCollide(e.clientX, e.clientY) && itemTitleElement.innerHTML != item.item.hoverText && item.item.hoverText) {
-            setItemTitleElement((_a = item.item.hoverText) !== null && _a !== void 0 ? _a : "", (_b = item.item.hoverTextStyle) !== null && _b !== void 0 ? _b : "");
-            itemTitleElement.style.top = String(item.y + item.height + 5) + "px";
-            itemTitleElement.style.left = String(item.x + (item.width / 2)) + "px";
+        if (item.pointCollide(e.clientX, e.clientY)) {
+            if (itemTitleElement.innerHTML != item.item.hoverText && item.item.hoverText) {
+                if (!item.item.overrideHover) {
+                    setItemTitleElement((_a = item.item.hoverText) !== null && _a !== void 0 ? _a : "", (_b = item.item.hoverTextStyle) !== null && _b !== void 0 ? _b : "");
+                    itemTitleElement.style.top = String(item.y + item.height + 5) + "px";
+                    itemTitleElement.style.left = String(item.x + (item.width / 2)) + "px";
+                }
+            }
+            if (item.item.onhover && !item.dragging && (!item.hovering || item.item.onhoverEveryMovement)) {
+                item.hovering = true;
+                item.item.onhover({ event: e, inventory: inventory, item: item, canvas: canv, itemsOnScreen: itemsOnScreen });
+            }
         }
+        else
+            item.hovering = false;
         if (item.dragging) { //makes sure it was clicked previously
             if (item.onmove)
                 item.onmove({ event: e, inventory: inventory, itemsOnScreen: itemsOnScreen, item: item, canvas: canv });
