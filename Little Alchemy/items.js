@@ -15,7 +15,7 @@ events:
 oncreate: a function that gets called when the item is created
 onclick: a function that gets called when the item is clicked
 */
-const CSS_COLOR_NAMES = [
+const CSS_COLOR_NAME = [
     "AliceBlue",
     "AntiqueWhite",
     "Aqua",
@@ -157,6 +157,7 @@ const CSS_COLOR_NAMES = [
     "Teal",
     "Thistle",
     "Tomato",
+    "Transparent",
     "Turquoise",
     "Violet",
     "Wheat",
@@ -1054,6 +1055,134 @@ const items = [
         name: "delta",
         color: "green",
         recipe: ["river", "ocean"]
+    },
+    {
+        name: "cloud",
+        color: "White",
+        recipe: ["evaporation", "air"],
+        textColor: "Blue",
+        sidebarColor: "Blue"
+    },
+    {
+        name: "rain",
+        color: "blue",
+        recipe: ["cloud", "water"]
+    },
+    {
+        name: "snow",
+        color: "white",
+        textColor: "black",
+        sidebarColor: "black",
+        recipe: [
+            ["mountain", "rain"],
+            ["mountain-range", "rain"],
+            ["weather", "mountain"],
+            ["rain", "cold"]
+        ]
+    },
+    {
+        name: "snowman",
+        color: "green",
+        textColor: "red",
+        sidebarColor: "green",
+        inventoryHover: "background-color:green;color:red",
+        recipe: ["snow", "human"]
+    },
+    {
+        name: "christmas-tree",
+        color: "green",
+        textColor: "red",
+        sidebarColor: "green",
+        inventoryHover: "background-color:green;color:red",
+        recipe: ["snow", "tree"]
+    },
+    {
+        name: "santa",
+        color: "red",
+        textColor: "white",
+        sidebarColor: "red",
+        recipe: ["christmas-tree", "human"],
+        secretItem: true
+    },
+    {
+        name: "meteorologist",
+        color: "Yellow",
+        recipe: [
+            ["rain", "human"],
+            ["snow", "human"],
+            ["cloud", "human"]
+        ]
+    },
+    {
+        name: "weather",
+        color: "Transparent",
+        textColor: "black",
+        sidebarColor: "black",
+        recipe: ["air", "meteorologist"]
+    },
+    {
+        name: "hot",
+        color: "red",
+        recipe: ["weather", "sun"]
+    },
+    {
+        name: "cold",
+        color: "Turquoise",
+        textColor: "DarkBlue",
+        sidebarColor: "DarkBlue",
+        recipe: ["weather", "snow"]
+    },
+    {
+        name: "ice",
+        color: "AliceBlue",
+        textColor: "darkblue",
+        sidebarColor: "darkblue",
+        recipe: ["cold", "water"]
+    },
+    {
+        name: "fridge",
+        color: "SlateGrey",
+        textColor: "white",
+        sidebarColor: "white",
+        recipe: [
+            ["cold", "tool"],
+            ["ice", "tool"]
+        ]
+    },
+    {
+        name: "ice-sculpture",
+        displayName: "ice sculpture",
+        color: "AliceBlue",
+        textColor: "darkblue",
+        sidebarColor: "darkblue",
+        recipe: ["human", "ice"]
+    },
+    {
+        name: "oven",
+        color: "red",
+        recipe: ["hot", "tool"]
+    },
+    {
+        name: "iceburg",
+        color: "AliceBlue",
+        textColor: "darkblue",
+        sidebarColor: "darkblue",
+        recipe: ["ice", "ocean"]
+    },
+    {
+        name: "boat",
+        color: "brown",
+        recipe: [
+            ["tool", "ocean"],
+            ["log", "ocean"]
+        ]
+    },
+    {
+        name: "captain",
+        color: "DarkCyan",
+        textColor: "red",
+        sidebarColor: "red",
+        recipe: ["boat", "human"]
     }
 ];
 //generates ItemNames type so i can copy paste
