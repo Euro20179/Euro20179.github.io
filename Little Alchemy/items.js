@@ -974,6 +974,39 @@ const items = [
             ["fire", "tree"],
             ["fire", "grass"]
         ]
+    },
+    {
+        name: "cup",
+        color: "white",
+        sidebarColor: "black",
+        recipe: [
+            ["water", "tool"]
+        ]
+    },
+    {
+        name: "water-bottle",
+        displayName: "watter bottle",
+        color: "blue",
+        recipe: ["water", "tool"]
+    },
+    {
+        name: "pollution",
+        color: "limegreen",
+        recipe: [
+            ["watter-bottle", "ocean"]
+        ]
+    },
+    {
+        name: "river",
+        color: "blue",
+        recipe: [
+            ["water", "mountain"]
+        ]
+    },
+    {
+        name: "delta",
+        color: "green",
+        recipe: ["river", "ocean"]
     }
 ];
 function getItemByName(name) {
