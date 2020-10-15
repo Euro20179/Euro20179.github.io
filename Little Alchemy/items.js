@@ -993,7 +993,7 @@ const items = [
         name: "pollution",
         color: "limegreen",
         recipe: [
-            ["watter-bottle", "ocean"]
+            ["water-bottle", "ocean"]
         ]
     },
     {
