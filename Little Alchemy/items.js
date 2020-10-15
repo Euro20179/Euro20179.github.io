@@ -303,12 +303,14 @@ const items = [
     {
         name: "baby",
         color: "white",
-        recipe: ["love", "human"]
+        recipe: ["love", "human"],
+        sidebarColor: "black"
     },
     {
         name: "family",
         color: "white",
-        recipe: ["baby", "human"]
+        recipe: ["baby", "human"],
+        sidebarColor: "black"
     },
     {
         name: "fireman",
