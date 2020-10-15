@@ -1056,6 +1056,14 @@ const items = [
         recipe: ["river", "ocean"]
     }
 ];
+//generates ItemNames type so i can copy paste
+function logItems() {
+    let inames = [];
+    for (let item of items) {
+        inames.push(`"${item.name}"`);
+    }
+    console.log(inames.join(" | "));
+}
 function getItemByName(name) {
     let item;
     for (item of items) {
