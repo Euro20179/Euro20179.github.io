@@ -404,9 +404,19 @@ function main(time) {
                         else
                             craft = c; //otherwise craft is the crafted item
                         if (!isInInventory(craft)) {
-                            updateItemCount(); //increase items owned by 1
-                            addToInventory(craft); //add crafted to inventory
-                            updateInventory(craft); //update the sidebar
+                            //doing with this with promises incase it's slow
+                            Promise.all([new Promise((resolve, reject) => {
+                                    updateItemCount();
+                                    resolve();
+                                }),
+                                new Promise((resolve, reject) => {
+                                    addToInventory(craft);
+                                    resolve();
+                                }),
+                                new Promise((resolve, reject) => {
+                                    updateInventory(craft); //update the sidebar
+                                    resolve();
+                                })]);
                             if (c.return) { //if crafted.return, (these items are not stored in code, so they must be stored in local storage)
                                 totalItems++; //the total items in the game ++
                                 updateItemCount(0); //updates the count display
@@ -414,16 +424,21 @@ function main(time) {
                                 localStorage.setItem("localitems", JSON.stringify(generatedLocalItems)); //puts the generated local items in localstorage
                             }
                             if (c.oncreate) {
-                                c.oncreate({
-                                    x: mean(item.x, item2.x),
-                                    y: mean(item.y, item2.y),
-                                    item1: item,
-                                    item2: item2,
-                                    inventory: inventory,
-                                    itemsOnScreen: itemsOnScreen,
-                                    deltaTime: deltaTime,
-                                    time: time
-                                });
+                                new Promise((resolve, reject) => {
+                                    c.oncreate({
+                                        x: mean(item.x, item2.x),
+                                        y: mean(item.y, item2.y),
+                                        item1: item,
+                                        item2: item2,
+                                        inventory: inventory,
+                                        itemsOnScreen: itemsOnScreen,
+                                        deltaTime: deltaTime,
+                                        time: time
+                                    });
+                                    resolve();
+                                })
+                                    .then()
+                                    .catch();
                             }
                         }
                         addItem(craft, mean(item.x, item2.x), mean(item.y, item2.y));
