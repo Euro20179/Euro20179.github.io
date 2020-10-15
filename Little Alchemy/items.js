@@ -941,6 +941,39 @@ const items = [
         textColor: "white",
         sidebarColor: "brown",
         recipe: ["tree", "axe"]
+    },
+    {
+        name: "campfire",
+        color: "red",
+        recipe: ["log", "fire"]
+    },
+    {
+        name: "charcoal",
+        color: "black",
+        textColor: "white",
+        sidebarColor: "black",
+        recipe: [
+            ["fire", "log"],
+            ["fire", "tree"]
+        ]
+    },
+    {
+        name: "smoke",
+        color: "grey",
+        textColor: "white",
+        sidebarColor: "grey",
+        recipe: [
+            ["fire", "log"],
+            ["fire", "tree"]
+        ]
+    },
+    {
+        name: "wildfire",
+        color: "orange",
+        recipe: [
+            ["fire", "tree"],
+            ["fire", "grass"]
+        ]
     }
 ];
 function getItemByName(name) {
