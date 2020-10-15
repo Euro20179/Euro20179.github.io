@@ -32,7 +32,11 @@ const items = [
         name: "water",
         color: "blue",
         starter: true,
-        img: "./imgs/water.png"
+        img: "./imgs/water.png",
+        width: 67,
+        height: 50,
+        hoverText: "water",
+        hoverTextStyle: "color:blue"
     },
     {
         name: "time",
@@ -136,7 +140,9 @@ const items = [
             alert("HOT");
         },
         recipe: ["fire", "atmosphere"],
-        sidebarColor: "gold"
+        sidebarColor: "gold",
+        hoverText: "HOT",
+        hoverTextStyle: "color:red"
     },
     {
         name: "o2",
@@ -429,6 +435,7 @@ const items = [
     },
     {
         name: "color-generator",
+        color: "red",
         secretItem: true,
         recipe: [
             ["light", "glass"],

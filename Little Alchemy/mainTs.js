@@ -349,6 +349,9 @@ function removeFromSideBar(item) {
     }
 }
 function addItem(item, x, y, addAnyway = false, duplicate = false) {
+    let newestItem = findItemByName(item.name);
+    if (newestItem)
+        item = newestItem;
     if (!x) {
         x = Math.floor(Math.random() * canv.width);
     }
@@ -508,19 +511,20 @@ canv.addEventListener("contextmenu", e => {
         }
     }
 });
+function setItemTitleElement(text, style) {
+    itemTitleElement.innerHTML = text;
+    itemTitleElementStyle.textContent = `#item-title-element{${style}}`;
+}
 //moves the item with the mouse
 document.addEventListener("mousemove", e => {
     var _a, _b;
     itemTitleElement.innerHTML = "";
     for (let i in itemsOnScreen) {
         let item = itemsOnScreen[i];
-        if (item.pointCollide(e.clientX, e.clientY) && itemTitleElement.innerHTML != item.item.hoverText) {
-            if (itemTitleElementStyle.textContent != item.item.hoverTextStyle) {
-                itemTitleElementStyle.textContent = `#item-title-element{${(_a = item.item.hoverTextStyle) !== null && _a !== void 0 ? _a : ""}}`;
-            }
+        if (item.pointCollide(e.clientX, e.clientY) && itemTitleElement.innerHTML != item.item.hoverText && item.item.hoverText) {
+            setItemTitleElement((_a = item.item.hoverText) !== null && _a !== void 0 ? _a : "", (_b = item.item.hoverTextStyle) !== null && _b !== void 0 ? _b : "");
             itemTitleElement.style.top = String(item.y + item.height + 5) + "px";
             itemTitleElement.style.left = String(item.x + (item.width / 2)) + "px";
-            itemTitleElement.innerHTML = (_b = item.item.hoverText) !== null && _b !== void 0 ? _b : "";
         }
         if (item.dragging) { //makes sure it was clicked previously
             if (item.onmove)
@@ -543,6 +547,8 @@ document.addEventListener("keypress", e => {
     search.focus();
     typing = true;
 });
+function yes(x, y) {
+}
 document.addEventListener("keydown", e => {
     if (e.ctrlKey) {
         switch (e.key) {
