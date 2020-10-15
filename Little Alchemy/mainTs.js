@@ -1,46 +1,42 @@
-var __spreadArrays = (this && this.__spreadArrays) || function () {
-    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
-    for (var r = Array(s), k = 0, i = 0; i < il; i++)
-        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
-            r[k] = a[j];
-    return r;
-};
-var canv = document.getElementById("canv");
-var ctx = canv.getContext("2d");
-var inventoryDiv = document.getElementById("inv");
-var clearButton = document.getElementById("clear-button");
-var itemCountDispaly = document.getElementById("item-count");
-var colorPicker = document.getElementById("color-picker");
-var search = document.getElementById('inv-search');
+const canv = document.getElementById("canv");
+const ctx = canv.getContext("2d");
+const inventoryDiv = document.getElementById("inv");
+const clearButton = document.getElementById("clear-button");
+const itemCountDispaly = document.getElementById("item-count");
+const colorPicker = document.getElementById("color-picker");
+const search = document.getElementById('inv-search');
+const itemTitleElement = document.getElementById("item-title-element");
+const itemTitleElementStyle = document.createElement("style");
+const body = document.getElementById("body");
+body.appendChild(itemTitleElementStyle);
 search.style.width = inventoryDiv.clientWidth + "px";
-var params = new URLSearchParams(window.location.search);
-var canvColor = params.get("color");
+let params = new URLSearchParams(window.location.search);
+let canvColor = params.get("color");
 if (canvColor) {
     canvColor = canvColor.replace("*", "#");
     canv.style.backgroundColor = canvColor;
 }
-var itemCount = 0;
-var generatedLocalItems = localStorage.getItem("localitems") ? JSON.parse(localStorage.getItem("localitems")) : [];
-var totalItems = generatedLocalItems.length ? generatedLocalItems.length : 0;
-for (var _i = 0, items_1 = items; _i < items_1.length; _i++) {
-    var i = items_1[_i];
+let itemCount = 0;
+let generatedLocalItems = localStorage.getItem("localitems") ? JSON.parse(localStorage.getItem("localitems")) : [];
+let totalItems = generatedLocalItems.length ? generatedLocalItems.length : 0;
+for (let i of items) {
     if (!i.secretItem)
         totalItems += 1;
 }
-var recentlyDragged = null;
-clearButton.onclick = function () {
-    for (var i in itemsOnScreen) {
-        var item = itemsOnScreen[i];
+let recentlyDragged = null;
+clearButton.onclick = () => {
+    for (let i in itemsOnScreen) {
+        let item = itemsOnScreen[i];
         if (item.onboardclear) {
             item.onboardclear(inventory);
         }
     }
     itemsOnScreen = {};
 };
-itemCountDispaly.addEventListener("click", function (e) {
+itemCountDispaly.addEventListener("click", e => {
     colorPicker.click();
 });
-colorPicker.oninput = function () {
+colorPicker.oninput = () => {
     canv.style.backgroundColor = colorPicker.value;
     itemCountDispaly.style.color = "#" + invertHex(colorPicker.value.replace("#", ""));
 };
@@ -49,7 +45,7 @@ function removeChildren(element) {
         element.removeChild(element.lastChild);
     }
 }
-document.getElementById("reset").addEventListener("dblclick", function (e) {
+document.getElementById("reset").addEventListener("dblclick", e => {
     if (confirm("ARE YOU SURE YOU WANT TO RESET PROGRESS?")) {
         inventory = [];
         itemsOnScreen = {};
@@ -65,33 +61,34 @@ document.getElementById("reset").addEventListener("dblclick", function (e) {
         updateItemCount(-itemCount + 5);
     }
 });
-var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
+const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
 canv.width = window.innerWidth / 2;
 canv.height = window.innerHeight;
-clearButton.style.top = window.innerHeight - clearButton.clientHeight + "px";
-clearButton.style.left = window.innerWidth / 2 + "px";
-var tempInv = JSON.parse(localStorage.getItem("inventory"));
-var inventory;
+clearButton.style.top = `${window.innerHeight - clearButton.clientHeight}px`;
+clearButton.style.left = `${window.innerWidth / 2}px`;
+let tempInv = JSON.parse(localStorage.getItem("inventory"));
+let inventory;
 if (tempInv)
     inventory = tempInv;
 else
     inventory = [];
-var itemBeingDragged = null;
-var VisualItem = /** @class */ (function () {
-    function VisualItem(item, x, y) {
+let itemBeingDragged = null;
+class VisualItem {
+    constructor(item, x, y) {
+        var _a, _b, _c, _d, _e;
         this.item = item;
-        this.name = this.item.displayName ? this.item.displayName : this.item.name;
-        this.fontFamily = this.item.fontFamily ? this.item.fontFamily : "arial";
-        this.fontSize = this.item.fontSize ? this.item.fontSize : "20px";
-        this.width = this.item.width ? this.item.width : ((ctx.measureText(this.name).width) > 50 ? ctx.measureText(this.name).width : 50);
-        this.height = this.item.height ? this.item.height : 50;
+        this.name = (_a = this.item.displayName) !== null && _a !== void 0 ? _a : this.item.name;
+        this.fontFamily = (_b = this.item.fontFamily) !== null && _b !== void 0 ? _b : "arial";
+        this.fontSize = (_c = this.item.fontSize) !== null && _c !== void 0 ? _c : "20px";
+        this.width = (_d = this.item.width) !== null && _d !== void 0 ? _d : ((ctx.measureText(this.name).width) > 50 ? ctx.measureText(this.name).width : 50);
+        this.height = (_e = this.item.height) !== null && _e !== void 0 ? _e : 50;
         this.id = "";
-        for (var i = 0; i < 20; i++)
+        for (let i = 0; i < 20; i++)
             this.id += chars[Math.floor(Math.random() * chars.length)];
         this.x = x;
         this.y = y;
         this.dragging = false;
-        this.onclick = this.item.onclick ? this.item.onclick : function () { };
+        this.onclick = this.item.onclick ? this.item.onclick : () => { };
         this.oncreate = this.item.oncreate;
         this.onremove = this.item.onremove;
         this.onusedinrecipe = this.item.onusedinrecipe;
@@ -99,45 +96,43 @@ var VisualItem = /** @class */ (function () {
         this.onboardclear = this.item.onboardclear;
         this.onmove = this.item.onmove;
     }
-    VisualItem.prototype.draw = function () {
+    draw() {
         if (this.item.img) {
             blitImg(this.item.img, this.x, this.y);
         }
         else {
             drawRect(this.item.color, this.x, this.y, this.width, this.height);
-            drawText(this.name, this.item.textColor ? this.item.textColor : "black", this.fontSize + " " + this.fontFamily, this.x, this.y + (this.height / 2));
+            drawText(this.name, this.item.textColor ? this.item.textColor : "black", `${this.fontSize} ${this.fontFamily}`, this.x, this.y + (this.height / 2));
         }
-    };
-    VisualItem.prototype.pointCollide = function (x, y) {
+    }
+    pointCollide(x, y) {
         return (x > this.x && x < this.x + this.width) && (y > this.y && y < this.y + this.height);
-    };
-    VisualItem.prototype.rectCollide = function (x, y, width, height) {
+    }
+    rectCollide(x, y, width, height) {
         return (this.x < x + width &&
             this.x + this.width > x &&
             this.y < y + height &&
             this.y + this.height > y); //why did i forget this algorithm???
-    };
-    VisualItem.prototype.setToPoint = function (x, y) {
+    }
+    setToPoint(x, y) {
         this.x = x;
         this.y = y;
-    };
-    VisualItem.prototype.startDragging = function () {
+    }
+    startDragging() {
         this.dragging = true;
         itemBeingDragged = this;
         recentlyDragged = null;
-    };
-    VisualItem.prototype.stopDragging = function () {
+    }
+    stopDragging() {
         this.dragging = false;
         itemBeingDragged = null;
         recentlyDragged = this;
-    };
-    VisualItem.prototype.inRecipeCount = function () {
-        var recipeCount = 0;
-        for (var _i = 0, items_2 = items; _i < items_2.length; _i++) {
-            var i = items_2[_i];
+    }
+    inRecipeCount() {
+        let recipeCount = 0;
+        for (let i of items) {
             if (typeof i.recipe == "object") {
-                for (var _a = 0, _b = i.recipe; _a < _b.length; _a++) {
-                    var r = _b[_a];
+                for (let r of i.recipe) {
                     if (r.includes(this.item.name))
                         recipeCount++;
                 }
@@ -146,16 +141,14 @@ var VisualItem = /** @class */ (function () {
                 recipeCount++;
         }
         return recipeCount;
-    };
-    VisualItem.itemInRecipeCount = function (item) {
-        var recipeCount = 0;
-        for (var _i = 0, items_3 = items; _i < items_3.length; _i++) {
-            var i = items_3[_i];
+    }
+    static itemInRecipeCount(item) {
+        let recipeCount = 0;
+        for (let i of items) {
             if (!i.recipe)
                 continue;
             if (typeof i.recipe == "object") {
-                for (var _a = 0, _b = i.recipe; _a < _b.length; _a++) {
-                    var r = _b[_a];
+                for (let r of i.recipe) {
                     if (r.includes(item.name)) {
                         recipeCount++;
                         break;
@@ -165,13 +158,11 @@ var VisualItem = /** @class */ (function () {
             else if (i.recipe.includes(item.name))
                 recipeCount++;
         }
-        for (var _c = 0, generatedLocalItems_1 = generatedLocalItems; _c < generatedLocalItems_1.length; _c++) {
-            var i = generatedLocalItems_1[_c];
+        for (let i of generatedLocalItems) {
             if (!i.recipe)
                 continue;
             if (typeof i.recipe == "object") {
-                for (var _d = 0, _e = i.recipe; _d < _e.length; _d++) {
-                    var r = _e[_d];
+                for (let r of i.recipe) {
                     if (r.includes(item.name)) {
                         recipeCount++;
                         break;
@@ -182,13 +173,11 @@ var VisualItem = /** @class */ (function () {
                 recipeCount++;
         }
         return recipeCount;
-    };
-    return VisualItem;
-}());
-var itemsOnScreen = {};
+    }
+}
+let itemsOnScreen = {};
 function giveStartingItems() {
-    for (var _i = 0, items_4 = items; _i < items_4.length; _i++) {
-        var item = items_4[_i];
+    for (let item of items) {
         if (item.starter) {
             if (!isInInventory(item)) {
                 addToInventory(item);
@@ -199,25 +188,23 @@ function giveStartingItems() {
     }
 }
 giveStartingItems();
-function updateItemCount(amount) {
-    if (amount === void 0) { amount = 1; }
+updateSearchWidth();
+function updateItemCount(amount = 1) {
     itemCount += amount;
-    itemCountDispaly.innerHTML = "Items: " + itemCount + "/" + totalItems;
+    itemCountDispaly.innerHTML = `Items: ${itemCount}/${totalItems}`;
 }
 function checkRecipeMatches(item1, item2) {
-    var itemMatches = [];
-    for (var _i = 0, items_5 = items; _i < items_5.length; _i++) {
-        var item = items_5[_i];
+    let itemMatches = [];
+    for (let item of items) {
         if (!item.recipe)
             continue;
         if (typeof item.recipe[0] == "object") {
-            for (var _a = 0, _b = item.recipe; _a < _b.length; _a++) {
-                var recipe_1 = _b[_a];
-                if (_.isEqual(recipe_1.sort(), [item1.item.name, item2.item.name].sort()))
+            for (let recipe of item.recipe) {
+                if (_.isEqual(recipe.sort(), [item1.item.name, item2.item.name].sort()))
                     itemMatches.push(item);
             }
         }
-        var recipe = __spreadArrays(item.recipe);
+        let recipe = [...item.recipe];
         if (_.isEqual(recipe, ["*", "*"]))
             itemMatches.push(item);
         else if (recipe.indexOf("*") >= 0) {
@@ -238,10 +225,10 @@ function checkRecipeMatches(item1, item2) {
     return itemMatches;
 }
 function isItemOnScreen(item) {
-    var itemnames = [];
-    for (var i in itemsOnScreen) {
-        var item_1 = itemsOnScreen[i];
-        itemnames.push(item_1.name);
+    let itemnames = [];
+    for (let i in itemsOnScreen) {
+        let item = itemsOnScreen[i];
+        itemnames.push(item.name);
     }
     return itemnames.includes(item.name);
 }
@@ -249,24 +236,24 @@ function isItemOnSidebar(item) {
     return document.getElementById(item.name) ? true : false;
 }
 function isInInventory(item) {
-    for (var _i = 0, inventory_2 = inventory; _i < inventory_2.length; _i++) {
-        var i = inventory_2[_i];
+    for (let i of inventory) {
         if (i.name == item.name) {
             return true;
         }
     }
+    return false;
 }
 function getTimeStampFromItem(item) {
-    var createdAt = item.timeCreated;
-    var _a = createdAt.split(" at "), mdy = _a[0], hms = _a[1];
-    var _b = mdy.split("/"), month = _b[0], d = _b[1], y = _b[2];
-    var _c = hms.split(":"), h = _c[0], m = _c[1], s = _c[2];
-    var date = new Date(y, month, d, h, m, s);
+    let createdAt = item.timeCreated;
+    let [mdy, hms] = createdAt.split(" at ");
+    let [month, d, y] = mdy.split("/");
+    let [h, m, s] = hms.split(":");
+    let date = new Date(y, month, d, h, m, s);
     return Date.parse(date.toString());
 }
 function addToInventory(item) {
-    var d = new Date();
-    item.timeCreated = d.getMonth() + 1 + "/" + d.getDate() + "/" + d.getFullYear() + " at " + d.getHours() + ":" + (String(d.getMinutes()).length > 1 ? d.getMinutes() : "0" + d.getMinutes()) + ":" + (String(d.getSeconds()).length > 1 ? d.getSeconds() : "0" + d.getSeconds()); //a formatted timestamp
+    let d = new Date();
+    item.timeCreated = `${d.getMonth() + 1}/${d.getDate()}/${d.getFullYear()} at ${d.getHours()}:${String(d.getMinutes()).length > 1 ? d.getMinutes() : "0" + d.getMinutes()}:${String(d.getSeconds()).length > 1 ? d.getSeconds() : "0" + d.getSeconds()}`; //a formatted timestamp
     inventory.push(item); //add to inventory
     localStorage.setItem("inventory", JSON.stringify(inventory)); //add to local storage
 }
@@ -276,89 +263,84 @@ function removeFromInventory(item) {
     }
 }
 function itemHasUpdated(item) {
-    for (var _i = 0, items_6 = items; _i < items_6.length; _i++) {
-        var realItem = items_6[_i];
+    for (let realItem of items) {
         if (_.isEqual(realItem, item)) {
             return false;
         }
     }
     return true;
 }
-function updateInventory(item) {
-    var elem;
-    var isReal;
-    var inRecipe;
+function updateSearchWidth() {
     search.style.width = inventoryDiv.clientWidth + "px";
-    var _loop_1 = function (item_2) {
-        if (!isItemOnSidebar(item_2)) {
+}
+function updateInventory(item) {
+    let elem;
+    let isReal;
+    let inRecipe;
+    for (let item of inventory) {
+        if (!isItemOnSidebar(item)) {
             isReal = false;
             inRecipe = false;
-            for (var _i = 0, items_7 = items; _i < items_7.length; _i++) {
-                var realItem = items_7[_i];
-                if (realItem.name == item_2.name) {
+            for (let realItem of items) {
+                if (realItem.name == item.name) {
                     isReal = true;
                 }
                 if (realItem.recipe) {
                     if (typeof realItem.recipe === "object") {
-                        for (var _a = 0, _b = realItem.recipe; _a < _b.length; _a++) {
-                            var recipe = _b[_a];
-                            if (recipe.includes(item_2.name)) {
+                        for (let recipe of realItem.recipe) {
+                            if (recipe.includes(item.name)) {
                                 inRecipe = true;
                                 break;
                             }
                         }
                     }
-                    else if (realItem.recipe.includes(item_2.name)) {
+                    else if (realItem.recipe.includes(item.name)) {
                         inRecipe = true;
                     }
                 }
             }
-            var style = document.createElement('style');
-            var styleNode = "p#" + item_2.name + "{color: " + (item_2.sidebarColor ? item_2.sidebarColor : item_2.color) + ";";
-            if (!item_2.overrideStyling) {
+            let style = document.createElement('style');
+            let styleNode = `p#${item.name}{color: ${item.sidebarColor ? item.sidebarColor : item.color};`;
+            if (!item.overrideStyling) {
                 if (!isReal)
-                    styleNode += item_2.isFakeStyling ? item_2.isFakeStyling : "text-decoration:underline wavy orange;cursor:help;";
+                    styleNode += item.isFakeStyling ? item.isFakeStyling : `text-decoration:underline wavy orange;cursor:help;`;
                 if (!inRecipe) {
-                    styleNode += item_2.notInRecipeStyle ? item_2.notInRecipeStyle : "font-style: italic;cursor:help;";
+                    styleNode += item.notInRecipeStyle ? item.notInRecipeStyle : "font-style: italic;cursor:help;";
                 }
             }
             else {
                 if (!isReal)
-                    styleNode += item_2.isFakeStyling ? item_2.isFakeStyling : "";
+                    styleNode += item.isFakeStyling ? item.isFakeStyling : "";
                 if (!inRecipe)
-                    styleNode += item_2.notInRecipeStyle ? item_2.notInRecipeStyle : "";
+                    styleNode += item.notInRecipeStyle ? item.notInRecipeStyle : "";
             }
             styleNode += "}";
-            if (item_2.hoverStyle) {
-                styleNode += "p#" + item_2.name + ":hover{" + item_2.hoverStyle + "}";
+            if (item.inventoryHover) {
+                styleNode += `p#${item.name}:hover{${item.inventoryHover}}`;
             }
             style.appendChild(document.createTextNode(styleNode));
             inventoryDiv.appendChild(style);
             elem = document.createElement("p");
-            var title = "";
-            title += "Created at: " + item_2.timeCreated + "\n\n";
+            let title = "";
+            title += `Created at: ${item.timeCreated}\n\n`;
             if (!isReal || !inRecipe) {
                 if (!isReal)
-                    title += item_2.isFakeTitle ? item_2.isFakeTitle : "This item has been removed\nif you clear cache or anything of the sort this item could dissappear\n";
+                    title += item.isFakeTitle ? item.isFakeTitle : "This item has been removed\nif you clear cache or anything of the sort this item could dissappear\n";
                 if (!inRecipe)
-                    title += item_2.notInRecipeTitle ? item_2.notInRecipeTitle : "This item is not used in any recipes\n";
+                    title += item.notInRecipeTitle ? item.notInRecipeTitle : "This item is not used in any recipes\n";
             }
             elem.title = title;
-            elem.innerHTML = item_2.displayName ? item_2.displayName : item_2.name;
-            elem.id = item_2.name;
-            elem.onclick = function () {
-                addItem(item_2, null, null, true, true);
+            elem.innerHTML = item.displayName ? item.displayName : item.name;
+            elem.id = item.name;
+            elem.onclick = () => {
+                addItem(item, null, null, true, true);
             };
-            elem.oncontextmenu = function (e) {
+            elem.oncontextmenu = (e) => {
                 e.preventDefault();
-                alert("Item Info:\n\nUsed in: " + VisualItem.itemInRecipeCount(item_2) + " recipes\n" + (item_2.recipe ? "Ways to create this item: " + (typeof item_2.recipe[0] == "object" ? item_2.recipe.length : 1) : "") + "\n\nDiscovered at: " + item_2.timeCreated);
+                alert(`Item Info:\n\nUsed in: ${VisualItem.itemInRecipeCount(item)} recipes\n${item.recipe ? `Ways to create this item: ${typeof item.recipe[0] == "object" ? item.recipe.length : 1}` : ""}\n\nDiscovered at: ${item.timeCreated}`);
             };
             inventoryDiv.appendChild(elem);
         }
-    };
-    for (var _i = 0, inventory_3 = inventory; _i < inventory_3.length; _i++) {
-        var item_2 = inventory_3[_i];
-        _loop_1(item_2);
     }
 }
 function removeFromSideBar(item) {
@@ -366,9 +348,7 @@ function removeFromSideBar(item) {
         inventoryDiv.removeChild(document.getElementById(item.name));
     }
 }
-function addItem(item, x, y, addAnyway, duplicate) {
-    if (addAnyway === void 0) { addAnyway = false; }
-    if (duplicate === void 0) { duplicate = false; }
+function addItem(item, x, y, addAnyway = false, duplicate = false) {
     if (!x) {
         x = Math.floor(Math.random() * canv.width);
     }
@@ -383,17 +363,17 @@ function addItem(item, x, y, addAnyway, duplicate) {
             itemsOnScreen[item.name] = new VisualItem(item, x, y);
     }
 }
-var lastTime = 0;
+let lastTime = 0;
 function main(time) {
-    var deltaTime = time - lastTime;
+    let deltaTime = time - lastTime;
     ctx.clearRect(0, 0, canv.width, canv.height); //resets the canvas
-    var itemFound = false; //a variable to see if there has been an item crafted
-    for (var i in itemsOnScreen) {
-        var item = itemsOnScreen[i];
+    let itemFound = false; //a variable to see if there has been an item crafted
+    for (let i in itemsOnScreen) {
+        let item = itemsOnScreen[i];
         item.draw(); //draw the item
         if (!itemFound) { //if no item was crafted
-            for (var i2 in itemsOnScreen) { //go through all the items on the screen again
-                var item2 = itemsOnScreen[i2];
+            for (let i2 in itemsOnScreen) { //go through all the items on the screen again
+                let item2 = itemsOnScreen[i2];
                 //if item is item2 or either item is being dragged or both items were not recently dragged, continue
                 if (item.id === item2.id || item.dragging || item2.dragging || (recentlyDragged != item && recentlyDragged != item2))
                     continue;
@@ -402,12 +382,11 @@ function main(time) {
                         item.onusedinrecipe(item, item2);
                     if (item2.onusedinrecipe) //same as above
                         item2.onusedinrecipe(item, item2);
-                    var crafted = checkRecipeMatches(item, item2); //gets all recipes that have both items in it
-                    for (var _i = 0, crafted_1 = crafted; _i < crafted_1.length; _i++) { //goes through all the items of the crafted
-                        var c = crafted_1[_i];
-                        var craft = void 0; //wrapper variable for either the plain crafted, or if the item has a return item
-                        if (c["return"]) { //craft is returned item
-                            craft = c["return"](item, item2);
+                    let crafted = checkRecipeMatches(item, item2); //gets all recipes that have both items in it
+                    for (let c of crafted) { //goes through all the items of the crafted
+                        let craft; //wrapper variable for either the plain crafted, or if the item has a return item
+                        if (c.return) { //craft is returned item
+                            craft = c.return(item, item2);
                             if (!craft)
                                 window.requestAnimationFrame(main);
                         }
@@ -417,7 +396,7 @@ function main(time) {
                             updateItemCount(); //increase items owned by 1
                             addToInventory(craft); //add crafted to inventory
                             updateInventory(craft); //update the sidebar
-                            if (c["return"]) { //if crafted.return, (these items are not stored in code, so they must be stored in local storage)
+                            if (c.return) { //if crafted.return, (these items are not stored in code, so they must be stored in local storage)
                                 totalItems++; //the total items in the game ++
                                 updateItemCount(0); //updates the count display
                                 generatedLocalItems.push(craft); //adds the crafted to the generated local items
@@ -448,8 +427,7 @@ function main(time) {
     window.requestAnimationFrame(main);
 }
 //makes sure that all the items are given to player before updating item count at start
-for (var _a = 0, inventory_1 = inventory; _a < inventory_1.length; _a++) {
-    var i = inventory_1[_a];
+for (let i of inventory) {
     if (!i.secretItem)
         updateItemCount();
 }
@@ -457,17 +435,16 @@ for (var _a = 0, inventory_1 = inventory; _a < inventory_1.length; _a++) {
 window.requestAnimationFrame(main);
 //reverses an array and returns it
 function reverse(array) {
-    var newArray = __spreadArrays(array);
+    let newArray = [...array];
     newArray.reverse();
     return newArray;
 }
-search.addEventListener('input', function (e) {
+search.addEventListener('input', e => {
     if (search.value == "") {
         //when there is nothing in the search this resets it back to the initial order
         resetSideBar();
     }
-    for (var _i = 0, inventory_4 = inventory; _i < inventory_4.length; _i++) {
-        var item = inventory_4[_i];
+    for (let item of inventory) {
         if (item.name.indexOf(search.value) < 0) {
             removeFromSideBar(item);
         }
@@ -475,11 +452,11 @@ search.addEventListener('input', function (e) {
             updateInventory(item);
         }
     }
+    updateSearchWidth();
 });
 //moves the item
-canv.addEventListener("click", function (e) {
-    for (var _i = 0, _a = reverse(Object.keys(itemsOnScreen)); _i < _a.length; _i++) { //goes through items in reverse order idk why
-        var item = _a[_i];
+canv.addEventListener("click", e => {
+    for (let item of reverse(Object.keys(itemsOnScreen))) { //goes through items in reverse order idk why
         item = itemsOnScreen[item];
         if (item.pointCollide(e.offsetX, e.offsetY)) { //makes sure mouse collides with item
             if (!itemBeingDragged) { //if there is no item being dragged currently
@@ -499,17 +476,15 @@ canv.addEventListener("click", function (e) {
     }
 });
 //duplicates the item
-var clickedItem;
-canv.addEventListener("dblclick", function (e) {
-    for (var _i = 0, _a = reverse(Object.keys(itemsOnScreen)); _i < _a.length; _i++) { //goes through items on the screen in reverse order  (idk why)
-        var item = _a[_i];
+let clickedItem;
+canv.addEventListener("dblclick", e => {
+    for (let item of reverse(Object.keys(itemsOnScreen))) { //goes through items on the screen in reverse order  (idk why)
         item = itemsOnScreen[item];
         if (item.pointCollide(e.offsetX, e.offsetY)) { //makes sure the click was on element
             clickedItem = item; //sets the item that is currently clicked to this item
         }
     }
-    for (var _b = 0, items_8 = items; _b < items_8.length; _b++) {
-        var item = items_8[_b];
+    for (let item of items) {
         if (clickedItem.name === item.name) {
             if (item.ondblclick) { //if there's the ondblclick event for the item trigger it
                 item.ondblclick({ event: e, inventory: inventory, itemsOnScreen: itemsOnScreen, item: item, canvas: canv });
@@ -521,10 +496,10 @@ canv.addEventListener("dblclick", function (e) {
     }
 });
 //removes item from canvas
-canv.addEventListener("contextmenu", function (e) {
+canv.addEventListener("contextmenu", e => {
     e.preventDefault();
-    for (var item in itemsOnScreen) {
-        var i = itemsOnScreen[item];
+    for (let item in itemsOnScreen) {
+        let i = itemsOnScreen[item];
         if (i.pointCollide(e.offsetX, e.offsetY)) { //makes sure the click was on the element
             if (i.onremove) {
                 i.onremove({ event: e, inventory: inventory, itemsOnScreen: itemsOnScreen, item: i, canvas: canv });
@@ -534,9 +509,19 @@ canv.addEventListener("contextmenu", function (e) {
     }
 });
 //moves the item with the mouse
-document.addEventListener("mousemove", function (e) {
-    for (var i in itemsOnScreen) {
-        var item = itemsOnScreen[i];
+document.addEventListener("mousemove", e => {
+    var _a, _b;
+    itemTitleElement.innerHTML = "";
+    for (let i in itemsOnScreen) {
+        let item = itemsOnScreen[i];
+        if (item.pointCollide(e.clientX, e.clientY) && itemTitleElement.innerHTML != item.item.hoverText) {
+            if (itemTitleElementStyle.textContent != item.item.hoverTextStyle) {
+                itemTitleElementStyle.textContent = `#item-title-element{${(_a = item.item.hoverTextStyle) !== null && _a !== void 0 ? _a : ""}}`;
+            }
+            itemTitleElement.style.top = String(item.y + item.height + 5) + "px";
+            itemTitleElement.style.left = String(item.x + (item.width / 2)) + "px";
+            itemTitleElement.innerHTML = (_b = item.item.hoverText) !== null && _b !== void 0 ? _b : "";
+        }
         if (item.dragging) { //makes sure it was clicked previously
             if (item.onmove)
                 item.onmove({ event: e, inventory: inventory, itemsOnScreen: itemsOnScreen, item: item, canvas: canv });
@@ -545,44 +530,44 @@ document.addEventListener("mousemove", function (e) {
         }
     }
 });
-var typing = false;
-search.addEventListener("focusin", function (e) {
+let typing = false;
+search.addEventListener("focusin", e => {
     e.preventDefault();
     typing = true;
 });
-search.addEventListener("focusout", function (e) { return typing = false; });
-document.addEventListener("keypress", function (e) {
+search.addEventListener("focusout", e => typing = false);
+document.addEventListener("keypress", e => {
     if (!typing && !isBrowser(/chrome/)) {
         search.value = e.key;
     }
     search.focus();
     typing = true;
 });
-document.addEventListener("keydown", function (e) {
+document.addEventListener("keydown", e => {
     if (e.ctrlKey) {
         switch (e.key) {
             case "1":
-                inventory.sort(function (a, b) { return a.name > b.name; });
+                inventory.sort((a, b) => a.name > b.name ? 1 : 0);
                 e.preventDefault();
                 break;
             case "2":
-                inventory.sort(function (a, b) { return a.name < b.name; });
+                inventory.sort((a, b) => a.name < b.name ? 1 : 0);
                 e.preventDefault();
                 break;
             case "3":
-                inventory.sort(function (a, b) { return getTimeStampFromItem(a) > getTimeStampFromItem(b); });
+                inventory.sort((a, b) => getTimeStampFromItem(a) > getTimeStampFromItem(b) ? 1 : 0);
                 e.preventDefault();
                 break;
             case "4":
-                inventory.sort(function (a, b) { return getTimeStampFromItem(a) < getTimeStampFromItem(b); });
+                inventory.sort((a, b) => getTimeStampFromItem(a) < getTimeStampFromItem(b) ? 1 : 0);
                 e.preventDefault();
                 break;
             case "5":
-                inventory.sort(function (a, b) { return VisualItem.itemInRecipeCount(a) > VisualItem.itemInRecipeCount(b); });
+                inventory.sort((a, b) => VisualItem.itemInRecipeCount(a) > VisualItem.itemInRecipeCount(b) ? 1 : 0);
                 e.preventDefault();
                 break;
             case "6":
-                inventory.sort(function (a, b) { return VisualItem.itemInRecipeCount(a) < VisualItem.itemInRecipeCount(b); });
+                inventory.sort((a, b) => VisualItem.itemInRecipeCount(a) < VisualItem.itemInRecipeCount(b) ? 1 : 0);
                 e.preventDefault();
                 break;
             case "/":
@@ -597,12 +582,10 @@ document.addEventListener("keydown", function (e) {
     }
 });
 function resetSideBar() {
-    for (var _i = 0, inventory_5 = inventory; _i < inventory_5.length; _i++) {
-        var item = inventory_5[_i];
+    for (let item of inventory) {
         removeFromSideBar(item);
     }
-    for (var _a = 0, inventory_6 = inventory; _a < inventory_6.length; _a++) {
-        var item = inventory_6[_a];
+    for (let item of inventory) {
         updateInventory(item);
     }
 }
@@ -619,27 +602,21 @@ function drawText(text, color, font, x, y) {
 }
 //wrapper around putting an image on a canvas
 function blitImg(imgSrc, x, y) {
-    var img = document.createElement("img");
+    let img = document.createElement("img");
     img.src = imgSrc;
     ctx.drawImage(img, x, y);
 }
 //mean function finds the mean of values
-function mean() {
-    var values = [];
-    for (var _i = 0; _i < arguments.length; _i++) {
-        values[_i] = arguments[_i];
-    }
-    var sum = 0;
-    for (var _a = 0, arguments_1 = arguments; _a < arguments_1.length; _a++) {
-        var num = arguments_1[_a];
+function mean(...values) {
+    let sum = 0;
+    for (let num of arguments) {
         sum += num;
     }
     return sum / arguments.length;
 }
 //more for debugging, adds item by name/id
 function giveItemByName(itemName) {
-    for (var _i = 0, items_9 = items; _i < items_9.length; _i++) {
-        var item = items_9[_i];
+    for (let item of items) {
         if (item.name == itemName) {
             if (!isInInventory(item)) {
                 updateItemCount();
@@ -648,35 +625,35 @@ function giveItemByName(itemName) {
             }
         }
     }
+    updateSearchWidth();
 }
 //more for debugging, removes item by name/id
 function removeItemByName(itemName) {
-    for (var _i = 0, inventory_7 = inventory; _i < inventory_7.length; _i++) {
-        var item = inventory_7[_i];
+    for (let item of inventory) {
         if (item.name == itemName) {
             updateItemCount(-1);
             removeFromInventory(item);
             removeFromSideBar(item);
         }
     }
+    updateSearchWidth();
 }
 function findItemByName(itemName) {
-    for (var _i = 0, items_10 = items; _i < items_10.length; _i++) {
-        var item = items_10[_i];
+    for (let item of items) {
         if (item.name == itemName) {
             return item;
         }
     }
 }
-window.addEventListener("resize", function (e) {
+window.addEventListener("resize", e => {
     //puts the  clear button by the bottom right of canvas
-    clearButton.style.top = window.innerHeight - clearButton.clientHeight + "px";
-    clearButton.style.left = window.innerWidth / 2 + "px";
+    clearButton.style.top = `${window.innerHeight - clearButton.clientHeight}px`;
+    clearButton.style.left = `${window.innerWidth / 2}px`;
     //puts each item in the same relative place
-    for (var i in itemsOnScreen) {
-        var item = itemsOnScreen[i];
-        var percentX = item.x / canv.width; //the percents keep the item at the same-ish relative position on the canvas
-        var percentY = item.y / canv.height;
+    for (let i in itemsOnScreen) {
+        let item = itemsOnScreen[i];
+        let percentX = item.x / canv.width; //the percents keep the item at the same-ish relative position on the canvas
+        let percentY = item.y / canv.height;
         item.x = Math.floor(window.innerWidth / 2 * percentX);
         item.y = window.innerHeight * percentY;
         if (item.x <= 0) {
@@ -697,7 +674,7 @@ window.addEventListener("resize", function (e) {
     canv.height = window.innerHeight;
 });
 function invertHex(hex) {
-    return (Number("0x1" + hex) ^ 0xFFFFFF).toString(16).substr(1).toUpperCase();
+    return (Number(`0x1${hex}`) ^ 0xFFFFFF).toString(16).substr(1).toUpperCase();
 }
 function isBrowser(browserId) {
     return browserId.test(navigator.userAgent.toLocaleLowerCase());

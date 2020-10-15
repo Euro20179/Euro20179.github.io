@@ -8,7 +8,7 @@ img: the image to show instead of a square
 starter: whether or not it will appear at the start of the game
 color: the background color of the rectangle, and color of text in inventory
 sidebarColor: the color of the inventory text
-hoverStyle: the styling for hovernig on the item in inventory
+inventoryHover: the styling for hovernig on the item in inventory
 
 events:
 
@@ -24,10 +24,10 @@ var colors = {
     indigo: "#4b0082",
     purple: "#800080",
     pink: "#ffc0cb",
-    violet: "#ee82ee"
+    violet: "#ee82ee",
 };
 //THE ACTUALLY IMPORTANT BIT
-var items = [
+const items = [
     {
         name: "water",
         color: "blue",
@@ -39,7 +39,7 @@ var items = [
         color: "#f0f0f0",
         starter: true,
         textColor: "black",
-        sidebarColor: "black"
+        sidebarColor: "black",
     },
     {
         name: "pond",
@@ -64,7 +64,7 @@ var items = [
             ["ocean", "sun"],
             ["lake", "sun"]
         ],
-        sidebarColor: "black"
+        sidebarColor: "black",
     },
     {
         name: "air",
@@ -77,7 +77,7 @@ var items = [
         name: "atmosphere",
         color: "skyblue",
         textColor: "black",
-        recipe: ["air", "air"]
+        recipe: ["air", "air"],
     },
     {
         name: "earth",
@@ -115,14 +115,14 @@ var items = [
     {
         name: "mountain",
         color: "brown",
-        recipe: ["earth", "earth"]
+        recipe: ["earth", "earth"],
     },
     {
         name: "mountain-range",
         displayName: "mountain range",
         color: "#000088",
         textColor: "#FFFAFA",
-        recipe: ["mountain", "mountain"]
+        recipe: ["mountain", "mountain"],
     },
     {
         name: 'mud',
@@ -132,7 +132,7 @@ var items = [
     {
         name: "sun",
         color: "yellow",
-        oncreate: function (e) {
+        oncreate: (e) => {
             alert("HOT");
         },
         recipe: ["fire", "atmosphere"],
@@ -150,7 +150,9 @@ var items = [
         color: "red",
         starter: true,
         textColor: "white",
-        hoverStyle: "color:white;\n        background-color:red;\n        background-image: url(\"https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.wanowandthen.com%2Fmisc%2Ffire.jpg&f=1&nofb=1\")"
+        inventoryHover: `color:white;
+        background-color:red;
+        background-image: url("https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.wanowandthen.com%2Fmisc%2Ffire.jpg&f=1&nofb=1")`,
     },
     {
         name: "steam",
@@ -261,7 +263,7 @@ var items = [
     {
         name: "life",
         color: "limegreen",
-        recipe: ["ocean", "o2"]
+        recipe: ["ocean", "o2"],
     },
     {
         name: "ocean-animal",
@@ -322,12 +324,12 @@ var items = [
         color: "turquoise",
         textColor: "blue",
         recipe: ["ocean-animal", "ocean"],
-        onmove: function (e) {
+        onmove: (e) => {
             if (Math.random() > .9999)
                 alert("just let me be free");
-            var moveAmount = 10;
-            var moveY = 0;
-            var moveX = 0;
+            const moveAmount = 10;
+            let moveY = 0;
+            let moveX = 0;
             if (Math.random() > .5)
                 moveY = Math.floor(Math.random() * moveAmount);
             else
@@ -347,10 +349,10 @@ var items = [
         recipe: [
             ["fish", "ocean"],
         ],
-        oncreate: function (e) {
-            var creatures = ["fish"];
+        oncreate: (e) => {
+            let creatures = ["fish"];
             if (creatures.indexOf(e.item1.name) >= 0 || creatures.indexOf(e.item2.name) >= 0) {
-                alert("You did the right thing and put the animal in it's natural habitat");
+                alert(`You did the right thing and put the animal in it's natural habitat`);
             }
         }
     },
@@ -361,7 +363,7 @@ var items = [
         recipe: ["dust", "dust"],
         sidebarColor: "black",
         textColor: "black",
-        secretItem: true
+        secretItem: true,
     },
     {
         name: "monster",
@@ -377,7 +379,7 @@ var items = [
         color: "#eeeeeeaa",
         recipe: ["fire", "sand"],
         sidebarColor: "#000000aa",
-        onremove: function () {
+        onremove: () => {
             new Audio("audio/glass.mp3").play();
         }
     },
@@ -385,18 +387,19 @@ var items = [
         name: "?-glass",
         recipe: ["glass", "*"],
         color: "red",
-        "return": function (item, item2) {
+        secretItem: true,
+        return: (item, item2) => {
             item = item2.name == "glass" ? item : item2;
             if (Object.keys(colors).indexOf(item.name) >= 0) {
                 return {
-                    name: item.name + "-glass",
-                    displayName: item.name + " glass",
-                    color: colors[item.name] + "aa",
+                    name: `${item.name}-glass`,
+                    displayName: `${item.name} glass`,
+                    color: `${colors[item.name]}aa`,
                     overrideStyling: true,
                     notInRecipeStyle: "font-style:italic",
                     recipe: [item.name, "glass"],
                     isFakeTitle: "this item is generated by the game\n",
-                    onremove: function (e) {
+                    onremove: (e) => {
                         new Audio("audio/glass.mp3").play();
                     }
                 };
@@ -406,7 +409,7 @@ var items = [
                 color: "#eeeeeeaa",
                 recipe: ["fire", "sand"],
                 sidebarColor: "#000000aa",
-                onremove: function () {
+                onremove: () => {
                     new Audio("audio/glass.mp3").play();
                 }
             };
@@ -415,24 +418,25 @@ var items = [
     {
         name: "star",
         color: "orange",
-        recipe: ["sun", "night"]
+        recipe: ["sun", "night"],
     },
     {
         name: "starry-night",
         color: "black",
         textColor: "white",
         secretItem: true,
-        recipe: ["star", "night"]
+        recipe: ["star", "night"],
     },
     {
         name: "color-generator",
+        secretItem: true,
         recipe: [
             ["light", "glass"],
             ["sun", "glass"]
         ],
-        "return": function (item, item2) {
-            var colorName = Object.keys(colors)[Math.floor(Math.random() * Object.keys(colors).length)];
-            var choice = colors[colorName];
+        return: (item, item2) => {
+            const colorName = Object.keys(colors)[Math.floor(Math.random() * Object.keys(colors).length)];
+            const choice = colors[colorName];
             return {
                 name: colorName,
                 color: choice,
@@ -447,29 +451,30 @@ var items = [
         recipe: ["stone", "stone"],
         color: "gray",
         textColor: "white",
-        sidebarColor: "gray"
+        sidebarColor: "gray",
     },
     {
         name: "ancient-stone-or-boulder",
         color: "darkgreen",
+        secretItem: true,
         recipe: [
             ["time", "stone"],
             ["moss", "stone"],
             ["time", "boulder"],
             ["moss", "boulder"]
         ],
-        "return": function (item, item2) {
+        return: (item, item2) => {
             item = item.name == "boulder" || item.name == "stone" ? item : item2;
             return {
-                name: "ancient-" + item.name,
-                displayName: "ancient " + item.name,
+                name: `ancient-${item.name}`,
+                displayName: `ancient ${item.name}`,
                 color: "darkgreen",
                 textColor: "white",
                 recipe: [
                     [item.name, "time"],
                     [item.name, "moss"]
                 ],
-                overrideStyling: true
+                overrideStyling: true,
             };
         }
     },
@@ -479,7 +484,7 @@ var items = [
         recipe: [
             ["moss", "tree"],
             ["moss", "time"]
-        ]
+        ],
     },
     {
         name: "house",
@@ -487,7 +492,7 @@ var items = [
         recipe: [
             ["family", "building"],
             ["human", "building"]
-        ]
+        ],
     },
     {
         name: "human-sacrifise",
@@ -500,7 +505,7 @@ var items = [
             ["human", "volcano"]
         ],
         secretItem: true,
-        oncreate: function (e) {
+        oncreate: (e) => {
             alert("sacrafise\nsacrafise\nsacrafise\nsacrafise\nsacrafise\nsacrafise\nsacrafise\nsacrafise\nsacrafise\nsacrafise\nsacrafise\nsacrafise\n");
         }
     },
@@ -636,12 +641,13 @@ var items = [
         textColor: "black",
         sidebarColor: "khaki",
         recipe: ["bread", "meat"],
-        "return": function (item, item2) {
-            var types = ["balogna", "turkey", "chicken", "ham"];
-            var choice = types[Math.floor(Math.random() * types.length)];
+        secretItem: true,
+        return: (item, item2) => {
+            const types = ["balogna", "turkey", "chicken", "ham"];
+            let choice = types[Math.floor(Math.random() * types.length)];
             return {
-                name: choice + "-sandwich",
-                displayName: choice + " sandwich",
+                name: `${choice}-sandwich`,
+                displayName: `${choice} sandwich`,
                 color: "coral",
                 recipe: ["bread", "meat"],
                 overrideStyling: true,
@@ -651,9 +657,8 @@ var items = [
     }
 ];
 function getItemByName(name) {
-    var item;
-    for (var _i = 0, items_1 = items; _i < items_1.length; _i++) {
-        item = items_1[_i];
+    let item;
+    for (item of items) {
         if (item.name == name) {
             return item;
         }
