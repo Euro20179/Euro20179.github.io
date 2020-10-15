@@ -73,7 +73,7 @@ else
 let d = new Date();
 for (let i = 0; i < inventory.length; i++) {
     let item = inventory[i];
-    let newItem = findItemByName(item.name);
+    let newItem = findItemByName((item.name));
     if (newItem) {
         newItem.timeCreated = (_a = item.timeCreated) !== null && _a !== void 0 ? _a : `${d.getMonth() + 1}/${d.getDate()}/${d.getFullYear()} at ${d.getHours()}:${String(d.getMinutes()).length > 1 ? d.getMinutes() : "0" + d.getMinutes()}:${String(d.getSeconds()).length > 1 ? d.getSeconds() : "0" + d.getSeconds()}`;
         inventory[i] = newItem;
