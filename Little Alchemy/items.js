@@ -927,6 +927,20 @@ const items = [
         recipe: [
             ["plant", "time"]
         ]
+    },
+    {
+        name: "axe",
+        color: "brown",
+        textColor: "white",
+        sidebarColor: "brown",
+        recipe: ["tree", "tool"]
+    },
+    {
+        name: "log",
+        color: "brown",
+        textColor: "white",
+        sidebarColor: "brown",
+        recipe: ["tree", "axe"]
     }
 ];
 function getItemByName(name) {
