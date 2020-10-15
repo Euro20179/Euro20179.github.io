@@ -985,7 +985,7 @@ const items = [
     },
     {
         name: "water-bottle",
-        displayName: "watter bottle",
+        displayName: "water bottle",
         color: "blue",
         recipe: ["water", "tool"]
     },
