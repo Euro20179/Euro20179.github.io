@@ -389,93 +389,76 @@ function main(time) {
             //if item is item2 or either item is being dragged or both items were not recently dragged, continue
             if (item.id === item2.id || item.dragging || item2.dragging || (recentlyDragged != item && recentlyDragged != item2))
                 continue;
-            if (item.rectCollide(item2.x, item2.y, item2.width, item2.height)) { //sees if the 2 items are colliding
-                let crafted = checkRecipeMatches(item, item2); //gets all recipes that have both items in it
-                for (let c of crafted) { //goes through all the items of the crafted
-                    let craft; //wrapper variable for either the plain crafted, or if the item has a return item
-                    if (c.return) { //craft is returned item
-                        craft = c.return(item, item2);
-                        if (!craft)
-                            window.requestAnimationFrame(main);
-                    }
-                    else
-                        craft = c; //otherwise craft is the crafted item
-                    if (!isInInventory(craft)) {
-                        //doing with this with promises incase it's slow
-                        Promise.all([new Promise((resolve, reject) => {
-                                updateItemCount();
-                                resolve();
-                            }),
-                            new Promise((resolve, reject) => {
-                                addToInventory(craft);
-                                resolve();
-                            }),
-                            new Promise((resolve, reject) => {
-                                updateInventory(craft); //update the sidebar
-                                resolve();
-                            })]);
-                        //item onusedinrecipeevent for bot itmes
-                        Promise.all([new Promise((resolve, reject) => {
-                                if (item.onusedinrecipe) {
-                                    item.onusedinrecipe({
-                                        item1: item, item2: item2,
-                                        crafted: craft, inventory: inventory,
-                                        itemsOnScreen: itemsOnScreen,
-                                        x: mean(item.x, item2.x),
-                                        y: mean(item.y, item2.y),
-                                        deltaTime: deltaTime,
-                                        time: time
-                                    });
-                                    resolve();
-                                }
-                                else
-                                    reject();
-                            }), new Promise((resolve, reject) => {
-                                if (item2.onusedinrecipe) {
-                                    item2.onusedinrecipe({
-                                        item1: item, item2: item2,
-                                        crafted: craft, inventory: inventory,
-                                        itemsOnScreen: itemsOnScreen,
-                                        x: mean(item.x, item2.x),
-                                        y: mean(item.y, item2.y),
-                                        deltaTime: deltaTime,
-                                        time: time
-                                    });
-                                    resolve();
-                                }
-                                else
-                                    reject();
-                            })]).catch((reason) => { });
-                        if (c.return) { //if crafted.return, (these items are not stored in code, so they must be stored in local storage)
-                            totalItems++; //the total items in the game ++
-                            updateItemCount(0); //updates the count display
-                            generatedLocalItems.push(craft); //adds the crafted to the generated local items
-                            localStorage.setItem("localitems", JSON.stringify(generatedLocalItems)); //puts the generated local items in localstorage
-                        }
-                        if (c.oncreate) {
-                            new Promise((resolve, reject) => {
-                                c.oncreate({
-                                    x: mean(item.x, item2.x),
-                                    y: mean(item.y, item2.y),
-                                    item1: item,
-                                    item2: item2,
-                                    inventory: inventory,
-                                    itemsOnScreen: itemsOnScreen,
-                                    deltaTime: deltaTime,
-                                    time: time,
-                                    crafted: craft
-                                });
-                                resolve();
-                            })
-                                .then()
-                                .catch();
-                        }
-                    }
-                    addItem(craft, mean(item.x, item2.x), mean(item.y, item2.y));
+            else if (!item.rectCollide(item2.x, item2.y, item2.width, item2.height))
+                continue; //if 2 items aren't colliding continue
+            let crafted = checkRecipeMatches(item, item2); //gets all recipes that have both items in it
+            for (let c of crafted) { //goes through all the items of the crafted
+                let craft; //wrapper variable for either the plain crafted, or if the item has a return item
+                if (c.return) { //craft is returned item
+                    craft = c.return(item, item2);
+                    if (!craft)
+                        window.requestAnimationFrame(main);
                 }
-                itemFound = true;
-                break;
+                else
+                    craft = c; //otherwise craft is the crafted item
+                let createEventObject = {
+                    item1: item, item2: item2,
+                    crafted: craft, inventory: inventory,
+                    itemsOnScreen: itemsOnScreen,
+                    x: mean(item.x, item2.x),
+                    y: mean(item.y, item2.y),
+                    deltaTime: deltaTime,
+                    time: time
+                };
+                if (!isInInventory(craft)) {
+                    //doing with this with promises incase it's slow
+                    Promise.all([new Promise((resolve, reject) => {
+                            updateItemCount();
+                            resolve();
+                        }),
+                        new Promise((resolve, reject) => {
+                            addToInventory(craft);
+                            resolve();
+                        }),
+                        new Promise((resolve, reject) => {
+                            updateInventory(craft); //update the sidebar
+                            resolve();
+                        })]);
+                    //item onusedinrecipeevent for bot itmes
+                    Promise.all([new Promise((resolve, reject) => {
+                            if (item.onusedinrecipe) {
+                                item.onusedinrecipe(createEventObject);
+                                resolve();
+                            }
+                            else
+                                reject();
+                        }), new Promise((resolve, reject) => {
+                            if (item2.onusedinrecipe) {
+                                item2.onusedinrecipe(createEventObject);
+                                resolve();
+                            }
+                            else
+                                reject();
+                        })]).catch((reason) => { });
+                    if (c.return) { //if crafted.return, (these items are not stored in code, so they must be stored in local storage)
+                        totalItems++; //the total items in the game ++
+                        updateItemCount(0); //updates the count display
+                        generatedLocalItems.push(craft); //adds the crafted to the generated local items
+                        localStorage.setItem("localitems", JSON.stringify(generatedLocalItems)); //puts the generated local items in localstorage
+                    }
+                    if (c.oncreate) {
+                        new Promise((resolve, reject) => {
+                            c.oncreate(createEventObject);
+                            resolve();
+                        })
+                            .then()
+                            .catch();
+                    }
+                }
+                addItem(craft, mean(item.x, item2.x), mean(item.y, item2.y));
             }
+            itemFound = true;
+            break;
         }
     }
     lastTime = time;
