@@ -382,70 +382,99 @@ function main(time) {
     for (let i in itemsOnScreen) {
         let item = itemsOnScreen[i];
         item.draw(); //draw the item
-        if (!itemFound) { //if no item was crafted
-            for (let i2 in itemsOnScreen) { //go through all the items on the screen again
-                let item2 = itemsOnScreen[i2];
-                //if item is item2 or either item is being dragged or both items were not recently dragged, continue
-                if (item.id === item2.id || item.dragging || item2.dragging || (recentlyDragged != item && recentlyDragged != item2))
-                    continue;
-                if (item.rectCollide(item2.x, item2.y, item2.width, item2.height)) { //sees if the 2 items are colliding
-                    if (item.onusedinrecipe) //item onusedinrecipeevent
-                        item.onusedinrecipe(item, item2);
-                    if (item2.onusedinrecipe) //same as above
-                        item2.onusedinrecipe(item, item2);
-                    let crafted = checkRecipeMatches(item, item2); //gets all recipes that have both items in it
-                    for (let c of crafted) { //goes through all the items of the crafted
-                        let craft; //wrapper variable for either the plain crafted, or if the item has a return item
-                        if (c.return) { //craft is returned item
-                            craft = c.return(item, item2);
-                            if (!craft)
-                                window.requestAnimationFrame(main);
-                        }
-                        else
-                            craft = c; //otherwise craft is the crafted item
-                        if (!isInInventory(craft)) {
-                            //doing with this with promises incase it's slow
-                            Promise.all([new Promise((resolve, reject) => {
-                                    updateItemCount();
-                                    resolve();
-                                }),
-                                new Promise((resolve, reject) => {
-                                    addToInventory(craft);
-                                    resolve();
-                                }),
-                                new Promise((resolve, reject) => {
-                                    updateInventory(craft); //update the sidebar
-                                    resolve();
-                                })]);
-                            if (c.return) { //if crafted.return, (these items are not stored in code, so they must be stored in local storage)
-                                totalItems++; //the total items in the game ++
-                                updateItemCount(0); //updates the count display
-                                generatedLocalItems.push(craft); //adds the crafted to the generated local items
-                                localStorage.setItem("localitems", JSON.stringify(generatedLocalItems)); //puts the generated local items in localstorage
-                            }
-                            if (c.oncreate) {
-                                new Promise((resolve, reject) => {
-                                    c.oncreate({
+        if (itemFound)
+            continue;
+        for (let i2 in itemsOnScreen) { //go through all the items on the screen again
+            let item2 = itemsOnScreen[i2];
+            //if item is item2 or either item is being dragged or both items were not recently dragged, continue
+            if (item.id === item2.id || item.dragging || item2.dragging || (recentlyDragged != item && recentlyDragged != item2))
+                continue;
+            if (item.rectCollide(item2.x, item2.y, item2.width, item2.height)) { //sees if the 2 items are colliding
+                let crafted = checkRecipeMatches(item, item2); //gets all recipes that have both items in it
+                for (let c of crafted) { //goes through all the items of the crafted
+                    let craft; //wrapper variable for either the plain crafted, or if the item has a return item
+                    if (c.return) { //craft is returned item
+                        craft = c.return(item, item2);
+                        if (!craft)
+                            window.requestAnimationFrame(main);
+                    }
+                    else
+                        craft = c; //otherwise craft is the crafted item
+                    if (!isInInventory(craft)) {
+                        //doing with this with promises incase it's slow
+                        Promise.all([new Promise((resolve, reject) => {
+                                updateItemCount();
+                                resolve();
+                            }),
+                            new Promise((resolve, reject) => {
+                                addToInventory(craft);
+                                resolve();
+                            }),
+                            new Promise((resolve, reject) => {
+                                updateInventory(craft); //update the sidebar
+                                resolve();
+                            })]);
+                        //item onusedinrecipeevent for bot itmes
+                        Promise.all([new Promise((resolve, reject) => {
+                                if (item.onusedinrecipe) {
+                                    item.onusedinrecipe({
+                                        item1: item, item2: item2,
+                                        crafted: craft, inventory: inventory,
+                                        itemsOnScreen: itemsOnScreen,
                                         x: mean(item.x, item2.x),
                                         y: mean(item.y, item2.y),
-                                        item1: item,
-                                        item2: item2,
-                                        inventory: inventory,
-                                        itemsOnScreen: itemsOnScreen,
                                         deltaTime: deltaTime,
                                         time: time
                                     });
                                     resolve();
-                                })
-                                    .then()
-                                    .catch();
-                            }
+                                }
+                                else
+                                    reject();
+                            }), new Promise((resolve, reject) => {
+                                if (item2.onusedinrecipe) {
+                                    item2.onusedinrecipe({
+                                        item1: item, item2: item2,
+                                        crafted: craft, inventory: inventory,
+                                        itemsOnScreen: itemsOnScreen,
+                                        x: mean(item.x, item2.x),
+                                        y: mean(item.y, item2.y),
+                                        deltaTime: deltaTime,
+                                        time: time
+                                    });
+                                    resolve();
+                                }
+                                else
+                                    reject();
+                            })]).catch((reason) => { });
+                        if (c.return) { //if crafted.return, (these items are not stored in code, so they must be stored in local storage)
+                            totalItems++; //the total items in the game ++
+                            updateItemCount(0); //updates the count display
+                            generatedLocalItems.push(craft); //adds the crafted to the generated local items
+                            localStorage.setItem("localitems", JSON.stringify(generatedLocalItems)); //puts the generated local items in localstorage
                         }
-                        addItem(craft, mean(item.x, item2.x), mean(item.y, item2.y));
+                        if (c.oncreate) {
+                            new Promise((resolve, reject) => {
+                                c.oncreate({
+                                    x: mean(item.x, item2.x),
+                                    y: mean(item.y, item2.y),
+                                    item1: item,
+                                    item2: item2,
+                                    inventory: inventory,
+                                    itemsOnScreen: itemsOnScreen,
+                                    deltaTime: deltaTime,
+                                    time: time,
+                                    crafted: craft
+                                });
+                                resolve();
+                            })
+                                .then()
+                                .catch();
+                        }
                     }
-                    itemFound = true;
-                    break;
+                    addItem(craft, mean(item.x, item2.x), mean(item.y, item2.y));
                 }
+                itemFound = true;
+                break;
             }
         }
     }
@@ -465,6 +494,11 @@ function reverse(array) {
     newArray.reverse();
     return newArray;
 }
+search.addEventListener("keydown", e => {
+    if (e.key == "Enter") {
+        document.querySelector("p").click();
+    }
+});
 search.addEventListener('input', e => {
     if (search.value == "") {
         //when there is nothing in the search this resets it back to the initial order
@@ -482,8 +516,8 @@ search.addEventListener('input', e => {
 });
 //moves the item
 canv.addEventListener("click", e => {
-    for (let item of reverse(Object.keys(itemsOnScreen))) { //goes through items in reverse order idk why
-        item = itemsOnScreen[item];
+    for (let i of reverse(Object.keys(itemsOnScreen))) { //goes through items in reverse order idk why
+        let item = itemsOnScreen[i];
         if (item.pointCollide(e.offsetX, e.offsetY)) { //makes sure mouse collides with item
             if (!itemBeingDragged) { //if there is no item being dragged currently
                 if (item.onclick)
@@ -505,8 +539,8 @@ canv.addEventListener("click", e => {
 //duplicates the item
 let clickedItem;
 canv.addEventListener("dblclick", e => {
-    for (let item of reverse(Object.keys(itemsOnScreen))) { //goes through items on the screen in reverse order  (idk why)
-        item = itemsOnScreen[item];
+    for (let i of reverse(Object.keys(itemsOnScreen))) { //goes through items on the screen in reverse order  (idk why)
+        let item = itemsOnScreen[i];
         if (item.pointCollide(e.offsetX, e.offsetY)) { //makes sure the click was on element
             clickedItem = item; //sets the item that is currently clicked to this item
         }

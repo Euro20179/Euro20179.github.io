@@ -187,7 +187,7 @@ const items = [
         width: 67,
         height: 50,
         hoverText: "water",
-        hoverTextStyle: "color:blue"
+        hoverTextStyle: "color:blue",
     },
     {
         name: "time",
