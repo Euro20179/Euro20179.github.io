@@ -547,6 +547,10 @@ ${include}::selection{
 }
 ],
 [
+/(?<!\\)\\END(?:.*?)?\\/g,
+"</div>"
+],
+[
 /(?<!\\)\\THEME:(.*)\\/g,
 (_, theme)=>{
     return `<link rel="stylesheet" type="text/css" href="./Themes/${theme}.css" id="_theme">`
