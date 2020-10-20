@@ -532,7 +532,7 @@ ${include}::selection{
 '<BLANK id="$1"></BLANK>'
 ],
 [
-/(?<!\\)\\(FONT|SIZE|COLOR|CUSTOM):(.*)\\/g,
+/(?<!\\)\\(FONT|SIZE|COLOR|CUSTOM)(?::| )(.*)\\/g,
 (_, type, value)=>{
     switch(type){
         case "FONT":
@@ -545,6 +545,22 @@ ${include}::selection{
             return `<div style="${value}">`
     }
 }
+],
+[
+/(?<!\\)\\ENDF(?:ONT)? (.*)\\/g,
+"</div><div style='font-family:$1'>"
+],
+[
+/(?<!\\)\\ENDS(?:IZE)? (.*)\\/g,
+"</div><div style='font-size:$1'>"
+],
+[
+/(?<!\\)\\END(?:#|COLOR) (.*)\\/g,
+"</div><div style='color:$1'>"
+],
+[
+/(?<!\\)\\ENDC(?:USTOM) (.*)\\/g,
+"</div><div style='$1'>"
 ],
 [
 /(?<!\\)\\END.*?\\/g,
