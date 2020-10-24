@@ -361,7 +361,7 @@ regexes = [
 "<audio controls='controls' src='$1'>"
 ],
 [
-/(?<!\\)\{(?:scroll|move|shift):?\[?(?:(?:dir)?:?(?:"|')(.+?)(?:"|'))? ?(?:w?(?:idth)?:?(?:"|')(.+?)(?:"|'))? ?(?:h?(?:eight)?:?(?:"|')(.+?)(?:"|'))? ?(?:s?(?:croll)?(?:amount)?(?:peed)?:?(?:"|')(.+?)(?:"|'))?\]?:? ?(.+?)\}/g, //this is the craziest regexp i've ever made it doesn't even do that much lmao
+/(?<!\\)\{(?:scroll|move|shift):?(?:(?:dir)?:?(?:"|')(.+?)(?:"|'))? ?(?:w?(?:idth)?:?(?:"|')(.+?)(?:"|'))? ?(?:h?(?:eight)?:?(?:"|')(.+?)(?:"|'))? ?(?:s?(?:croll)?(?:amount)?(?:peed)?:?(?:"|')(.+?)(?:"|'))?:? ?(.+?)\}/g, //this is the craziest regexp i've ever made it doesn't even do that much lmao
 "<marquee direction='$1' height='$3' width='$2' scrollamount='$4'>$5</marquee>"
 ],
 [
@@ -528,7 +528,7 @@ ${include}::selection{
 }
 ],
 [
-/(?<!\\)\{id:? ?([^\n\}]+)\}/g,
+/(?<!\\)#\[(.*)\]/g,
 '<BLANK id="$1"></BLANK>'
 ],
 [
@@ -547,6 +547,10 @@ ${include}::selection{
 }
 ],
 [
+/(?<!\\)\\SECTION (.*?)\\/g,
+"<div id='$1'>"
+],
+[
 /(?<!\\)\\ENDF(?:ONT)? (.*)\\/g,
 "</div><div style='font-family:$1'>"
 ],
@@ -561,6 +565,10 @@ ${include}::selection{
 [
 /(?<!\\)\\ENDC(?:USTOM) (.*)\\/g,
 "</div><div style='$1'>"
+],
+[
+/(?<!\\)\\ENDSECTION (.*)\\/g,
+"</div><div id='$1'>"
 ],
 [
 /(?<!\\)\\END.*?\\/g,
