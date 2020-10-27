@@ -3,6 +3,11 @@ const UPPER = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 const LOWER = "abcdefghijklmnopqrstuvwxyz"
 const NUMBERS = "0123456789"
 const parser = math.parser()
+math.config({
+  number: 'BigNumber',      // Default type of number:
+                            // 'number' (default), 'BigNumber', or 'Fraction'
+  precision: 64             // Number of significant digits for BigNumbers
+})
 const upsideDown = {
     a: "\u0250",
     b: "q",
@@ -582,10 +587,19 @@ ${include}::selection{
 }
 ],
 [
-/(?<!\\)\$(none)?\$(.*?)\$\$/g,
+/(?<!\\)\$(none|unit)?\$(.*?)\$\$/g,
 (_, re, expr)=>{
+    if(re == "unit"){
+        try{
+            expr = `createUnit("${expr.split(",")[0].trim()}", "${expr.split(",")[1].trim()}")`
+            const evaled = parser.evaluate(expr)
+        }
+        catch(err){
+        }
+        return ""
+    }
     const evaled = parser.evaluate(expr)
-    if(re)
+    if(re == "none")
         return ""
     return typeof evaled != "function" ? evaled : ""
 }
