@@ -587,7 +587,7 @@ ${include}::selection{
 }
 ],
 [
-/(?<!\\)\$(none|unit)?\$(.*?)\$\$/g,
+/(?<!\\)\$(none|unit|simplify)?\$(.*?)\$\$/g,
 (_, re, expr)=>{
     if(re == "unit"){
         try{
@@ -597,6 +597,10 @@ ${include}::selection{
         catch(err){
         }
         return ""
+    }
+    else if(re == "simplify"){
+        const evaled = math.simplify(expr)
+        return evaled
     }
     const evaled = parser.evaluate(expr)
     if(re == "none")
