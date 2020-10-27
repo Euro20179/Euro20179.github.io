@@ -2,6 +2,7 @@ const CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 const UPPER = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 const LOWER = "abcdefghijklmnopqrstuvwxyz"
 const NUMBERS = "0123456789"
+const parser = math.parser()
 const upsideDown = {
     a: "\u0250",
     b: "q",
@@ -578,6 +579,15 @@ ${include}::selection{
 /(?<!\\)\\THEME:(.*)\\/g,
 (_, theme)=>{
     return `<link rel="stylesheet" type="text/css" href="./Themes/${theme}.css" id="_theme">`
+}
+],
+[
+/(?<!\\)\$(none)?\$(.*?)\$\$/g,
+(_, re, expr)=>{
+    const evaled = parser.evaluate(expr)
+    if(re)
+        return ""
+    return typeof evaled != "function" ? evaled : ""
 }
 ],
 [
