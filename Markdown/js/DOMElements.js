@@ -96,6 +96,14 @@ class Rainbow extends HTMLElement{
         if(this.absolute){
             this.style.position = "absolute"
         }
+        this.style.display = this.display
+    }
+    get display(){
+        if(this.getAttribute("inline") != null)
+            return "inline"
+        else if(this.style.display)
+            return this.style.display
+        return "inline-block"
     }
     get position(){
         if(this.style.position){
@@ -178,7 +186,7 @@ class Spacer extends HTMLElement{
             if(parseInt(this.amount.slice(-1)) >= 0) return this.amount +  "ch"
             return this.amount
         }
-        return this.style.paddingLeft ? this.style.paddingLeft : "1ch"
+        return this.style.paddingLeft ?? "1ch"
     }
     get amount(){
         return this.getAttribute("amount")
@@ -189,19 +197,169 @@ class Shadow extends HTMLElement{
         this.style.textShadow = `${this.left} ${this.down} ${this.blur} ${this.color}`
     }
     get left(){
-        return this.getAttribute("left") ? this.getAttribute("left") : ".2em"
+        return this.getAttribute("left") ?? ".2em"
     }
     get down(){
-        return this.getAttribute("down") ? this.getAttribute("down") : ".2em"
+        return this.getAttribute("down") ?? ".2em"
     }
     get blur(){
-        return this.getAttribute("blur") ? this.getAttribute("blur") : "2px"
+        return this.getAttribute("blur") ?? "2px"
     }
     get color(){
-        return this.getAttribute("color") ? this.getAttribute("color") : "lightgrey"
+        return this.getAttribute("color") ?? "lightgrey"
+    }
+}
+class Alert extends HTMLElement{
+    connectedCallback(){
+        this.onclick = ()=>{
+            alert(this.alert)
+        }
+    }
+    get alert(){
+        return this.getAttribute("alert") ?? this.textContent
     }
 }
 
+class Confirm extends HTMLElement{
+    connectedCallback(){
+        this.onclick = ()=>{
+            if(confirm(this.prompt)){
+                if(this.getAttribute("onconfirm")){
+                    Function(this.getAttribute("onconfirm"))()
+                }
+            }
+            else{
+                if(this.getAttribute("onreject")){
+                    Function(this.getAttribute("onreject"))()
+                }
+            }
+        }
+    }
+    get prompt(){
+        return this.getAttribute("prompt") ?? this.textContent
+    }
+}
+
+class Prompt extends HTMLElement{
+    connectedCallback(){
+        this.onclick = ()=>{
+            let value = prompt(this.prompt)
+            if(value){
+                this.oninput(value)
+            }
+            else{
+                if(this.getAttribute("onreject")){
+                    Function(this.getAttribute("onreject"))()
+                }
+            }
+        }
+    }
+    get oninput(){
+        return this.getAttribute("oninput") ? Function(this.getAttribute("oninput")) : value=>{
+            this.innerHTML = value;
+        }
+    }
+    get prompt(){
+        return this.getAttribute("prompt") ?? this.textContent
+    }
+}
+
+class Time extends HTMLElement{
+    constructor(){
+        super()
+        this.unformattedText = this.textContent
+    }
+    updateSelf(f){
+        const date = new Date()
+        this.textContent = this.unformattedText
+        .replaceAll("%a", this.numberToShortDay(date.getDay()))
+        .replaceAll("%A", this.numberToDay(date.getDay()))
+        .replaceAll("%w", date.getDay() + 1)
+        .replaceAll("%d", date.getDate())
+        .replaceAll("%b", this.numberToShortMonth(date.getMonth()))
+        .replaceAll("%B", this.numberToMonth(date.getMonth()))
+        .replaceAll("%m", date.getMonth() + 1)
+        .replaceAll("%y", String(date.getFullYear()).slice(-2))
+        .replaceAll("%Y", date.getFullYear())
+        .replaceAll("%H", date.getHours())
+        .replaceAll("%h", date.getHours() >= 13 ? date.getHours() - 12 : date.getHours())
+        .replaceAll("%p", date.getHours() >= 12 ? "PM" : "AM")
+        .replaceAll("%M", date.getMinutes())
+        .replaceAll("%S", date.getSeconds())
+        .replaceAll("%f", date.getMilliseconds())
+        .replaceAll("%z", date.getTimezoneOffset() / 60)
+        .replaceAll("%X", date.toLocaleTimeString())
+        .replaceAll("%x", date.toLocaleDateString())
+    }
+    connectedCallback(){
+        this.updateSelf()
+    }
+    numberToDay(n){
+        switch(n){
+            case 0: return "Sunday"
+            case 1: return "Monday"
+            case 2: return "Tuesday"
+            case 3: return "Wednesday"
+            case 4: return "Thursday"
+            case 5: return "Friday"
+            case 6: return "Saturday"
+        }
+    }
+    numberToShortDay(n){
+        switch(n){
+            case 0: return "Sun"
+            case 1: return "Mon"
+            case 2: return "Tue"
+            case 3: return "Wed"
+            case 4: return "Thu"
+            case 5: return "Fri"
+            case 6: return "Sat"
+        }
+    }
+    numberToMonth(n){
+        switch (n){
+            case 0: return "January"
+            case 1: return "February"
+            case 2: return "March"
+            case 3: return "April"
+            case 4: return "May"
+            case 5: return "June"
+            case 6: return "July"
+            case 7: return "August"
+            case 8: return "September"
+            case 9: return "October"
+            case 10: return "November"
+            case 11: return "December"
+        }
+    }
+    numberToShortMonth(n){
+        switch(n){
+            case 0: return "Jan"
+            case 1: return "Feb"
+            case 2: return "Mar"
+            case 3: return "Apr"
+            case 4: return "May"
+            case 5: return "Jun"
+            case 6: return "Jul"
+            case 7: return "Aug"
+            case 8: return "Sep"
+            case 9: return "Oct"
+            case 10: return "Nov"
+            case 11: return "Dec"
+        }
+    }
+}
+
+class Variables extends HTMLElement{
+    connectedCallback(){
+        for(let attr of this.getAttributeNames()){
+            this.innerHTML = this.innerHTML.replaceAll(`%${attr}%`, this.getAttribute(attr))
+        }
+    }
+}
+
+customElements.define("c-variables", Variables)
+customElements.define("c-time", Time)
 customElements.define('c-upsidedown', Upsidedown)
 customElements.define('c-circled', Circled)
 customElements.define('c-rainbow', Rainbow)
@@ -211,3 +369,6 @@ customElements.define("c-random", Rand)
 customElements.define("c-unicode", Unicode)
 customElements.define("c-spacer", Spacer)
 customElements.define("c-shadow", Shadow)
+customElements.define("c-alert", Alert)
+customElements.define("c-confirm", Confirm)
+customElements.define("c-prompt", Prompt)

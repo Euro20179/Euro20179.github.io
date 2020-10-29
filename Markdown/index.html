@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" media="screen" href="./css/main.css">
     <link rel="stylesheet" type="text/css" media="screen" href="./css/normalize.css">
-    <link rel="shortcut icon" type="image/png" href="./fav.png">
+    <link rel="shortcut icon" type="image/png" href="./imgs/fav.png">
     <link rel="stylesheet" type="text/css" href="./css/hidden-buttons.css">
 </head>
 <body ondrop="dropHandler(event)" ondragover="dragOverHandler(event)">
@@ -80,7 +80,7 @@
                 <span class="divider" dashed></span>
                 <span style="text-decoration: underline dotted;cursor:help" title="Alt Click the preview">Fullscreen Preview</span>
                 <span class="divider"></span>   
-                <a href="./Emojis.html"><button class="editing-button" style="cursor:help">Emoji List</button></a>
+                <a href="./Emojis/Emojis.html"><button class="editing-button" style="cursor:help">Emoji List</button></a>
             </fieldset>
         </div>
         <div id="file" class="bar-section">
@@ -364,14 +364,14 @@
         <div class="preview" style="resize: horizontal;overflow: auto;width:50%" id="preview"></div>
     </div>
     <input type="color" id="context-menu-color-picker" class="context-menu-item" style="display:none;z-index:2" oninput="addTextTypeInTextArea(contextMenuColorpicker.value.split('#')[1], 'select')">
-    <script src="js/emojis.js"></script>
-    <script src="js/math.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjs@7.5.1/dist/math.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="./js/emojis.js"></script>
     <script src="./js/ConvertToMarkdown.js"></script>
     <script src="./js/main.js"></script>
     <script src="./js/DOMElements.js"></script>
     <script src="./js/utility.js"></script>
-    <script src="html2pdf.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="./js/html2pdf.js"></script>
     <script>
         let TextEditorColorInversion = document.getElementById("text-editor-color-inversion").checked;
         let PreviewColorInversion = document.getElementById("preview-color-inversion").checked;
