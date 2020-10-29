@@ -171,6 +171,28 @@ document.getElementById("preview-search-count").addEventListener("keydown", (e)=
     }
 })
 
+let EditMode = false;
+textEditor.addEventListener("click", e=>{
+    if(e.altKey || (e.ctrlKey && e.shiftKey)){
+        if(!EditMode){
+            const editingBar = document.getElementById("editing-bar")
+            editingBar.classList = "editing-bar-off"
+            textEditor.style.width = "100%"
+            textEditor.style.height = "100%"
+            preview.style.display = "none"
+            EditMode = true;
+        }else{
+            const editingBar = document.getElementById("editing-bar")
+            editingBar.classList = "editing-bar"
+            textEditor.style.width = "50%"
+            textEditor.style.height = "100%"
+            preview.style.display = "initial"
+            EditMode = false;
+        }
+        e.preventDefault()
+    }
+})
+
 let PreviewMode = false;
 preview.addEventListener("click", e=>{
     if(e.altKey || (e.ctrlKey && e.shiftKey)){

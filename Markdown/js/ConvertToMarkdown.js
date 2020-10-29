@@ -587,8 +587,8 @@ ${include}::selection{
 }
 ],
 [
-/(?<!\\)\$(none|unit|simplify)?\$(.*?)\$\$/g,
-(_, re, expr)=>{
+/(?<!\\)\$(none|unit|simplify)?\$(.*?)\$(nohover)?\$/g,
+(_, re, expr, settings)=>{
     if(re == "unit"){
         try{
             expr = `createUnit("${expr.split(",")[0].trim()}", "${expr.split(",")[1].trim()}")`
@@ -600,12 +600,12 @@ ${include}::selection{
     }
     else if(re == "simplify"){
         const evaled = math.simplify(expr)
-        return evaled
+        return settings != "nohover" ? `<span title="${expr}">${evaled}</span>` : evaled
     }
     const evaled = parser.evaluate(expr)
     if(re == "none")
         return ""
-    return typeof evaled != "function" ? evaled : ""
+    return typeof evaled != "function" ? (settings != "nohover" ? `<span title="${expr}">${evaled}</span>` : evaled) : ""
 }
 ],
 [
