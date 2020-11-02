@@ -340,8 +340,8 @@ const regexes = [
         '<hr style="background-color:$1;color:$1;border-color:$1" />'
     ],
     [
-        /(?<![\\#])(#{1,6}) ?(.+) \[#(.+?)\]/g,
-        (_, heading, contents, id) => `<h${heading.length} id=${id}>${contents}`
+        /(?<![\\#])(#{1,6}) ?(.+) \[#?(.+?)\]/g,
+        (_, heading, contents, id) => `<h${heading.length} id=${id}>${contents}</h${heading.length}>`
     ],
     [
         /(?<!\\)\[(\.)?([0-9]+)->([0-9]+)\](?:\{?([0-9]+)\})?/g,
@@ -410,6 +410,10 @@ const regexes = [
     [
         /(?<!\\)\{(?:\.|class)("|')(.+?)\1 ?(.+?)\}/g,
         '<span class="$2">$3</span>'
+    ],
+    [
+        /(?<!\\)\|(.+?) (.*?)\|/g,
+        "<p style='line-height:$1'>$2</p>"
     ],
     [
         /(?<!\\)(?:.|class)\[(.+?)\]"(.*?)"/g,
@@ -598,7 +602,7 @@ ${include}::selection{
         '<BLANK id="$1"></BLANK>'
     ],
     [
-        /(?<!\\)\\(FONT|SIZE|COLOR|CUSTOM)(?::| )(.*)\\/g,
+        /(?<!\\)\\(FONT|SIZE|COLOR|CUSTOM|LINHEIGHT|SPACING)(?::| )(.*)\\/g,
         (_, type, value) => {
             switch (type) {
                 case "FONT":
@@ -609,6 +613,9 @@ ${include}::selection{
                     return `<div style='color:${value}'>`;
                 case "CUSTOM":
                     return `<div style="${value}">`;
+                case "LINEHEIGHT":
+                case "SPACING":
+                    return `<style>p{line-height:${value}}</style>`;
             }
         }
     ],
