@@ -48,16 +48,18 @@ I wanted to add some "features" to markdown so I put a bunch of regular expressi
 
 * {shadow'.2em .2em 0px grey' any text here will have a text shadow}
 * {.'class' any text here will be in a span with the class of class}
+* .\[class]"text here will be in a span with the class of class}
 * {cmd: text}: puts text in a cmd element
 * {samp: text}: puts text in a samp element
 
 ### Align
 
-* |->center<-|
-* |->right|
-* {->2em indented 2em left}
-* {indented 2em right <-2em}
-* {->2em indented 2em both <-2em}
+* |(margin optional)->center<-(margin optional)|
+* |->right( &lt;margin optional)|
+* |(margin optional> )left<-|
+* 2em-->indented 2em left
+* indented 2em right<--2em
+* 2em-->indendted 2em right and left<--2em
 
 ---
 
@@ -72,6 +74,10 @@ I wanted to add some "features" to markdown so I put a bunch of regular expressi
 * |=>
 * |\v
 * |\^
+* +-->
+* <--+
+* <-^->
+* <-v->
 
 ---
 

@@ -51,14 +51,14 @@
             <fieldset>
                 <label class="option-item" title="(F6)"><input type="checkbox" id="darkmode" onclick="DarkMode=!DarkMode;setDarkMode()" title="F6" checked>Dark Mode?</label>
                 <span class="divider"></span>
-                <label>Text Editor</label>
-                <label class="option-item"><input type="color" value="#000000" id="text-editor-color" oninput="document.getElementById('text-editor').style.backgroundColor = this.value;if(TextEditorColorInversion){document.getElementById('text-editor-text-color').value='#' + invertHex(this.value.split('#')[1]);document.getElementById('text-editor-text-color').dispatchEvent(new Event('input'))}">Background</label>
-                <label class="option-item"><input type="color" value="#ffffff" id="text-editor-text-color" oninput="document.getElementById('text-editor').style.color = this.value;if(TextEditorColorInversion){document.getElementById('text-editor-color').value='#' + invertHex(this.value.split('#')[1]);document.getElementById('text-editor-color').dispatchEvent(new Event('input'))}">Text</label>
+                <label>Text Editor&emsp;</label>
+                <label class="option-item">Background<input type="color" value="#000000" id="text-editor-color" oninput="document.getElementById('text-editor').style.backgroundColor = this.value;if(TextEditorColorInversion){document.getElementById('text-editor-text-color').value='#' + invertHex(this.value.split('#')[1]);document.getElementById('text-editor-text-color').dispatchEvent(new Event('input'))}"></label>
+                <label class="option-item">Text<input type="color" value="#ffffff" id="text-editor-text-color" oninput="document.getElementById('text-editor').style.color = this.value;if(TextEditorColorInversion){document.getElementById('text-editor-color').value='#' + invertHex(this.value.split('#')[1]);document.getElementById('text-editor-color').dispatchEvent(new Event('input'))}"></label>
                 <label class="option-item"><input type="checkbox" checked id="text-editor-color-inversion" onclick="TextEditorColorInversion = !TextEditorColorInversion">Invert Colors</label>
                 <span class="divider"></span>
-                <label>Preview</label>
-                <label class="option-item"><input type="color" value="#ffffff" id="preview-color" oninput="document.querySelector('.preview').style.backgroundColor = this.value;if(PreviewColorInversion){document.getElementById('preview-text-color').value='#' + invertHex(this.value.split('#')[1]);document.getElementById('preview-text-color').dispatchEvent(new Event('input'))}">Background</label>
-                <label class="option-item"><input type="color" value="#000000" id="preview-text-color" oninput="document.querySelector('.preview').style.color = this.value;if(PreviewColorInversion){document.getElementById('preview-color').value='#' + invertHex(this.value.split('#')[1]);document.getElementById('preview-color').dispatchEvent(new Event('input'))}">Text</label>
+                <label>Preview&emsp;</label>
+                <label class="option-item">Background<input type="color" value="#ffffff" id="preview-color" oninput="document.querySelector('.preview').style.backgroundColor = this.value;if(PreviewColorInversion){document.getElementById('preview-text-color').value='#' + invertHex(this.value.split('#')[1]);document.getElementById('preview-text-color').dispatchEvent(new Event('input'))}"></label>
+                <label class="option-item">Text<input type="color" value="#000000" id="preview-text-color" oninput="document.querySelector('.preview').style.color = this.value;if(PreviewColorInversion){document.getElementById('preview-color').value='#' + invertHex(this.value.split('#')[1]);document.getElementById('preview-color').dispatchEvent(new Event('input'))}"></label>
                 <label class="option-item"><input type="checkbox" checked id="preview-color-inversion" onclick="PreviewColorInversion = !PreviewColorInversion">Invert Colors</label>
             </fieldset>
         </div>
@@ -76,11 +76,16 @@
         </div>
         <div id="help" class="bar-section">
             <fieldset>
-                <span style="text-decoration: underline dotted;cursor:help" title="Ctrl + Shift + E">Open/close this</span>
+                <span style="cursor:help" title="Ctrl + Shift + E">Open/close this</span>
                 <span class="divider" dashed></span>
-                <span style="text-decoration: underline dotted;cursor:help" title="Alt Click the preview">Fullscreen Preview</span>
+                <button style="cursor:help" title="Alt Click the preview" class="editing-button" onclick="setPreviewMode()">Fullscreen Preview</button>
+                <button style="cursor:help" title="Alt Click the editor" class="editing-button" onclick="setEditMode()">Editing Mode</button>
                 <span class="divider"></span>   
                 <a href="./Emojis/Emojis.html"><button class="editing-button" style="cursor:help">Emoji List</button></a>
+                <span class="divider"></span>
+                <a href="./Update.html"><button class="editing-button" style="cursor: pointer;" title="V 1.0.0">Updates</button></a>
+                <span class="divider"></span>
+                <a href="./README.md"><button class="editing-button" style="cursor: pointer;" title="help">Help</button></a>
             </fieldset>
         </div>
         <div id="file" class="bar-section">
@@ -165,7 +170,7 @@
             <button title="command text (yes they are different) (ctrl + shift + ;)" class="editing-button" onclick="startEndTypeInTextArea('{cmd:', '}')"><cmd>A</cmd></button>
             <button title="samp text (yes they are different)" class="editing-button" onclick="startEndTypeInTextArea('{samp:', '}')"><samp>A</samp></button>
             <span class="divider"></span>
-            <input id="unicode-character-copy-area" value="&#12484;" type="text" style="width:0;height:0;background-color: transparent;color: transparent;border-color: transparent;border-style: none;">
+            <input id="unicode-character-copy-area" value="&#12484;" type="text" style="width:1px;height:0;background-color: transparent;color: transparent;border-color: transparent;border-style: none;">
             <label title="copy to clipboard"><input type="number" value="12484" oninput="document.getElementById('unicode-character').textContent = String.fromCodePoint(this.value)" style="width:90px" title="unicode character value"><label id="unicode-character" style="padding:5px;border:1px inset black;background-color:white;color:black;cursor: pointer;" onclick="let copyArea = document.getElementById('unicode-character-copy-area');copyArea.value=this.textContent;copyArea.select();document.execCommand('copy');">&#12484;</label></label>
             <span class="divider"></span>
             <button class="editing-button" onclick="let more = document.getElementById('text-more');if(more.style.visibility === 'visible'){more.style.visibility = 'hidden';more.style.height=0;more.style.marginTop='0%';more.style.display='none'}else{more.style.visibility = 'visible';more.style.height='initial';more.style.marginTop='1%';more.style.display='block'}" id="more-button">More</button>

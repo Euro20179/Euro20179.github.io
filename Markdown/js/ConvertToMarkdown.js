@@ -158,6 +158,26 @@ const regexes = [
         "↑"
     ],
     [
+        /(?<!\\)<--\+/g,
+        "&#10566;"
+    ],
+    [
+        /(?<!\\)\+-->/g,
+        "&#10565;"
+    ],
+    [
+        /(?<!\\)<=>/g,
+        "&#8660;"
+    ],
+    [
+        /(?<!\\)<-\^->/g,
+        "&#8644;"
+    ],
+    [
+        /(?<!\\)<-v->/g,
+        "&#8646;"
+    ],
+    [
         /(?<!\\)> ?''(.*)''(?:\[(.+?)\])?/g,
         (_, quote, author = null) => {
             if (author) {
@@ -280,23 +300,19 @@ const regexes = [
         "↔"
     ],
     [
-        /(?<!\\)\|(\*|>)/g,
-        (_, type) => type === "*" ? "⚑" : "🚩"
-    ],
-    [
         /(?<!\\):reg:([a-z]):/g,
         ":regional&lowbar;indicator_$1:"
     ],
     [
-        /(?<!\\)\{(?:->|lindent) ?([^ \n\}]*) (.+?) (?:<-|rindent)(.*?)\}/g,
+        /(?<!\\)^(.+?)-->(.+)<--(.*?)$/gm,
         "<span style='display:block;margin-left:$1;margin-right:$3'>$2</span>"
     ],
     [
-        /(?<!\\)\{(?:->|lindent) ?([^ \n\}]*) (.+?)\}/g,
+        /(?<!\\)^(.+?)-->(.+?)$/gm,
         "<span style='display:block;margin-left:$1'>$2</span>"
     ],
     [
-        /(?<!\\)\{(.+?) (?:<-|rindent)([^ \n\}]*)\}/g,
+        /(?<!\\)(.+?)<--(.+?)$/gm,
         "<span style='display:block;margin-right:$2'>$1</span>"
     ],
     [
@@ -320,8 +336,8 @@ const regexes = [
         "<mark title='$3' style='background-color:$1'>$2</mark>"
     ],
     [
-        /(?<!\\)([A-z]+|[#0-f]{6,8})(?:-{3,}|<hr>)/g,
-        '<hr style="background-color:$1;color:$1" />'
+        /(?<!\\)([A-z]+|#[0-f]{8}|#[0-f]{6}|#[0-f]{3})(?:-{3,}|<hr>)/g,
+        '<hr style="background-color:$1;color:$1;border-color:$1" />'
     ],
     [
         /(?<![\\#])(#{1,6}) ?(.+) \[#(.+?)\]/g,
@@ -344,19 +360,19 @@ const regexes = [
         '<a title="$3" href="$2">$1</a>'
     ],
     [
-        /(?<!\\)(?:\[(.+?)\])?\^\^_(.*?)_\^\^(?:\[(.+?)\])?/g,
+        /(?<!\\)(?:\[(.+?)\])?\^\^_(.+?)_\^\^(?:\[(.+?)\])?/g,
         '<span style="text-decoration:overline double $1" title="$3">$2</span>'
     ],
     [
-        /(?<!\\)(?:\[(.+?)\])?\^_(.*?)_\^(?:\[(.+?)\])?/g,
+        /(?<!\\)(?:\[(.+?)\])?\^_(.+?)_\^(?:\[(.+?)\])?/g,
         '<span style="text-decoration:overline $1" title="$3">$2</span>'
     ],
     [
-        /(?<!\\)(?:\[(.+?)\])?\^\.(.*?)\.\^(?:\[(.+?)\])?/g,
+        /(?<!\\)(?:\[(.+?)\])?\^\.(.+?)\.\^(?:\[(.+?)\])?/g,
         '<span style="text-decoration:overline dotted $1" title="$3">$2</span>'
     ],
     [
-        /(?<!\\)(?:\[(.+?)\])?\^~(.*?)~\^(?:\[(.+?)\])?/g,
+        /(?<!\\)(?:\[(.+?)\])?\^~(.+?)~\^(?:\[(.+?)\])?/g,
         '<span style="text-decoration:overline wavy $1" title="$3">$2</span>'
     ],
     [
@@ -376,16 +392,16 @@ const regexes = [
         "<u style='text-decoration:underline $1' title='$3'>$2</u>"
     ],
     [
-        /(?<!\\)\|->(.+?)<-\|/g,
-        "<center>$1</center>"
+        /(?<!\\)\|(?:(.*?))?->(.+?)<-(?:(.*?))?\|/g,
+        "<center style='margin-left:$1;margin-right:$3'>$2</center>"
     ],
     [
-        /(?<!\\)\|->(.+?)\|/g,
-        "<p style='text-align:right'>$1</p>"
+        /(?<!\\)\|->(.+?)(?: <(.*?))?\|/g,
+        "<p style='text-align:right;margin-right:$2'>$1</p>"
     ],
     [
-        /(?<!\\)\|(.+?)<-\|/g,
-        "<p style='text-align:left'>$1</p>"
+        /(?<!\\)\|(?:(.*?)> )?(.+?)<-\|/g,
+        "<p style='text-align:left;margin-left:$1'>$2</p>"
     ],
     [
         /(?<!\\)\{shadow:?(?:('|")(.+?)\1)? ?(.*?)\}/g,
@@ -396,10 +412,14 @@ const regexes = [
         '<span class="$2">$3</span>'
     ],
     [
+        /(?<!\\)(?:.|class)\[(.+?)\]"(.*?)"/g,
+        '<span class="$1">$2</span>'
+    ],
+    [
         /(?<!\\)(?<=(?:\* ?)?)(?:\.|>)(PRO|CON):?(.*)/g,
         (_, PC, contents) => {
             let Pro = PC === "PRO";
-            return `<span style="color:${Pro ? "green" : "red"}>${Pro ? "✓" : "☒"} ${contents}</span>`;
+            return `<span style="color:${Pro ? "green" : "red"}">${Pro ? "✓" : "☒"} ${contents}</span>`;
         }
     ],
     [
