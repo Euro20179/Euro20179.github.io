@@ -106,6 +106,15 @@ const regexes = [
         }
     ],
     [
+        /(?<!\\)\\(?:DEF(?:INE)?)?EMOJI ?:(.+?): ?(.+?)\\/g,
+        (_, name, value) => {
+            if (!(name in userDefinedEmotes)) {
+                userDefinedEmotes[name] = value;
+            }
+            return "";
+        }
+    ],
+    [
         /(?<!\\):([a-z0-9_]+):/g,
         (_, name) => {
             if (EMOJIS[name])
@@ -114,6 +123,8 @@ const regexes = [
                 return `<img src="${imgEmotes[name]}" align="absmiddle" style="width:1em">`;
             else if (hiddenEmotes[name])
                 return hiddenEmotes[name];
+            else if (userDefinedEmotes[name])
+                return userDefinedEmotes[name];
             return `:${name}:`;
         }
     ],
@@ -305,15 +316,19 @@ const regexes = [
     ],
     [
         /(?<!\\)^(.+?)-->(.+)<--(.*?)$/gm,
-        "<span style='display:block;margin-left:$1;margin-right:$3'>$2</span>"
+        "<span style='display:inline-block;margin-left:$1;margin-right:$3'>$2</span>"
     ],
     [
         /(?<!\\)^(.+?)-->(.+?)$/gm,
-        "<span style='display:block;margin-left:$1'>$2</span>"
+        "<span style='display:inline-block;margin-left:$1'>$2</span>"
+    ],
+    [
+        /(?<!\\)^(.+?)->(.+?)$/gm,
+        "<span style='display:inline-block;text-indent:$1'>$2</span>"
     ],
     [
         /(?<!\\)(.+?)<--(.+?)$/gm,
-        "<span style='display:block;margin-right:$2'>$1</span>"
+        "<span style='display:inline-block;margin-right:$2'>$1</span>"
     ],
     [
         /(?<!\\)\\(\^|_)\[(.*?)\](?:\[(.*?)\])?/g,
@@ -334,6 +349,10 @@ const regexes = [
     [
         /(?<!\\)(?:\[(.*?)\])?\*-(.+?)-\*(?:\[(.+?)\])?/g,
         "<mark title='$3' style='background-color:$1'>$2</mark>"
+    ],
+    [
+        /(?<!\\)(?:\[([0-9]+.{2,4})?(?::|x)([0-9]+.{2,4})?])?\[(.*?)](.+?)\|/g,
+        "<c-textbox width='$1' height='$2' style='$3'>$4</c-textbox>"
     ],
     [
         /(?<!\\)([A-z]+|#[0-fa-fA-F]{8}|#[0-fa-fA-F]{6}|#[0-fa-fA-F]{3})(?:-{3,}|<hr>)/g,
@@ -416,7 +435,7 @@ const regexes = [
         "<p style='line-height:$1'>$2</p>"
     ],
     [
-        /(?<!\\)(?:.|class)\[(.+?)\]"(.*?)"/g,
+        /(?<!\\)(?:\.|class)\[(.+?)\](.*?)\|/g,
         '<span class="$1">$2</span>'
     ],
     [
@@ -433,6 +452,10 @@ const regexes = [
     [
         /(?<!\\)\{(?:scroll|move|shift):?(?:(?:dir)?:?(?:"|')(.+?)(?:"|'))? ?(?:w?(?:idth)?:?(?:"|')(.+?)(?:"|'))? ?(?:h?(?:eight)?:?(?:"|')(.+?)(?:"|'))? ?(?:s?(?:croll)?(?:amount)?(?:peed)?:?(?:"|')(.+?)(?:"|'))?:? ?(.+?)\}/g,
         "<marquee direction='$1' height='$3' width='$2' scrollamount='$4'>$5</marquee>"
+    ],
+    [
+        /(?<!\\)\[([0-9-]+?)\]\*(.+?)\*/g,
+        '<span style="transform:skewX($1deg);display:inline-flex">$2</span>'
     ],
     [
         /(?<!\\)\{(?:white)?space:? ?(?:([^\n ]+))?(?:(?: a:?)?(.+?))?\}/g,

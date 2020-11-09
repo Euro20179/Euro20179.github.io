@@ -10,7 +10,6 @@
     <link rel="stylesheet" type="text/css" href="./css/hidden-buttons.css">
 </head>
 <body ondrop="dropHandler(event)" ondragover="dragOverHandler(event)">
-    <div id="loading">Loading...</div>
     <div class="editing-bar" id="editing-bar" style="visibility: visible;">
         <button id="file-title" class="bar-section-title" title="file">
             🗎
@@ -91,13 +90,15 @@
         </div>
         <div id="file" class="bar-section">
             <fieldset>
+                <label>File Name <input type="text" value="Markdown" oninput="document.querySelector('title').innerHTML = this.value" id="file-name"></label>
+                <span class="divider"></span>
                 <button class="editing-button" onclick="document.getElementById('fileReader').click()" title="put text from a text file into the editor, (ctrl + shift + alt + o)">Import Text File</button>
                 <input type="file" id="fileReader" value="hi" style="user-select: none;cursor: inherit;display:none;">
                 <span class="divider"></span>
                 <a href="" id="download"><button class="editing-button" onclick="saveFile()" title="save generated html, (ctrl + shift + alt + s)">&#128190; HTML</button></a>
                 <button class="editing-button" onclick="savePDF()" title="save generated html as a pdf file, (ctrl + shift + alt + p)">&#128190; PDF</button>
                 <a href="" id="download-plain"><button class="editing-button" onclick="savePlain()" title="save text you have inputed, (ctrl + shift + alt + b)">&#128190; Plain</button></a>
-                <button class="editing-button" onclick="document.getElementById('preview').printMe()" title="prints the preview, (Alt + q)">🖨️ Print</button>
+                <button class="editing-button" onclick="printMe(document.getElementById('preview'))" title="prints the preview, (Alt + q)">🖨️ Print</button>
                 <span class="divider"></span>
                 <button class="editing-button" onclick="preview.innerHTML = convert(textEditor.value, custom=cusotmMdChkbx.checked)" title="(F1)">Convert (F1)</button>
             </fieldset>
@@ -352,7 +353,7 @@
             <wbr>
             <span class="divider" style="border-style:dashed;"></span>
             <label>Custom Elements</label>
-            <select name="custom elemnets" id="c-elements" oninput="startEndTypeInTextArea(`<${this.value}>`, `</${this.value}>`)">
+            <select name="custom elemnets" id="c-elements" oninput="startEndTypeInTextArea(`<${this.value}>`, `</${this.value.split(' ')[0]}>`)">
                 <option value="c-3d" title="(ctrl + shift + 1)">3d</option>
                 <option value="c-rainbow" title="(ctrl + shift + 2)">rainbow</option>
                 <option value="c-upsidedown" title="(ctrl + shift + 3)">upsidedown</option>
@@ -361,6 +362,14 @@
                 <option value="c-choose items='item1|item2'" title="put $1 or {value} where you want the choice to go, (ctrl + shift + 6)">choose</span></option>
                 <option value="c-random min=0 max=100 round=0'" title="put $1 or {value} where you want the number to go, (ctrl + shift + 7)">random</span></option>
                 <option value="c-spacer" title="(ctrl + shift + 8)">spacer</option>
+                <option value='c-variables x="2"'>variables</option>
+                <option value="c-time">time</option>
+                <option value='c-shadow  left=".2em" down=".2em" blur="2px" color="lightgrey"'>shadow</option>
+                <option value="c-alert alert=''">alert</option>
+                <option value="c-confirm prompt=''">confirm</option>
+                <option value="c-prompt prompt=''">prompt</option>
+                <option value="c-rotate rotate='20deg'">rotate</option>
+                <option value="c-textbox width='100px' height='100px'">textbox</option>
             </select>
             </fieldset>
         </div>
@@ -370,14 +379,14 @@
         <div class="preview" style="resize: horizontal;overflow: auto;width:50%" id="preview"></div>
     </div>
     <input type="color" id="context-menu-color-picker" class="context-menu-item" style="display:none;z-index:2" oninput="addTextTypeInTextArea(contextMenuColorpicker.value.split('#')[1], 'select')">
-    <script src="https://cdn.jsdelivr.net/npm/mathjs@7.5.1/dist/math.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script src="./js/emojis.js"></script>
-    <script src="./js/ConvertToMarkdown.js"></script>
-    <script src="./js/main.js"></script>
-    <script src="./js/DOMElements.js"></script>
-    <script src="./js/utility.js"></script>
-    <script src="./js/html2pdf.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjs@7.5.1/dist/math.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer></script>
+    <script src="./js/emojis.js" defer></script>
+    <script src="./js/ConvertToMarkdown.js" defer></script>
+    <script src="./js/main.js" defer></script>
+    <script src="./js/DOMElements.js" defer></script>
+    <script src="./js/utility.js" defer></script>
+    <script src="./js/html2pdf.js" defer></script>
     <script>
         let TextEditorColorInversion = document.getElementById("text-editor-color-inversion").checked;
         let PreviewColorInversion = document.getElementById("preview-color-inversion").checked;

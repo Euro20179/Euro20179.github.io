@@ -1,22 +1,13 @@
 class Upsidedown extends HTMLElement{
     connectedCallback(){
-        let newStr = "";
-        let Close = true;
-        for(let char of this.innerHTML){
-            if(char == "<"){
-                Close = false;
-            }
-            else if(Close){
-                if(char in upsideDown) newStr += upsideDown[char];
-                else newStr += char;
-                continue;
-            }
-            else if(char == ">" && !Close){
-                Close = true;
-            }
-            newStr += char;
-        }
-        this.innerHTML = newStr;
+        this.style.transform = this.transform
+        this.style.display = this.display
+    }
+    get display(){
+        return this.style.display || "inline-block"
+    }
+    get transform(){
+        return this.style.transform || "rotate(180deg)"
     }
 }
 class Circled extends HTMLElement{
@@ -358,6 +349,52 @@ class Variables extends HTMLElement{
     }
 }
 
+class Rotate extends HTMLElement{
+    connectedCallback(){
+        this.style.display = this.display
+        this.style.transform = `rotate(${this.rotate})`
+    }
+    get display(){
+        return this.style.display || "inline-block"
+    }
+    get rotate(){
+        return this.getAttribute("rotate") || "0deg"
+    }
+}
+
+class Textbox extends HTMLElement{
+    connectedCallback(){
+        this.style.overflow = this.overflow;
+        this.style.width = this.width;
+        this.style.height = this.height;
+        this.style.display = this.display;
+        this.style.border = this.border;
+        this.style.resize = this.resize;
+    }
+    get overflow(){
+        return this.style.overflow || "auto"
+    }
+    get width(){
+        return this.getAttribute("width") ?? ""
+    }
+    get height(){
+        return this.getAttribute("height") ?? ""
+    }
+    get display(){
+        return this.style.display || "inline-block"
+    }
+    get border(){
+        return this.style.border || "1px solid black"
+    }
+    get resize(){
+        if(this.getAttribute("width") || this.getAttribute("height")){
+            return this.style.resize || "none"
+        }
+        return this.style.resize || "both"
+    }
+}
+
+customElements.define("c-textbox", Textbox)
 customElements.define("c-variables", Variables)
 customElements.define("c-time", Time)
 customElements.define('c-upsidedown', Upsidedown)
@@ -372,3 +409,4 @@ customElements.define("c-shadow", Shadow)
 customElements.define("c-alert", Alert)
 customElements.define("c-confirm", Confirm)
 customElements.define("c-prompt", Prompt)
+customElements.define("c-rotate", Rotate)

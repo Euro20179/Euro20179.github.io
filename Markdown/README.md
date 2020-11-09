@@ -26,6 +26,7 @@ I wanted to add some "features" to markdown so I put a bunch of regular expressi
 * #\[color]text here will be color|\[title (optional)]
 * {bg:color any text in here will have a background color of color}\[title (optional)]
 * {cursor:type:text} any text will have a cursor of type
+* \[angle]*text* text will be skewed by angle
 <br>
 <br>
 
@@ -48,13 +49,14 @@ I wanted to add some "features" to markdown so I put a bunch of regular expressi
 
 * {shadow'.2em .2em 0px grey' any text here will have a text shadow}
 * {.'class' any text here will be in a span with the class of class}
-* .\[class]"text here will be in a span with the class of class}
+* .\[class]text here will be in a span with the class of class|
 * {cmd: text}: puts text in a cmd element
 * {samp: text}: puts text in a samp element
 * |line-height text| makes the text have spacing of line-height
 * \SPACING:line-height\ the whole page will have lineheight of line-height
 * spaceing<->text
     * spaces the letters in the words
+* \[width:height](\[style])textbox|
 
 ### Align
 
@@ -64,6 +66,7 @@ I wanted to add some "features" to markdown so I put a bunch of regular expressi
 * 2em-->indented 2em left
 * indented 2em right<--2em
 * 2em-->indendted 2em right and left<--2em
+* 2em->fist line is indneted 2em
 
 ---
 
@@ -113,6 +116,15 @@ I wanted to add some "features" to markdown so I put a bunch of regular expressi
 * c-unicode: when given any string of numbers it will convert it to unicode
 * c-choose: give an items attribute each item is seperated by | put $1 where you wnat the choice to go in the innerHTML
 * c-random: give min, max, and round attributes, put $1 where you want the number to go
+* c-variables: &lt;c-variables x="yes"&gt;%x%&lt;c-variables&gt;
+* c-time: uses datetime formats
+* c-spacer: puts whitespace
+* c-shadow: shadow element
+* c-alert: has alert when clicked
+* c-confirm: has confirm when clicked
+* c-prompt: has prompt when clicked
+* c-rotate: rotates text
+* c-textbox: textbox
 
 ### includes
 * Start each of these with \\INDLUDE:
@@ -159,6 +171,8 @@ I wanted to add some "features" to markdown so I put a bunch of regular expressi
 * "text"\[title]
 * \\;comment\\
 * \[word]part of speech (optional): (definition)
+* \EMOJI :name: value\
+    * defines a custom emoji
 
 ## NOT RECOMMENDED (usually causes lag)
 * \RAND\\: random number from 1 to 100
