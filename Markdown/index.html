@@ -8,6 +8,7 @@
     <link rel="stylesheet" type="text/css" media="screen" href="./css/normalize.css">
     <link rel="shortcut icon" type="image/png" href="./imgs/fav.png">
     <link rel="stylesheet" type="text/css" href="./css/hidden-buttons.css">
+    <link rel="stylesheet" type="text/css" href="./css/contextmenu.css">
 </head>
 <body ondrop="dropHandler(event)" ondragover="dragOverHandler(event)">
     <div class="editing-bar" id="editing-bar" style="visibility: visible;">
@@ -67,6 +68,7 @@
                 <label class="option-item"><input type="checkbox" id="live-interprate" checked onclick="InterprateLive=!InterprateLive" title="(F2)">Convert Live?</label>
                 <span class="divider"></span>
                 <label class="option-item"><input title="(F4)" type="checkbox" id="custom" checked>Custom markdown?</label>
+                <span class="divider" dashed></span><label for="" class="option-item"><input type="checkbox" id="mathjax" checked="checked" title="Use Mathjax (F9)">Mathjax?</label>
                 <span class="divider"></span>
                 <label class="option-item"><input type="checkbox" id="syncscrolling" onclick="SyncScrolling = !SyncScrolling">Sync Scrolling?</label>                    <span class="divider"></span>
                 <label class="option-item" style="cursor:help" title="stuff like the background color puts the value in the editor on update"><input type="checkbox" id="previews" checked="checked" onclick="Preview=!Preview">Previews?</label>
@@ -81,9 +83,9 @@
                 <button style="cursor:help" title="Alt Click the preview" class="editing-button" onclick="setPreviewMode()">Fullscreen Preview</button>
                 <button style="cursor:help" title="Alt Click the editor" class="editing-button" onclick="setEditMode()">Editing Mode</button>
                 <span class="divider"></span>   
-                <a href="./Emojis/Emojis.html"><button class="editing-button" style="cursor:help">Emoji List</button></a>
+                <button class="editing-button" style="cursor:help" onclick='window.open("./Emojis", "_blank")'>Emoji List</button>
                 <span class="divider"></span>
-                <a href="./Update.html"><button class="editing-button" style="cursor: pointer;" title="V 1.0.1">Updates</button></a>
+                <button class="editing-button" style="cursor: pointer;" title="V 1.0.1" onclick="window.open('./Update.html', '_blank')">Updates</button>
                 <span class="divider"></span>
                 <a href="./README.md"><button class="editing-button" style="cursor: pointer;" title="help">Help</button></a>
             </fieldset>
@@ -344,6 +346,7 @@
                     <option value="PLACEHOLDER" title="&lt;placeholder> element">Placeholder</option>
                     <option value="LIMARKER" title="&lt;li marker=''> element">Li Maker</option>
                     <option value="CMD" title="&lt;cmd> element">Cmd element</option>
+                    <option value="SPIN" title="$lt;spin speed=''">spin element</option>
                 </optgroup>
                 <optgroup label="Element Styling">
                     <option value="KBD" title="makes the kbd element nicer">Kbd</option>
@@ -370,27 +373,76 @@
                 <option value="c-prompt prompt=''">prompt</option>
                 <option value="c-rotate rotate='20deg'">rotate</option>
                 <option value="c-textbox width='100px' height='100px'">textbox</option>
+                <option value='spin speed="1000ms"'>spin (must have INCLUDE:SPIN)</option>
             </select>
             </fieldset>
         </div>
     </div>
     <div class="main-content">
-        <textarea class="text-editor" style="resize:horizontal" id="text-editor" spellcheck placeholder="# text here" autofocus>\FONT: arial\</textarea>
+        <textarea class="text-editor" style="resize:horizontal" id="text-editor" spellcheck placeholder="# text here" autofocus>\font{arial}</textarea>
         <div class="preview" style="resize: horizontal;overflow: auto;width:50%" id="preview"></div>
+    </div>
+    <div class="context-menu-container hidden" id="context-menu">
+        <h4 class="context-menu-header"><u>Debug Menu</u></h4>
+        <div class="context-menu-item" onclick="findFirstMatchingRegex()">Log first regex match</div>
+        <div class="context-menu-item" onclick="findMatchingRegexes()">Log regex matches</div>
     </div>
     <input type="color" id="context-menu-color-picker" class="context-menu-item" style="display:none;z-index:2" oninput="addTextTypeInTextArea(contextMenuColorpicker.value.split('#')[1], 'select')">
     <script src="https://cdn.jsdelivr.net/npm/mathjs@7.5.1/dist/math.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer></script>
     <script src="./js/emojis.js" defer></script>
+    <script src="./js/utility.js" defer></script>
     <script src="./js/ConvertToMarkdown.js" defer></script>
     <script src="./js/main.js" defer></script>
     <script src="./js/DOMElements.js" defer></script>
-    <script src="./js/utility.js" defer></script>
     <script src="./js/html2pdf.js" defer></script>
     <script>
         let TextEditorColorInversion = document.getElementById("text-editor-color-inversion").checked;
         let PreviewColorInversion = document.getElementById("preview-color-inversion").checked;
     </script>
+    <script type="text/x-mathjax-config">
+  // TeX-AMS_HTML
+  MathJax.Hub.Config({
+    jax: [
+      'input/TeX',
+      'output/HTML-CSS',
+      'output/PreviewHTML',
+    ],
+    extensions: [
+      'tex2jax.js',
+      'AssistiveMML.js',
+      'a11y/accessibility-menu.js',
+    ],
+    TeX: {
+      extensions: [
+        'AMSmath.js',
+        'AMSsymbols.js',
+        'noErrors.js',
+        'noUndefined.js',
+      ]
+    },
+    tex2jax: {
+      inlineMath: [
+        ['$', '$'],
+        ['\\(', '\\)'],
+      ],
+      displayMath: [
+        ['$$', '$$'],
+        ['\\[', '\\]'],
+      ],
+      processEscapes: true
+    },
+    showMathMenu: false,
+    showProcessingMessages: false,
+    messageStyle: 'none',
+    skipStartupTypeset: true, // disable initial rendering
+    positionToHash: false
+  })
+  // set specific container to render, can be delayed too
+  MathJax.Hub.Queue(
+    ['Typeset', MathJax.Hub, 'preview']
+  )</script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js"></script>
     
 </body>
 </html>

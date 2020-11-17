@@ -3,6 +3,9 @@ const preview = document.querySelector('.preview');
 const cusotmMdChkbx = document.getElementById("custom");
 const fileReader = document.getElementById("fileReader");
 const contextMenuColorpicker = document.getElementById("context-menu-color-picker");
+const contextMenu = document.getElementById("context-menu");
+const useMathJaxCheckbox = document.getElementById("mathjax");
+let contextOn = false;
 let InterprateLive = document.getElementById("live-interprate").checked;
 let Preview = document.getElementById("previews").checked;
 let tabs = [];
@@ -14,6 +17,9 @@ let elementInnerHTML;
 let AutoCompleteElements = document.getElementById("autocomplete-elements").checked;
 if (localStorage.getItem("textEditorValue")) {
     textEditor.value = localStorage.getItem("textEditorValue");
+    preview.innerHTML = convert(textEditor.value, cusotmMdChkbx.checked);
+    if (useMathJaxCheckbox.checked)
+        mathJax();
 }
 textEditor.style.backgroundColor = document.getElementById("text-editor-color").value;
 textEditor.style.color = document.getElementById("text-editor-text-color").value;
@@ -35,6 +41,12 @@ for (let queary of urlParams) {
         case "lightmode":
             DarkMode = false;
             break;
+        case "preview":
+            preview.style.backgroundColor = value;
+            break;
+        case "previewtext":
+            preview.style.color = value;
+            break;
     }
 }
 setDarkMode();
@@ -45,6 +57,47 @@ function setDarkMode() {
     }
     else
         body.classList.remove("darkmode");
+}
+function mathJax() {
+    // TeX-AMS_HTML
+    MathJax.Hub.Config({
+        jax: [
+            'input/TeX',
+            'output/HTML-CSS',
+            'output/PreviewHTML',
+        ],
+        extensions: [
+            'tex2jax.js',
+            'AssistiveMML.js',
+            'a11y/accessibility-menu.js',
+        ],
+        TeX: {
+            extensions: [
+                'AMSmath.js',
+                'AMSsymbols.js',
+                'noErrors.js',
+                'noUndefined.js',
+            ]
+        },
+        tex2jax: {
+            inlineMath: [
+                ['$', '$'],
+                ['\\(', '\\)'],
+            ],
+            displayMath: [
+                ['$$', '$$'],
+                ['\\[', '\\]'],
+            ],
+            processEscapes: true
+        },
+        showMathMenu: false,
+        showProcessingMessages: false,
+        messageStyle: 'none',
+        skipStartupTypeset: true,
+        positionToHash: false
+    });
+    // set specific container to render, can be delayed too
+    MathJax.Hub.Queue(['Typeset', MathJax.Hub, 'preview']);
 }
 function turnOffAllOtherTabs(currTab) {
     for (let tab of tabs) {
@@ -138,88 +191,7 @@ function addToCurrElem(e) {
         extraElemTextLength = 0;
     }
 }
-document.addEventListener("keydown", e => {
-    if (e.key == "Escape" && (PreviewMode || EditMode)) {
-        if (PreviewMode)
-            setPreviewMode();
-        else
-            setEditMode();
-    }
-    else if (e.altKey && e.key == "q") {
-        printMe(preview);
-    }
-    else if (e.altKey && e.shiftKey && e.ctrlKey) {
-        switch (e.key) {
-            case "S":
-                saveFile();
-                document.getElementById("download").click();
-                e.preventDefault();
-                break;
-            case "B":
-                savePlain();
-                document.getElementById("download-plain").click();
-                e.preventDefault();
-                break;
-            case "P":
-                savePDF();
-                e.preventDefault();
-                break;
-        }
-    }
-});
-document.getElementById("preview-search-count").addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-        document.getElementById("count-of-button").click();
-        e.preventDefault();
-    }
-});
-let EditMode = false;
-function setEditMode() {
-    if (!EditMode) {
-        const editingBar = document.getElementById("editing-bar");
-        editingBar.classList.value = "editing-bar-off";
-        textEditor.style.width = "100%";
-        preview.style.display = "none";
-    }
-    else {
-        const editingBar = document.getElementById("editing-bar");
-        editingBar.classList.value = "editing-bar";
-        textEditor.style.width = "50%";
-        preview.style.display = "initial";
-    }
-    EditMode = !EditMode;
-}
-let PreviewMode = false;
-function setPreviewMode() {
-    if (!PreviewMode) {
-        const editingBar = document.getElementById('editing-bar');
-        editingBar.classList.value = "editing-bar-off";
-        preview.style.width = "100%";
-        preview.style.height = "100%";
-        textEditor.style.display = "none";
-    }
-    else {
-        const editingBar = document.getElementById('editing-bar');
-        editingBar.classList.value = "editing-bar";
-        preview.style.width = "50%";
-        preview.style.height = "100%";
-        textEditor.style.display = "initial";
-    }
-    PreviewMode = !PreviewMode;
-}
-textEditor.addEventListener("click", e => {
-    if (e.altKey || (e.ctrlKey && e.shiftKey)) {
-        setEditMode();
-        e.preventDefault();
-    }
-});
-preview.addEventListener("click", e => {
-    if (e.altKey || (e.ctrlKey && e.shiftKey)) {
-        setPreviewMode();
-        e.preventDefault();
-    }
-});
-textEditor.addEventListener('keydown', e => {
+function keyPresses(e) {
     if (AutoCompleteElements) {
         //starts the element
         if (e.key == "<") {
@@ -263,6 +235,14 @@ textEditor.addEventListener('keydown', e => {
                 setDarkMode();
                 e.preventDefault();
                 break;
+            case "F9":
+                useMathJaxCheckbox.checked = !useMathJaxCheckbox.checked;
+                if (useMathJaxCheckbox.checked)
+                    mathJax();
+                else
+                    preview.innerHTML = convert(textEditor.value, cusotmMdChkbx.checked);
+                e.preventDefault();
+                break;
             case "F4":
                 document.getElementById("custom").click();
                 e.preventDefault();
@@ -274,6 +254,8 @@ textEditor.addEventListener('keydown', e => {
             case "F1":
                 textEditor.style.cursor = "wait";
                 preview.innerHTML = convert(textEditor.value, cusotmMdChkbx.checked);
+                if (useMathJaxCheckbox.checked)
+                    mathJax();
                 textEditor.style.cursor = "initial";
                 e.preventDefault();
                 break;
@@ -411,7 +393,7 @@ textEditor.addEventListener('keydown', e => {
     }
     //ctrl + shift + key
     else if (e.ctrlKey && e.shiftKey && !e.altKey) {
-        switch (e.key) {
+        switch (e.key.toUpperCase()) {
             case "U":
                 typeInTextarea('^__^', 2);
                 e.preventDefault();
@@ -537,7 +519,7 @@ textEditor.addEventListener('keydown', e => {
     }
     //alt + shift + ctrl + key
     else if (e.altKey && e.shiftKey && e.ctrlKey) {
-        switch (e.key) {
+        switch (e.key.toUpperCase()) {
             case "O":
                 document.getElementById('fileReader').click();
                 e.preventDefault();
@@ -548,7 +530,7 @@ textEditor.addEventListener('keydown', e => {
                 e.preventDefault();
                 break;
             case "F":
-                addTextTypeInTextArea("\\FONT: arial\\\n");
+                addTextTypeInTextArea("\\font{arial}\n");
                 e.preventDefault();
                 break;
             case "U":
@@ -556,6 +538,97 @@ textEditor.addEventListener('keydown', e => {
                     e.preventDefault();
                 break;
         }
+    }
+}
+document.addEventListener("keydown", e => {
+    if (e.key == "Escape" && (PreviewMode || EditMode)) {
+        if (PreviewMode)
+            setPreviewMode();
+        else
+            setEditMode();
+    }
+    else if (e.altKey && e.key == "q") {
+        printMe(preview);
+    }
+    else if (e.altKey && e.shiftKey && e.ctrlKey) {
+        switch (e.key.toUpperCase()) {
+            case "S":
+                saveFile();
+                document.getElementById("download").click();
+                e.preventDefault();
+                break;
+            case "B":
+                savePlain();
+                document.getElementById("download-plain").click();
+                e.preventDefault();
+                break;
+            case "P":
+                savePDF();
+                e.preventDefault();
+                break;
+        }
+        if (document.activeElement == textEditor) {
+            keyPresses(e);
+        }
+    }
+    else if (document.activeElement == textEditor) {
+        keyPresses(e);
+    }
+});
+document.getElementById("preview-search-count").addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+        document.getElementById("count-of-button").click();
+        e.preventDefault();
+    }
+});
+let EditMode = false;
+function setEditMode() {
+    if (!EditMode) {
+        const editingBar = document.getElementById("editing-bar");
+        editingBar.classList.value = "editing-bar-off";
+        textEditor.style.width = "100%";
+        preview.style.display = "none";
+    }
+    else {
+        const editingBar = document.getElementById("editing-bar");
+        editingBar.classList.value = "editing-bar";
+        textEditor.style.width = "50%";
+        preview.style.display = "initial";
+    }
+    EditMode = !EditMode;
+}
+let PreviewMode = false;
+function setPreviewMode() {
+    if (!PreviewMode) {
+        const editingBar = document.getElementById('editing-bar');
+        editingBar.classList.value = "editing-bar-off";
+        preview.style.width = "100%";
+        preview.style.height = "100%";
+        textEditor.style.display = "none";
+    }
+    else {
+        const editingBar = document.getElementById('editing-bar');
+        editingBar.classList.value = "editing-bar";
+        preview.style.width = "50%";
+        preview.style.height = "100%";
+        textEditor.style.display = "initial";
+    }
+    PreviewMode = !PreviewMode;
+}
+textEditor.addEventListener("click", e => {
+    if (e.altKey || (e.ctrlKey && e.shiftKey)) {
+        setEditMode();
+        e.preventDefault();
+    }
+    if (contextOn) {
+        contextMenu.classList.replace("visible", "hidden");
+        contextOn = false;
+    }
+});
+preview.addEventListener("click", e => {
+    if (e.altKey || (e.ctrlKey && e.shiftKey)) {
+        setPreviewMode();
+        e.preventDefault();
     }
 });
 //when changing the settings for the space insert, this changes the A next to it
@@ -616,6 +689,8 @@ cusotmMdChkbx.addEventListener('click', e => {
     if (InterprateLive) {
         let value = textEditor.value;
         preview.innerHTML = convert(value, cusotmMdChkbx.checked);
+        if (useMathJaxCheckbox.checked)
+            mathJax();
     }
 });
 //updates the preview when the texteditor value changes
@@ -624,14 +699,24 @@ textEditor.addEventListener('input', (e) => {
         let { value } = e.target;
         //matches the variable things like [VAR:x=y]
         preview.innerHTML = convert(value, cusotmMdChkbx.checked);
+        if (useMathJaxCheckbox.checked)
+            mathJax();
     }
-    save().then(() => { });
+    save().then();
 });
 //when ctrl + right click, opens color picker
 textEditor.addEventListener("contextmenu", (e) => {
     if (e.ctrlKey) {
         contextMenuColorpicker.click();
         e.preventDefault();
+        return;
+    }
+    if (e.altKey && textEditor.selectionStart - textEditor.selectionEnd < 0) {
+        contextMenu.classList.replace("hidden", "visible");
+        contextMenu.style.top = String(e.clientY) + "px";
+        contextMenu.style.left = String(e.clientX) + "px";
+        e.preventDefault();
+        contextOn = true;
     }
 });
 //triggers when a file is added to the page
@@ -640,6 +725,8 @@ fileReader.addEventListener("change", (e) => {
     fr.onload = () => {
         textEditor.value = fr.result;
         preview.innerHTML = convert(fr.result, cusotmMdChkbx.checked);
+        if (useMathJaxCheckbox.checked)
+            mathJax();
     };
     fr.readAsText(fileReader.files[0]);
 });
@@ -671,4 +758,42 @@ textEditor.addEventListener("scroll", (e) => {
 });
 async function save() {
     localStorage.setItem("textEditorValue", textEditor.value);
+}
+function findMatchingRegexes(log = true) {
+    return (new Promise((resolve, reject) => {
+        let matches = [];
+        const selection = textEditor.value.slice(textEditor.selectionStart, textEditor.selectionEnd);
+        for (let regex of regexes) {
+            let r = regex[0];
+            if (selection.match(r)) {
+                if (log)
+                    console.log(selection, r, typeof regex[1] == 'function' ? regex[1].toString() : regex[1]);
+                matches.push([selection, r, regex[1]]);
+            }
+        }
+        matches[0] ? resolve(matches) : reject("no matches");
+    })).then(value => {
+        return value;
+    })
+        .catch(reason => {
+        console.log(reason);
+        return [];
+    });
+}
+function findFirstMatchingRegex() {
+    return (new Promise((resolve, reject) => {
+        const matches = findMatchingRegexes(false)[0];
+        if (!matches) {
+            reject("no match");
+        }
+        matches[2] = typeof matches[2] == "function" ? matches[2].toString() : matches[2];
+        console.log(matches[0], matches[1], matches[2]);
+        resolve(matches);
+    })).then((value) => {
+        return value;
+    })
+        .catch((reason) => {
+        console.log(reason);
+        return [];
+    });
 }

@@ -43,6 +43,12 @@
         #toc a:hover{
             color:green;
         }
+        #home-link{
+            color:blue;
+        }
+        #home-link:visited{
+            color:blue;
+        }
     </style>
 </head>
 <body style='background-color:#eeeeee'>
@@ -62,12 +68,82 @@
             <ul>
                 <li><a href="#1.3.1">1.3.1</a></li>
             </ul>
+            <li><a href="#1.4.0">1.4.0</a></li>
         </ul>
     </ul>
     </div>
     <div id="main">
+    <h1 style="font-size:3.8em;"><a href="./index.html" id="home-link">Home</a></h1>
     <h1 style="font-size:3.5em">Updates</h1>
     <hr>
+    <div class="version-container" id="1.4.0">
+        <h2 class="version-num">1.4.0</h2>
+        <h3 class="added">Additions</h3>
+        <ul>
+            <li>Debug context menu</li>
+            <ul>
+                <li>Select text and alt + right click</li>
+                <li>First regex match, loggs the first regular expression match that matches the selected text</li>
+                <li>regex match, loggs every regular expression that matches the selected text</li>
+            </ul>
+            <li>Shortcut for &asymp;: ~=</li>
+            <li>Shortcut for &divide;: ./.</li>
+            <li>Emote for &divide;: :div:</li>
+            <li>Shortcut for &ne;: /=</li>
+            <li>Shortcut for &le;: &lt;_</li>
+            <li>Shortcut for &ge;: _></li>
+            <li>Mathjax works</li>
+            <li>Setting to turn on and off Mathjax</li>
+            <li>[text]*number results in text being multiplied by number</li>
+            <li>INCLUDE:SPIN and &lt;spin>element</li>
+            <li>&lt;evaluate>javascript&lt;/evaluate></li>
+            <li>added INCLUDE:RAINBOW</li>
+            <ul>
+                <li>Not to be confused with &lt;c-rainbow></li>
+            </ul>
+            <li>Better way to do \FONT:font\ and \INCLUDE:include\</li>
+            <ul>
+                <li>\font{font}</li>
+                <li>\include{include}</li>
+                <li>\END\ and \SECTION\ also work this way</li>
+            </ul>
+            <li>Search query strings</li>
+            <ul>
+                <li>preview=color, color of the preview</li>
+                <li>previewtext=color, color of the preview text</li>
+            </ul>
+            <li>*[css]text| as alternative to {*"css" text}</li>
+        </ul>
+        <h3 class="changed">Changes</h3>
+        <ul>
+            <li>$$2 + 2$$ is now, solve: $$$2 + 2$$$</li>
+            <li>#[id] now returns a div element instead of a span element</li>
+            <li>The transition from light to dark mode and from dark to light mode is less jarring</li>
+            <li>Link to this and the link to the list of emojis now open in new tabs</li>
+            <li>Rounded Buttons</li>
+        </ul>
+        <h3 class="fixed">Fixes</h3>
+        <ul>
+            <li>When the page is loaded the text is converted</li>
+            <li>.[class]text triggered the textbox regex, it shouldn't now</li>
+            <li>Preview was 1px larger than the page</li>
+            <li>If caps lock was on it would break key combinations that used shift</li>
+            <li>Markdown "emoji"</li>
+            <li>Border shorthand fix</li>
+        </ul>
+        <h3 class="removed">Removed</h3>
+        <ul>
+            <li>\THEME:theme\</li>
+            <li>\SECTION\</li>
+            <ul>
+                <li>Reduntant of #[id]</li>
+            </ul>
+            <li>\ENDSECTION\</li>
+            <li>comment</li>
+        </ul>
+    </div>
+    <hr>
+    <br>
     <div class="version-container" id="1.3.1">
         <h2 class="version-num">1.3.1</h2>
         <h3 class="added">Additions</h3>

@@ -8,63 +8,6 @@ math.config({
     // 'number' (default), 'BigNumber', or 'Fraction'
     precision: 64 // Number of significant digits for BigNumbers
 });
-const upsideDown = {
-    a: "\u0250",
-    b: "q",
-    c: "\u0254",
-    d: "p",
-    e: "\u01DD",
-    f: "\u025f",
-    g: "\u0183",
-    h: "\u0265",
-    i: "\u1D09",
-    j: "\u027E",
-    k: "\u029E",
-    l: "l",
-    m: "\u026f",
-    n: "u",
-    o: "o",
-    p: "d",
-    q: "b",
-    r: "\u0279",
-    s: "s",
-    t: "\u0287",
-    u: "n",
-    v: "\u028c",
-    w: "\u028d",
-    x: "x",
-    y: "\u028e",
-    z: "z",
-    A: "\u2200",
-    B: "B",
-    C: "\u0186",
-    D: "D",
-    E: "\u018e",
-    F: "\u2132",
-    G: "\u2141",
-    H: "H",
-    I: "I",
-    J: "\u017f",
-    K: "\ua7b0",
-    L: "\u025e",
-    M: "\u019c",
-    N: "N",
-    O: "O",
-    P: "\u0500",
-    Q: "Q",
-    R: "\u1d1a",
-    S: "S",
-    T: "\ua7b1",
-    U: "\u2229",
-    V: "\u0245",
-    W: "\u028d",
-    X: "X",
-    Y: "\u2144",
-    Z: "Z",
-    " ": " ",
-    "!": "¡",
-    "?": "¿"
-};
 const circleLetters = {
     A: 9398,
     " ": 32,
@@ -83,6 +26,12 @@ for (let x = 1; x < 52; x++) {
     circleLetters[CHARS[x]] = circleLetters["A"] + x;
 }
 const regexes = [
+    [
+        /(?<!\\)<evaluate>\s?(.+?)\s?(?:<\/evaluate>)/g,
+        (_, evaluate) => {
+            return eval(evaluate);
+        }
+    ],
     [
         /(?<!\\)\\RAND(?:\{([0-9]+) ([0-9]+)\})?\\/g,
         (_, one = null, two = null) => {
@@ -129,8 +78,16 @@ const regexes = [
         }
     ],
     [
+        /(?<!\\)\|(?:(.*?))?->(.+?)<-(?:(.*?))?\|/g,
+        "<center style='margin-left:$1;margin-right:$3'>$2</center>"
+    ],
+    [
         /(?<!\\)([0-9\.]+)\/\/([0-9\.]+)/g,
         "$1⁄$2"
+    ],
+    [
+        /(?<!\\)<spin speed="(.*?)">/g,
+        "<spin style='animation-duration: $1'>"
     ],
     [
         /(?<!\\)--->/g,
@@ -189,6 +146,14 @@ const regexes = [
         "&#8646;"
     ],
     [
+        /(?<!\\)<_/g,
+        "&le;"
+    ],
+    [
+        /(?<!\\)_>/g,
+        "&ge;"
+    ],
+    [
         /(?<!\\)> ?''(.*)''(?:\[(.+?)\])?/g,
         (_, quote, author = null) => {
             if (author) {
@@ -208,6 +173,10 @@ const regexes = [
     [
         /(?<!\\)\{(?:\*|style|css)('|")(.+?)\1 ?(.+?)\}/g,
         "<span style='$2'>$3</span>"
+    ],
+    [
+        /(?<!\\)\*\[(.*?)\](.*?)\|(?:\[(.*?)\])?/g,
+        "<span style='$1' title='$3'>$2</span>"
     ],
     [
         /(?<!\\)\[(\.)?( |x)\]\s?(?!\()/g,
@@ -254,7 +223,7 @@ const regexes = [
         (_, meterOrProgress, value, max, title) => `<${meterOrProgress === '|' ? "meter" : "progress"} value="${value}" max="${max}" title="${title ? title : ""}"></${meterOrProgress === '|' ? "meter" : "progress"}>`
     ],
     [
-        /(?<!\\)\|(\^|v|(?:l|<)|>)?\[(.+?)\]"(.+?)"(?:\[(.+)\])?/g,
+        /(?<!\\)\|(\^|v|(?:l|<)|>)?\[(.+?)\](.+?)\|(?:\[(.+)\])?/g,
         (_, bType, bDecoration, text, title) => {
             let borderType = "";
             switch (bType) {
@@ -277,6 +246,10 @@ const regexes = [
             }
             return `<span title="${title}" style="${borderType}: ${bDecoration}">${text}</span>`;
         }
+    ],
+    [
+        /(?<!\\|\.)(?:\[([0-9]+.{2,4})?(?::|x)([0-9]+.{2,4})?])?\[(.*?)](.+?)\|/g,
+        "<c-textbox width='$1' height='$2' style='$3'>$4</c-textbox>"
     ],
     [
         /(?<!\\)\{b('|")(.*?)\1 ?(.*?)\}/g,
@@ -351,10 +324,6 @@ const regexes = [
         "<mark title='$3' style='background-color:$1'>$2</mark>"
     ],
     [
-        /(?<!\\)(?:\[([0-9]+.{2,4})?(?::|x)([0-9]+.{2,4})?])?\[(.*?)](.+?)\|/g,
-        "<c-textbox width='$1' height='$2' style='$3'>$4</c-textbox>"
-    ],
-    [
         /(?<!\\)([A-z]+|#[0-fa-fA-F]{8}|#[0-fa-fA-F]{6}|#[0-fa-fA-F]{3})(?:-{3,}|<hr>)/g,
         '<hr style="background-color:$1;color:$1;border-color:$1" />'
     ],
@@ -372,7 +341,7 @@ const regexes = [
     ],
     [
         /(?<!\\)#\[(.*?)\]/g,
-        "<span id='$1'></span>"
+        "<div id='$1'></div>"
     ],
     [
         /(?<!\\|!)\[(.*?)\]\((.+?)(?:\s(.*?))?\)/g,
@@ -413,10 +382,6 @@ const regexes = [
     [
         /(?<!\\|_)(?:\[(.+?)\])?_(.+?)_(?:\[(.+?)\])?/g,
         "<u style='text-decoration:underline $1' title='$3'>$2</u>"
-    ],
-    [
-        /(?<!\\)\|(?:(.*?))?->(.+?)<-(?:(.*?))?\|/g,
-        "<center style='margin-left:$1;margin-right:$3'>$2</center>"
     ],
     [
         /(?<!\\)\|->(.+?)(?: ?<(.*?))?\|/g,
@@ -526,9 +491,10 @@ ${selector} li{
         }
     ],
     [
-        /(?<!\\)\\INCLUDE:(LIMARKER|SOFTBLINK|BLINK|PLACEHOLDER|KBD|SAMP|CMD)\\/g,
-        (_, include) => {
-            switch (include) {
+        /(?<!\\)\\include(?:\{(.*?)\}|(?::|  )(.*?)\\)/g,
+        (_, include, include2) => {
+            include = include2 ?? include;
+            switch (include.toUpperCase()) {
                 case "LIMARKER":
                     return `
 <style>
@@ -621,6 +587,54 @@ ${include}{
 ${include}::selection{
     background-color:white;
 }</style>`;
+                case "SPIN":
+                    return `<style>
+spin{
+transform: rotate(0deg);
+display:inline-block;
+animation-name: spin-animation;
+animation-iteration-count: infinite;
+animation-timing-function: linear;
+}
+
+@keyframes spin-animation{
+0%{
+transform: rotate(0deg);
+}
+100%{
+transform: rotate(360deg);
+}
+</style>`;
+                case "RAINBOW":
+                    return `<style>
+rainbow{
+animation: rainbow-an 2000ms linear infinite;
+color: blue;
+}
+@keyframes rainbow-an{
+0%{
+color: #f00;
+}
+16%{
+color: #ffff00;
+}
+32%{
+color: #00ff00;
+}
+48%{
+color: #00ffff;
+}
+64%{
+color: #0000ff;
+}
+80%{
+color: #ff00ff;
+}
+100%{
+color: #f00;
+}
+}
+</style>`;
             }
         }
     ],
@@ -633,9 +647,10 @@ ${include}::selection{
         '<span style="letter-spacing:$1">$2</span>'
     ],
     [
-        /(?<!\\)\\(FONT|SIZE|COLOR|CUSTOM|LINHEIGHT|SPACING)(?::| )(.*)\\/g,
-        (_, type, value) => {
-            switch (type) {
+        /(?<!\\)\\(font|size|color|custom|lineheight|spacing)(?:\{(.*)\}|(?::| )(.*)\\)/gi,
+        (_, type, value, value2) => {
+            value = value2 ?? value;
+            switch (type.toUpperCase()) {
                 case "FONT":
                     return `<div style='font-family:${value}'>`;
                 case "SIZE":
@@ -651,41 +666,29 @@ ${include}::selection{
         }
     ],
     [
-        /(?<!\\)\\SECTION (.*?)\\/g,
-        "<div id='$1'>"
-    ],
-    [
-        /(?<!\\)\\ENDF(?:ONT)? (.*)\\/g,
-        "</div><div style='font-family:$1'>"
-    ],
-    [
-        /(?<!\\)\\ENDS(?:IZE)? (.*)\\/g,
-        "</div><div style='font-size:$1'>"
-    ],
-    [
-        /(?<!\\)\\END(?:#|COLOR) (.*)\\/g,
-        "</div><div style='color:$1'>"
-    ],
-    [
-        /(?<!\\)\\ENDC(?:USTOM) (.*)\\/g,
-        "</div><div style='$1'>"
-    ],
-    [
-        /(?<!\\)\\ENDSECTION (.*)\\/g,
-        "</div><div id='$1'>"
-    ],
-    [
-        /(?<!\\)\\END.*?\\/g,
-        "</div>"
-    ],
-    [
-        /(?<!\\)\\THEME:(.*)\\/g,
-        (_, theme) => {
-            return `<link rel="stylesheet" type="text/css" href="./Themes/${theme}.css" id="_theme">`;
+        /(?<!\\)\\END(F|S|#|C|L)(?:\{(.*?)\}| (.*?)\\)/gi,
+        (_, type, newValue, newValue2) => {
+            newValue = newValue2 ?? newValue;
+            switch (type.toUpperCase()) {
+                case "F":
+                    return `</div><div style="font-family: ${newValue}">`;
+                case "S":
+                    return `</div><div style="font-size: ${newValue}">`;
+                case "#":
+                    return `</div><div style="color: ${newValue}">`;
+                case "C":
+                    return `</div><div style="${newValue}">`;
+                case "L":
+                    return `</div><div style="line-height: ${newValue}">`;
+            }
         }
     ],
     [
-        /(?<!\\)\$(none|unit|simplify)?\$(.*?)\$(nohover)?\$/g,
+        /(?<!\\)\\END(?:.*?\\|\{.*?\})/g,
+        "</div>"
+    ],
+    [
+        /(?<!\\)\$\$(none|unit|simplify)?\$(.*?)\$(nohover)?\$\$/g,
         (_, re, expr, settings) => {
             if (re == "unit") {
                 try {
@@ -715,6 +718,28 @@ ${include}::selection{
         "<li marker='$1&nbsp;'>$2</li>"
     ],
     [
+        /(?<!\\)~=/g,
+        "&asymp;"
+    ],
+    [
+        /(?<!\\)\+-/g,
+        "&plusmn;"
+    ],
+    [
+        /(?<!\\)\.\/\./g,
+        "&divide;"
+    ],
+    [
+        /(?<!\\)\/=/g,
+        "&ne;"
+    ],
+    [
+        /(?<!\\)\[(.*?)\]\*([0-9]+)/g,
+        (_, chars, count) => {
+            return chars.multiply(Number(count));
+        }
+    ],
+    [
         /(?<!\\)\\count:([^\n]+)((?:\n)re)?\\/g,
         (_, search, Re) => {
             if (Re) {
@@ -722,10 +747,6 @@ ${include}::selection{
             }
             return preview.textContent.split(search).length - 1;
         }
-    ],
-    [
-        /(?<!\\)\\;(.*?)\\/g,
-        "<!--$1-->"
     ],
     [
         /(?<!\\)\\s\\/g,

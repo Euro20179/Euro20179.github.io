@@ -2,22 +2,6 @@
 function invertHex(hex) {
     return (Number(`0x1${hex}`) ^ 0xFFFFFF).toString(16).substr(1).toUpperCase();
 }
-String.prototype.formatUnicorn = String.prototype.formatUnicorn ||
-    function () {
-        "use strict";
-        var str = this.toString();
-        if (arguments.length) {
-            var t = typeof arguments[0];
-            var key;
-            var args = ("string" === t || "number" === t) ?
-                Array.prototype.slice.call(arguments)
-                : arguments[0];
-            for (key in args) {
-                str = str.replace(new RegExp("\\{" + key + "\\}", "gi"), args[key]);
-            }
-        }
-        return str;
-    };
 //importing files
 function dropHandler(e) {
     e.preventDefault();
@@ -41,17 +25,22 @@ function saveFile() {
     downloadB.download = `${fileName}.md`;
 }
 function savePDF() {
-    html2pdf()
-        .set({
-        image: { type: "png" },
-        html2canvas: { scale: 2 },
-        jsPDF: {
-            unit: "in",
-            orientation: "landscape"
-        },
-    })
-        .from(preview)
-        .save();
+    (new Promise((resolve, reject) => {
+        html2pdf()
+            .set({
+            image: { type: "png" },
+            html2canvas: { scale: 2 },
+            jsPDF: {
+                unit: "in",
+                orientation: "landscape"
+            },
+        })
+            .from(preview)
+            .save();
+        resolve("success");
+    })).then(value => {
+        console.log("saved");
+    });
 }
 function savePlain() {
     const downloadB = document.getElementById("download-plain");
@@ -131,3 +120,10 @@ function addTextTypeInTextArea(text, selectType = "end") {
     el.setRangeText(text, el.selectionStart, el.selectionEnd, selectType);
     preview.innerHTML = convert(el.value, cusotmMdChkbx.checked);
 }
+String.prototype.multiply = function (times) {
+    let newString = this;
+    for (let i = 1; i < times; i++) {
+        newString += this;
+    }
+    return newString;
+};
