@@ -62,15 +62,6 @@ const regexes = [
         }
     ],
     [
-        /(?<!\\)\\(?:DEF(?:INE)?)?EMOJI ?:(.+?): ?(.+?)\\/g,
-        (_, name, value) => {
-            if (!(name in userDefinedEmotes)) {
-                userDefinedEmotes[name] = value;
-            }
-            return "";
-        }
-    ],
-    [
         /(?<!\\):reg:([a-z]):/g,
         ":regional_indicator_$1:"
     ],

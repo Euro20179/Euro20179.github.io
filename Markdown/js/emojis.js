@@ -1285,4 +1285,28 @@ const imgEmotes = {
     autohotkey: "https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fcdn.warer.com%2Fmedia%2Fauto_hotkey-logo.png&f=1&nofb=1",
 };
 const hiddenEmotes = {};
-let userDefinedEmotes = {};
+let userDefinedEmotes = JSON.parse(localStorage.getItem("customEmojis")) || {};
+function addCustomEmote(name, value) {
+    userDefinedEmotes[name] = value;
+}
+function removeCustomEmote(name) {
+    delete userDefinedEmotes[name];
+}
+function generateCustomEmojiOptions() {
+    let selection = document.getElementById("custom-emoji-dropdown");
+    for (let emoji in userDefinedEmotes) {
+        if (document.getElementById(emoji)) {
+            continue;
+        }
+        let value = userDefinedEmotes[emoji];
+        let option = document.createElement("option");
+        option.value = emoji;
+        option.title = value;
+        option.innerHTML = emoji;
+        option.id = emoji;
+        selection.appendChild(option);
+    }
+}
+function removeCustomEmojiOption() {
+    document.getElementById('custom-emoji-dropdown').removeChild(document.getElementById(document.getElementById('remove-custom-emote').value));
+}
