@@ -3,40 +3,136 @@
     <script src="../js/emojis.js"></script>
     <meta charset="utf-8">
     <style>
+        html{
+            --side-padding: 6%;
+            padding-left: var(--side-padding);
+            padding-right: var(--side-padding);
+            overflow-x: hidden;
+        }
         h1{
             text-decoration: underline;
         }
         p{
             font-size:2em
         }
+        .emoji-container{
+            font-size:3em;
+            display: grid;
+            grid-template-columns: repeat(5, 10fr);
+            cursor: pointer;
+        }
+        div > .emoji-tooltip{
+            --transition-effects: 100ms linear;
+            visibility: hidden;
+            position:absolute;
+            background-color:transparent;
+            color:transparent;
+            border: none;
+            outline: none;
+            transition: /*START*/
+                background-color var(--transition-effects), 
+                color var(--transition-effects), 
+                border var(--transition-effects), 
+                outline var(--transition-effects);
+            /*END*/
+        }
+        div:hover > .emoji-tooltip{
+            --borer-width: 4px;
+            display:inline;
+            visibility: visible;
+            position:absolute;
+            color:white;
+            font-size:.7em;
+            transform: translateX(-50%);
+            background-color:#000000dd;
+            border-radius: 10%;
+            border: var(--borer-width) solid lightblue;
+        }
+        .search{
+            height:5vh;
+            width:50%;
+            font-size:2em;
+        }
+        .result-counter{
+            font-size:2.5em;
+        }
     </style>
 </head>
 <body style="text-align: center;font-size:large;font-family:Arial, Helvetica, sans-serif">
+    <input type="text" style="visibility:hidden;width:1px;background-color:transparent;color:transparent;z-index:-1;height:1px;" id="emoji-copy">
+    <input type="text" name="search" id="search" class="search" value="" placeholder="search">
+    <span class="result-counter" id="results-counter">Results: </span>
     <div style="text-align: center;">
-        <h1>Use like this-> :shortcut:</h1>
+        <h1>Use like this -> :shortcut:</h1>
     </div>
     
     <div id="regular-emoji-shortcuts">
         <h1>Emojis</h1>
+        <div class="emoji-container" id="regular-emoji-container"></div>
     </div>
     <div id="img-emoji-shortcuts">
         <h1>Img Emojis</h1>
+        <div class="emoji-container" id="img-emoji-container"></div>
     </div>
     <script>
         let emojiAlphabetized = Object.keys(EMOJIS).sort((a, b)=>a >= b ? 1 : -1)
         let imgEmojiAlphabetized = Object.keys(imgEmotes).sort((a, b)=> a >= b ? 1 : -1)
-        const regDiv = document.getElementById("regular-emoji-shortcuts")
+
+        const regDiv = document.getElementById("regular-emoji-container")
         const imgDiv = document.getElementById("img-emoji-shortcuts")
+
         for(let emoji of emojiAlphabetized){
-            let emojiPara = document.createElement("p")
-            emojiPara.innerHTML = `${emoji}: ${EMOJIS[emoji]}`
+            let emojiPara = document.createElement("div")
+            emojiPara.id = emoji;
+            emojiPara.classList.add("data-emoji-div")
+            let emojiTip = document.createElement("div")
+
+            new Promise((resolve, reject)=>{
+                emojiTip.classList.add("emoji-tooltip")
+                emojiTip.innerText = emoji
+                resolve(emojiTip)
+            }).then(emojiTip=>{
+                emojiPara.appendChild(emojiTip)
+            })
+
+            new Promise((resolve, reject)=>{
+                emojiPara.addEventListener("click", e=>{
+                    let inp = document.getElementById("emoji-copy")
+                    inp.value = `:${emojiTip.innerText}:`
+                    inp.select()
+                    document.execCommand("copy")
+                })
+
+                emojiPara.addEventListener("contextmenu", e=>{
+                    e.preventDefault()
+                    let inp = document.getElementById("emoji-copy")
+                    inp.value = emojiPara.innerHTML.split("<br>")[0]
+                    inp.select()
+                    document.execCommand("copy")
+                })
+            })
+
+            emojiPara.innerHTML = EMOJIS[emoji]
+            emojiPara.appendChild(document.createElement('br'))
             regDiv.appendChild(emojiPara)
         }
 
         for(let emoji of imgEmojiAlphabetized){
-            let emojiPara = document.createElement("p")
-            emojiPara.innerHTML = `${emoji}: <img src="${imgEmotes[emoji]}" style="width:1em">`
+            let emojiPara = document.createElement("div")
+            new Promise((resolve, reject)=>{
+                let emojiTip = document.createElement("div")
+                emojiTip.classList.add("emoji-tooltip")
+                emojiTip.innerText = emoji
+                emojiTip.style.fontSize = "2em"
+                resolve(emojiTip)
+            }).then(emojiTip=>{
+                emojiPara.appendChild(emojiTip)
+            })
+
+            emojiPara.innerHTML =  `<img src="${imgEmotes[emoji]}" style="width:3em;">`
+            emojiPara.appendChild(document.createElement("br"))
             imgDiv.appendChild(emojiPara)
         }
     </script>
+    <script src="emoji.js"></script>
 </body>
