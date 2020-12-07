@@ -5,6 +5,7 @@ const fileReader = document.getElementById("fileReader");
 const contextMenuColorpicker = document.getElementById("context-menu-color-picker");
 const contextMenu = document.getElementById("context-menu");
 const useMathJaxCheckbox = document.getElementById("mathjax");
+const useSyntaxHighlighting = document.getElementById("syntax-parsing");
 let contextOn = false;
 let InterprateLive = document.getElementById("live-interprate").checked;
 let Preview = document.getElementById("previews").checked;
@@ -15,11 +16,16 @@ let currTypingElem = [];
 let extraElemTextLength = 0;
 let elementInnerHTML;
 let AutoCompleteElements = document.getElementById("autocomplete-elements").checked;
+function highlightCode() {
+    if (useSyntaxHighlighting.checked)
+        Prism.highlightAll();
+}
 if (localStorage.getItem("textEditorValue")) {
     textEditor.value = localStorage.getItem("textEditorValue");
     preview.innerHTML = convert(textEditor.value, cusotmMdChkbx.checked);
     if (useMathJaxCheckbox.checked)
         mathJax();
+    highlightCode();
 }
 textEditor.style.backgroundColor = document.getElementById("text-editor-color").value;
 textEditor.style.color = document.getElementById("text-editor-text-color").value;
@@ -134,6 +140,7 @@ const UIOptionsTab = new Tab(document.getElementById("ui-options"), document.get
 const helpTab = new Tab(document.getElementById("help"), document.getElementById("help-title"));
 const countTab = new Tab(document.getElementById("count"), document.getElementById("count-title"));
 const emojisTab = new Tab(document.getElementById("emojis"), document.getElementById("emojis-title"));
+const regexTab = new Tab(document.getElementById("custom-regex"), document.getElementById("custom-regex-title"));
 let currTab = homeTab;
 turnOffAllOtherTabs(currTab);
 var SyncScrolling = document.getElementById("syncscrolling").checked;
@@ -255,6 +262,7 @@ function keyPresses(e) {
             case "F1":
                 textEditor.style.cursor = "wait";
                 preview.innerHTML = convert(textEditor.value, cusotmMdChkbx.checked);
+                highlightCode();
                 if (useMathJaxCheckbox.checked)
                     mathJax();
                 textEditor.style.cursor = "initial";
@@ -355,10 +363,6 @@ function keyPresses(e) {
                 break;
             case "k":
                 startEndTypeInTextArea("[](", ")", { cursor: 1 });
-                e.preventDefault();
-                break;
-            case "y":
-                startEndTypeInTextArea("[", "]:()", { cursor: -1, defaultCursor: 1 });
                 e.preventDefault();
                 break;
             case "'":
@@ -692,6 +696,7 @@ cusotmMdChkbx.addEventListener('click', e => {
         preview.innerHTML = convert(value, cusotmMdChkbx.checked);
         if (useMathJaxCheckbox.checked)
             mathJax();
+        highlightCode();
     }
 });
 //updates the preview when the texteditor value changes
@@ -702,6 +707,7 @@ textEditor.addEventListener('input', (e) => {
         preview.innerHTML = convert(value, cusotmMdChkbx.checked);
         if (useMathJaxCheckbox.checked)
             mathJax();
+        highlightCode();
     }
     save().then();
 });
@@ -728,6 +734,7 @@ fileReader.addEventListener("change", (e) => {
         preview.innerHTML = convert(fr.result, cusotmMdChkbx.checked);
         if (useMathJaxCheckbox.checked)
             mathJax();
+        highlightCode();
     };
     fr.readAsText(fileReader.files[0]);
 });
@@ -782,3 +789,19 @@ function findMatchingRegexes(log = true) {
         return [];
     });
 }
+document.getElementById("add-custom-emote-value").addEventListener("keydown", e => {
+    if (e.key == "Enter") {
+        document.getElementById("add-emoji-button").click();
+    }
+});
+document.getElementById("remove-custom-emote").addEventListener("keydown", e => {
+    if (e.key == "Enter") {
+        document.getElementById("remove-emoji-button").click();
+    }
+});
+document.getElementById("add-custom-emote-name").addEventListener("keydown", e => {
+    if (e.key == "Enter") {
+        document.getElementById("add-emoji-button").click();
+    }
+});
+document.querySelector("body").removeChild(document.getElementById("loading-screen"));

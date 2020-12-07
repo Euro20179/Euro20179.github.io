@@ -25,13 +25,41 @@ const circleLetters = {
 for (let x = 1; x < 52; x++) {
     circleLetters[CHARS[x]] = circleLetters["A"] + x;
 }
-const regexes = [
-    [
-        /(?<!\\)<evaluate>\s?(.+?)\s?(?:<\/evaluate>)/g,
-        (_, evaluate) => {
-            return eval(evaluate);
+Object.defineProperty(RegExp.prototype, "toJSON", {
+    value: RegExp.prototype.toString
+});
+function addCustomRegex(searcher, replace) {
+    userDefinedRegexes.push([new RegExp(searcher, "g"), replace]);
+    localStorage.setItem("customRegularExpressions", JSON.stringify(userDefinedRegexes));
+}
+function removeCustomRegex(searcher) {
+    let searcher2 = new RegExp(searcher, "g");
+    for (let i = 0; i < userDefinedRegexes.length; i++) {
+        let regex = userDefinedRegexes[i];
+        if (regex[0].source == searcher2.source) {
+            userDefinedRegexes.splice(i, 1);
         }
-    ],
+    }
+    localStorage.setItem("customRegularExpressions", JSON.stringify(userDefinedRegexes));
+}
+let userDefinedRegexes = [];
+function loadRegexes() {
+    let temp = JSON.parse(localStorage.getItem('customRegularExpressions'));
+    for (let regex of temp) {
+        regex[0] = regex[0].split("/");
+        regex[0] = regex[0].slice(1, regex[0].length - 1).join("/");
+        regex[0] = new RegExp(regex[0], "g");
+        console.log(regex);
+        userDefinedRegexes.push(regex);
+    }
+}
+if (localStorage.getItem("customRegularExpressions")) {
+    loadRegexes();
+}
+else {
+    userDefinedRegexes = [];
+}
+const regexes = [
     [
         /(?<!\\)\\RAND(?:\{([0-9]+) ([0-9]+)\})?\\/g,
         (_, one = null, two = null) => {
@@ -43,30 +71,39 @@ const regexes = [
         }
     ],
     [
-        /(?<!\\):U_([0-9]+):/gi,
-        (_, chr) => {
-            return String.fromCodePoint(chr);
-        }
-    ],
-    [
-        /(?<!\\)\\EMOJI\\/g,
-        () => {
-            let emojis = [EMOJIS, imgEmotes, hiddenEmotes, userDefinedEmotes];
-            let listChoice = {};
-            while (Object.values(listChoice).length == 0)
-                listChoice = emojis[Math.floor(Math.random() * emojis.length)];
-            if (Object.values(listChoice)[0] == Object.values(imgEmotes)[0]) {
-                return `<img src="${Object.values(listChoice)[Math.floor(Math.random() * Object.values(listChoice).length)]}" align="absmiddle" style="width:1em">`;
+        /(?<!\\)\\EMOJI(?:(?:\{([0-9]+)(?:(?: |, ?)(.*?))?\})|\\)/gi,
+        (_, amount, seperator) => {
+            let emojis = { ...EMOJIS, ...hiddenEmotes, ...userDefinedEmotes, ...imgEmotes };
+            let keys = Object.keys(emojis);
+            let imgEmoteValues = Object.values(imgEmotes);
+            let sep = seperator ?? "";
+            if (amount) {
+                let str = "";
+                let emoji;
+                for (let i = 0; i < amount; i++) {
+                    emoji = emojis[keys[Math.floor(Math.random() * keys.length)]];
+                    if (imgEmoteValues.indexOf(emoji) >= 0) {
+                        str += `<img src="${emoji}" align="absmiddle" style="width:1em">` + sep;
+                    }
+                    else {
+                        str += emoji + sep;
+                    }
+                }
+                return str;
             }
-            return Object.values(listChoice)[Math.floor(Math.random() * Object.values(listChoice).length)];
+            return emojis[Object.keys(emojis)[Math.floor(Math.random() * Object.keys(emojis).length)]];
         }
     ],
     [
-        /(?<!\\):reg:([a-z]):/g,
+        /(?<!\\)\\calc\{(.*?)\}/g,
+        (_, ev) => eval(ev)
+    ],
+    [
+        /(?<!\\):reg(?::|_)([a-z]):/g,
         ":regional_indicator_$1:"
     ],
     [
-        /(?<!\\):([a-z0-9_]+):/g,
+        /(?<!\\):(.+?):/g,
         (_, name) => {
             if (EMOJIS[name])
                 return EMOJIS[name];
@@ -80,7 +117,7 @@ const regexes = [
         }
     ],
     [
-        /(?<!\\)\|(?:(.*?))?->(.+?)<-(?:(.*?))?\|/g,
+        /(?<!\\)\|(.*?)->(.+?)<-(.*?)\|/g,
         "<center style='margin-left:$1;margin-right:$3'>$2</center>"
     ],
     [
@@ -160,7 +197,7 @@ const regexes = [
         "<br>"
     ],
     [
-        /(?<!\\)(\\u[0-9a-f]{4})/gi,
+        /(?<!\\)(\\u[0-9a-f]{4}|\\u\{[0-9a-f]+\})/gi,
         (_, point) => {
             return eval(`"${point}"`);
         }
@@ -183,10 +220,6 @@ const regexes = [
         (_, checked) => `<input type="radio" ${checked === "*" ? "checked" : ""} disabled>`
     ],
     [
-        /(?<!\\)\{(?:\*|style|css)('|")(.+?)\1 ?(.+?)\}/g,
-        "<span style='$2'>$3</span>"
-    ],
-    [
         /(?<!\\)\*\[(.*?)\](.*?)\|(?:\[(.*?)\])?/g,
         "<span style='$1' title='$3'>$2</span>"
     ],
@@ -203,12 +236,6 @@ const regexes = [
         "<span style='background-image:linear-gradient($2, $3)'>$4</span>"
     ],
     [
-        /(?<!\\)\{#:?(.+?)(?::| )(.+?)\}(?:\[(.+?)\])?/g,
-        (_, color, content, title) => {
-            return `<span title="${title ? title : ""}" style="color:${color.match(/(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})/) ? "#" + color : color}">${content}</span>`;
-        }
-    ],
-    [
         /(?<!\\)#\[(.+?)\](.+?)\|(?:\[(.+?)\])?/g,
         (_, color, content, title) => {
             return `<span title="${title ? title : ""}" style="color:${color.match(/(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})/) ? "#" + color : color}">${content}</span>`;
@@ -223,16 +250,8 @@ const regexes = [
         "<span style='font-size:$1' title='$3'>$2</span>"
     ],
     [
-        /(?<!\\)\{f(?:"|')(.+?)(?:"|')(?::| )?(.*?)\}/g,
-        "<span style='font-family:$1'>$2</span>"
-    ],
-    [
         /(?<!\\)f\[(.+?)\](.+?)\|(?:\[(.+?)\])?/g,
         "<span title='$3' style='font-family:$1'>$2</span>"
-    ],
-    [
-        /(?<!\\)(\[|\|)\=([0-9]+)(?: ?out ?| ?outof ?)([0-9]+)\=(?:\]|\|)(?:\[(.+?)\])?/g,
-        (_, meterOrProgress, value, max, title) => `<${meterOrProgress === '|' ? "meter" : "progress"} value="${value}" max="${max}" title="${title ? title : ""}"></${meterOrProgress === '|' ? "meter" : "progress"}>`
     ],
     [
         /(?<!\\)\|(\^|v|(?:l|<)|>)?\[(.+?)\](.+?)\|(?:\[(.+)\])?/g,
@@ -264,30 +283,6 @@ const regexes = [
         (_, width, height, resize, text) => {
             return `<c-textbox width="${width ?? ""}" height="${height ?? ""}"${resize ? ' style="resize:none;"' : ""}>${text}</c-textbox>`;
         }
-    ],
-    [
-        /(?<!\\)\{b('|")(.*?)\1 ?(.*?)\}/g,
-        "<span style='border: $2'>$3</span>"
-    ],
-    [
-        /(?<!\\)\{b\^:?('|")(.*?)\1 ?(.*?)\}/g,
-        "<span style='border-top: $2'>$3</span>"
-    ],
-    [
-        /(?<!\\)\{bv:?('|")(.*?)\1 ?(.*?)\}/g,
-        "<span style='border-bottom: $2'>$3</span>"
-    ],
-    [
-        /(?<!\\)\{b(?:l|<):?('|")(.*?)\1 ?(.*?)\}/g,
-        "<span style='border-left: $2'>$3</span>"
-    ],
-    [
-        /(?<!\\)\{b>:?('|")(.*?)\1 ?(.*?)\}/g,
-        "<span style='border-right: $2'>$3</span>"
-    ],
-    [
-        /(?<!\\)\{bg(?:#|:)?([^ \n]+)(.*?)\}(?:\[(.*?)\])?/g,
-        '<span style="background-color:$1" title="$3">$2</span>'
     ],
     [
         /(?<!\\)\((C|R)\)/g,
@@ -322,8 +317,8 @@ const regexes = [
         '<span title="$4">$1$3</span>'
     ],
     [
-        /(?<!\\)"(.+?)"\s?\.{3}(.*)/g,
-        "<details><summary>$1</summary>$2</details>"
+        /(?<!\\)"(.+?)"(?:::(.+?)(?:\/(.+?))?)?\s?\.{3}(.*)/g,
+        "<details><summary data-marker='$2' data-marker-open='$3'>$1</summary>$4</details>"
     ],
     [
         /(?<!\\)\{(k(?:ey)?|(?:cmd|samp|k(?:ey)?)):(.+?)\}/g,
@@ -338,7 +333,7 @@ const regexes = [
         '<hr style="background-color:$1;color:$1;border-color:$1" />'
     ],
     [
-        /(?<![\\#])(#{1,6}) ?(.+) \[#?(.+?)\]/g,
+        /(?<![\\#])(#{1,6}) (.+) \[#?(.+?)\]/g,
         (_, heading, contents, id) => `<h${heading.length} id=${id}>${contents}</h${heading.length}>`
     ],
     [
@@ -406,10 +401,6 @@ const regexes = [
         "<span style='text-shadow:$2'>$3</span>"
     ],
     [
-        /(?<!\\)\{(?:\.|class)("|')(.+?)\1 ?(.+?)\}/g,
-        '<span class="$2">$3</span>'
-    ],
-    [
         /(?<!\\)(?:\.|class)\[(.+?)\](.*?)\|/g,
         '<span class="$1">$2</span>'
     ],
@@ -423,6 +414,12 @@ const regexes = [
     [
         /(?<!\\)A!\[(.+?)\]/g,
         "<audio controls='controls' src='$1'>"
+    ],
+    [
+        /(?<!\\)YT!\[(.+?)\](?:\(([0-9\.]*)(?: |, ?)([0-9\.]*)\))?/g,
+        (_, link, width, height) => {
+            return `<iframe width="${width}" height="${height}" src="${link.replace("watch?v=", "embed/")}"></iframe>`;
+        }
     ],
     [
         /(?<!\\)\{(?:scroll|move|shift):?(?:(?:dir)?:?(?:"|')(.+?)(?:"|'))? ?(?:w?(?:idth)?:?(?:"|')(.+?)(?:"|'))? ?(?:h?(?:eight)?:?(?:"|')(.+?)(?:"|'))? ?(?:s?(?:croll)?(?:amount)?(?:peed)?:?(?:"|')(.+?)(?:"|'))?:? ?(.+?)\}/g,
@@ -497,160 +494,36 @@ ${selector} li{
         }
     ],
     [
-        /(?<!\\)\\include(?:\{(.*?)\}|(?::|  )(.*?)\\)/g,
+        /(?<!\\)\\include(?:\{(summarymarker|softblink|blink|placeholder|kbd|samp|cmd|spin|rainbow|highlight|l#|linenumber|csscolor)\}|(?::|  )(summarymarker|softblink|blink|placeholder|kbd|samp|cmd|spin|rainbow|highlight|l#|linenumber|csscolor)\\)/gi,
         (_, include, include2) => {
             include = include2 ?? include;
             switch (include.toUpperCase()) {
-                case "LIMARKER":
-                    return `
-<style>
-li[marker]::marker{
-content:attr(marker);
-}
-</style>`;
                 case "SOFTBLINK":
-                    return `
-<style>
-softblink{
-animation: soft-blinking linear infinite;
-animation-duration:1000ms;
-}
-@keyframes soft-blinking{
-	0%{
-		color:inherit;
-        text-shadow:inherit;
-	}
-	50%{
-		color:transparent;
-        text-shadow:none;
-	}
-}
-</style>
-`;
+                    return `<style>softblink{animation:soft-blinking linear infinite;animation-duration:1000ms}@keyframes soft-blinking{0%{color:inherit;text-shadow:inherit}50%{color:transparent;text-shadow:none}}</style>`;
                 case "BLINK":
-                    return `
-<style>
-blink{
-animation: blinking linear infinite;
-animation-duration:1000ms;
-}
-@keyframes blinking{
-	0%{
-		color:inherit;
-		background-color:inherit;
-        text-shadow:inherit;
-	}   
-	49%{
-		color:inherit;
-		background-color:inherit;
-        text-shadow:inherit;
-	}
-	50%{
-		color:transparent;	
-		background-color:transparent;
-        text-shadow:none;
-	}
-	100%{
-		color:transparent;
-		background-color:transparent;
-        text-shadow:none;
-	}
-}
-</style>
-`;
+                    return `<style>blink{animation:blinking linear infinite;animation-duration:1000ms}@keyframes blinking{0%{color:inherit;background-color:inherit;text-shadow:inherit}49%{color:inherit;background-color:inherit;text-shadow:inherit}50%{color:transparent;background-color:transparent;text-shadow:none}100%{color:transparent;background-color:transparent;text-shadow:none}}</style>`;
                 case "PLACEHOLDER":
-                    return `
-<style>
-placeholder{
-color: grey;
-user-select:none;
-}
-</style>
-`;
+                    return `<style>placeholder{color:grey;user-select:none}</style>`;
                 case "KBD":
-                    return `<style>
-kbd{
-background-color:#fafbfc;
-border:1px solid #d1d5da;
-border-bottom-color:#c6cbd1;
-border-radius:3px;
-box-shadow:inset 0 -1px 0 #c6cbd1;
-color:#444d56;display:inline-block;
-font:.8em SFMono-Regular,Consolas,Liberation Mono,Menlo,Courier,monospace;
-line-height:.9em;
-padding:3px 5px;
-vertical-align:middle
-}</style>`;
+                    return `<style>kbd{background-color:#fafbfc;border:1px solid #d1d5da;border-bottom-color:#c6cbd1;border-radius:3px;box-shadow:inset 0 -1px 0 #c6cbd1;color:#444d56;display:inline-block;font:0.8em SFMono-Regular,Consolas,Liberation Mono,Menlo,Courier,monospace;line-height:0.9em;padding:3px 5px;vertical-align:middle}</style>`;
                 case "SAMP":
                 case "CMD":
-                    return `<style>
-${include}{
-    font-family:monospace, monospace;
-    color:green;
-    background-color:black;
-    padding:2px;
-}
-${include}::selection{
-    background-color:white;
-}</style>`;
+                    return `<style>${include}{font-family:monospace, monospace;color:green;background-color:black;padding:2px}${include}::selection{background-color:white}</style>`;
                 case "SPIN":
-                    return `<style>
-spin{
-transform: rotate(0deg);
-display:inline-block;
-animation-name: spin-animation;
-animation-iteration-count: infinite;
-animation-timing-function: linear;
-}
-
-@keyframes spin-animation{
-0%{
-transform: rotate(0deg);
-}
-100%{
-transform: rotate(360deg);
-}
-</style>`;
+                    return `<style>spin{transform:rotate(0deg);display:inline-block;animation-name:spin-animation;animation-iteration-count:infinite;animation-duration:200ms;animation-timing-function:linear}@keyframes spin-animation{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}</style>`;
                 case "RAINBOW":
-                    return `<style>
-rainbow{
-animation: rainbow-an 2000ms linear infinite;
-color: blue;
-}
-@keyframes rainbow-an{
-0%{
-color: #f00;
-}
-16%{
-color: #ffff00;
-}
-32%{
-color: #00ff00;
-}
-48%{
-color: #00ffff;
-}
-64%{
-color: #0000ff;
-}
-80%{
-color: #ff00ff;
-}
-100%{
-color: #f00;
-}
-}
-</style>`;
+                    return `<style>rainbow{animation:rainbow-an 2000ms linear infinite;color:blue}@keyframes rainbow-an{0%{color:#f00}16%{color:#ffff00}32%{color:#00ff00}48%{color:#00ffff}64%{color:#0000ff}80%{color:#ff00ff}100%{color:#f00}}</style>`;
+                case "HIGHLIGHT":
+                    return `<style>code[class*="language-"],pre[class*="language-"]{color:black;background:none;text-shadow:0 1px white;font-family:Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;font-size:1em;text-align:left;white-space:pre;word-spacing:normal;word-break:normal;word-wrap:normal;line-height:1.5;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-hyphens:none;-moz-hyphens:none;-ms-hyphens:none;hyphens:none}pre[class*="language-"]::-moz-selection,pre[class*="language-"] ::-moz-selection,code[class*="language-"]::-moz-selection,code[class*="language-"] ::-moz-selection{text-shadow:none;background:#b3d4fc}pre[class*="language-"]::selection,pre[class*="language-"] ::selection,code[class*="language-"]::selection,code[class*="language-"] ::selection{text-shadow:none;background:#b3d4fc}@media print{code[class*="language-"],pre[class*="language-"]{text-shadow:none}}pre[class*="language-"]{padding:1em;margin:0.5em 0;overflow:auto}:not(pre) > code[class*="language-"],pre[class*="language-"]{background:#f5f2f0}:not(pre) > code[class*="language-"]{padding:0.1em;border-radius:0.3em;white-space:normal}.token.cdata,.token.comment,.token.doctype,.token.prolog{color:slategray}.token.punctuation{color:#999}.token.namespace{opacity:0.7}.token.boolean,.token.constant,.token.deleted,.token.number,.token.property,.token.symbol,.token.tag{color:#905}.token.attr-name,.token.builtin,.token.char,.token.inserted,.token.selector,.token.string{color:#690}.language-css .token.string,.style .token.string,.token.entity,.token.operator,.token.url{color:#9a6e3a;background:hsla(0, 0%, 100%, .5)}.token.atrule,.token.attr-value,.token.keyword{color:#07a}.token.class-name,.token.function{color:#DD4A68}.token.important,.token.regex,.token.variable{color:#e90}.token.bold,.token.important{font-weight:bold}.token.italic{font-style:italic}.token.entity{cursor:help}</style>`;
+                case "L#":
+                case "LINENUMBER":
+                    return `<style>pre[class*="language-"].line-numbers{position:relative;padding-left:3.8em;counter-reset:linenumber}pre[class*="language-"].line-numbers > code{position:relative;white-space:inherit}.line-numbers .line-numbers-rows{position:absolute;pointer-events:none;top:0;font-size:100%;left:-3.8em;width:3em;letter-spacing:-1px;border-right:1px solid #999;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.line-numbers-rows > span{display:block;counter-increment:linenumber}.line-numbers-rows > span:before{content:counter(linenumber);color:#999;display:block;padding-right:0.8em;text-align:right}</style>`;
+                case "CSSCOLOR":
+                    return `<style>span.inline-color-wrapper{background:url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyIDIiPjxwYXRoIGZpbGw9ImdyYXkiIGQ9Ik0wIDBoMnYySDB6Ii8+PHBhdGggZmlsbD0id2hpdGUiIGQ9Ik0wIDBoMXYxSDB6TTEgMWgxdjFIMXoiLz48L3N2Zz4=");background-position:center;background-size:110%;display:inline-block;height:1.333ch;width:1.333ch;margin:0 0.333ch;box-sizing:border-box;border:1px solid white;outline:1px solid rgba(0,0,0,.5);overflow:hidden}span.inline-color{display:block;height:120%;width:120%}</style>`;
+                case "SUMMARYMARKER":
+                    return `<style>summary[data-marker]::marker{content: attr(data-marker)}details[open] summary[data-marker-open]::marker{content: attr(data-marker-open)}</style>`;
             }
         }
-    ],
-    [
-        /(?<!\\)#\[(.*)\]/g,
-        '<BLANK id="$1"></BLANK>'
-    ],
-    [
-        /(?<!\\)([^\s<]+)<->(.+)/g,
-        '<span style="letter-spacing:$1">$2</span>'
     ],
     [
         /(?<!\\)\\import(?:\((gf)\))?(?:\{(.*?)\}|(?::| )(.*?)\\)/g,
@@ -664,7 +537,7 @@ color: #f00;
         }
     ],
     [
-        /(?<!\\)\\(font|size|color|custom|lineheight|spacing)(?:\{(.*)\}|(?::| )(.*)\\)/gi,
+        /(?<!\\)\\(font|size|color|custom|lineheight|spacing|wordspacing|letterspacing)(?:\{((?:.|\s)*?)\}|(?::| )(.*)\\)/gi,
         (_, type, value, value2) => {
             value = value2 ?? value;
             switch (type.toUpperCase()) {
@@ -679,11 +552,15 @@ color: #f00;
                 case "LINEHEIGHT":
                 case "SPACING":
                     return `<div style='line-height:${value}>`;
+                case "WORDSPACING":
+                    return `<div style='word-spacing:${value}'>`;
+                case "LETTERSPACING":
+                    return `<div style='letter-spacing:${value}'>`;
             }
         }
     ],
     [
-        /(?<!\\)\\END(F|S|#|C|L)(?:\{(.*?)\}| (.*?)\\)/gi,
+        /(?<!\\)\\END(F|S|#|C|H|W|L)(?:\{(.*?)\}| (.*?)\\)/gi,
         (_, type, newValue, newValue2) => {
             newValue = newValue2 ?? newValue;
             switch (type.toUpperCase()) {
@@ -695,8 +572,12 @@ color: #f00;
                     return `</div><div style="color: ${newValue}">`;
                 case "C":
                     return `</div><div style="${newValue}">`;
-                case "L":
+                case "H":
                     return `</div><div style="line-height: ${newValue}">`;
+                case "W":
+                    return `</div><div style="word-spacing: ${newValue}">`;
+                case "L":
+                    return `</div><div style="letter-spacing: ${newValue}">`;
             }
         }
     ],
@@ -731,10 +612,6 @@ color: #f00;
         '<span style="cursor:$1" title="$3">$2</span>'
     ],
     [
-        /(?<!\\)\*\[(.+?)\] (.*)/g,
-        "<li marker='$1&nbsp;'>$2</li>"
-    ],
-    [
         /(?<!\\)~=/g,
         "&asymp;"
     ],
@@ -751,7 +628,19 @@ color: #f00;
         "&ne;"
     ],
     [
-        /(?<!\\)\[(.*?)\]\*([0-9]+)/g,
+        /(?<!\\):=/g,
+        "&Assign;"
+    ],
+    [
+        /(?<!\\)<\.\.\./g,
+        "&#8672;"
+    ],
+    [
+        /(?<!\\)\.\.\.>/g,
+        "&#8674;"
+    ],
+    [
+        /(?<!\\)\[(.+?)\]\*([0-9]+)/g,
         (_, chars, count) => {
             return chars.multiply(Number(count));
         }
@@ -778,22 +667,13 @@ function convert(value, custom = true, nonCustom = true) {
             value = value.replace(x[0], "");
             value = value.replace(regex, x[2]);
         }
-        let replaces = [...value.matchAll(/(?<!\\)\\replace:?(.+)\n(.*)((?:\n)re)?\\/g)];
-        for (let match of replaces) {
-            //makes it replace only the text after the declartation
-            value = value.split(match[0]);
-            //for regex replace
-            if (match[3]) {
-                value[1] = value[1].replace(new RegExp(match[1], "gm"), match[2]);
-            }
-            else
-                value[1] = value[1].replaceAll(match[1], match[2]); //for non-regex replace
-            value = value.join("");
-        }
         //loops through the lists of regexes
-        for (let regexReplace of regexes) {
-            value = value.replace(regexReplace[0], regexReplace[1]);
-        }
+        userDefinedRegexes.forEach(item => {
+            value = value.replace(item[0], item[1]);
+        });
+        regexes.forEach(item => {
+            value = value.replace(item[0], item[1]);
+        });
     }
     return nonCustom ? marked(value) : value;
 }

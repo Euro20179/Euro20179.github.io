@@ -20,11 +20,8 @@ I wanted to add some "features" to markdown so I put a bunch of regular expressi
 * any text below \\COLOR:color\\ will be that color
 * any text below \\FONT:font\\ will be that font
 * any text below \\SIZE:size\\ will be that size
-* {f'font' any text in here will be font}
 * f\[font]text in here will be font|\[title (optional)]
-* {ssize any text in here will be of size size}
 * s\[size]text will be size|\[title (optional)]
-* {#color any text in here will be color}\[title (optional)]
 * #\[color]text here will be color|\[title (optional)]
 * {bg:color any text in here will have a background color of color}\[title (optional)]
 * {cursor:type:text} any text will have a cursor of type
@@ -101,8 +98,6 @@ I wanted to add some "features" to markdown so I put a bunch of regular expressi
 * \[.x] checked clickable checkbox
 * ( ) radio unselected
 * (*) radio selected
-* \[=1 out 10=] a progress bar at 1 out of 10
-* |=1 out 10=| a meter bar at 1 out of 10
 
 ---
 
@@ -143,6 +138,9 @@ I wanted to add some "features" to markdown so I put a bunch of regular expressi
 * KBD: css for the kbd element
 * SAMP: css for the samp element
 * CMD: css for a cmd element (same css as SAMP)
+* HIGHLIGHT: css for code-block syntax highlighting
+* L#: css for line-numbers in code-blocks
+* LINECOLOR: css color preview for code blocks
 
 ---
 
@@ -179,6 +177,8 @@ I wanted to add some "features" to markdown so I put a bunch of regular expressi
 * \[text]\*number
     * makes it so that text is duplicated by number
 * \n a &lt;br> element
+* \\u00ff: unicode escape
+* \\u{00f90209f0e098} unicode escape
 
 ## NOT RECOMMENDED (usually causes lag)
 * \RAND\\: random number from 1 to 100
@@ -202,36 +202,3 @@ re\
 
 * replaces that with how many times the search shows up
     * NOTE: it will be one convert behind since it searches the preview's textContent not the value of the textarea
-
-### Find Replace
-```
-replace:(search)
-(replacement)\
-```
-OR
-```
-replace:(regex)
-(replacement)
-re\
-```
-
-#### Examples
-
-```
-\replace:red
-{#red red}\
-```
-searches through the input and makes the string "red" red
-
-```
-\replace:(.red.)
-{bg:red $1}
-re\
-```
-matches the regular expression .red. and makes the background red
-
-```
-\replace:underline
-{*'text-decoration:underline double;' underline}\
-```
-matches "underline" and gives it a double underline
