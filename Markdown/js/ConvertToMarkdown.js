@@ -232,9 +232,7 @@ const regexes = [
     ],
     [
         /(?<!\\)#\[(.+?)\](.+?)\|(?:\[(.+?)\])?/g,
-        (_, color, content, title) => {
-            return `<span title="${title ? title : ""}" style="color:${color.match(/(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})/) ? "#" + color : color}">${content}</span>`;
-        }
+        (_, color, content, title) => `<span title="${title ?? ""}" style="color:${color.match(/(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})/) ? "#" + color : color}">${content}</span>`
     ],
     [
         /(?<!\\)\{s(?!hadow|pace|amp):?([^ \n]+) (.*?)\}/g,
@@ -296,8 +294,8 @@ const regexes = [
         "<span style='display:inline-block;margin-left:$1'>$2</span>"
     ],
     [
-        /(?<!\\)^(.+?)->(.+?)$/gm,
-        "<span style='display:inline-block;text-indent:$1'>$2</span>"
+        /(?<!\\)^(.*?)->(.+?)$/gm,
+        (_, indent, text) => `<span style="display:inline-block; text-indent: ${indent || "2em"}">${text}</span>`
     ],
     [
         /(?<!\\)(.+?)<--(.+?)$/gm,
@@ -345,11 +343,7 @@ const regexes = [
     ],
     [
         /(?<!\\|!)\[(.*?)\]\((.+?)(?:\s(.*?))?\)/g,
-        (_, text, link, title) => {
-            if (!title)
-                return `<a title="${link}" href="${link}">${text}</a>`;
-            return `<a title="${title}" href="${link}">${text}</a>`;
-        }
+        (_, text, link, title) => `<a title="${title ?? link}" href="${link}">${text}</a>`
     ],
     [
         /(?<!\\)(?:\[(.+?)\])?\^\^_(.+?)_\^\^(?:\[(.+?)\])?/g,
@@ -408,7 +402,7 @@ const regexes = [
     ],
     [
         /(?<!\\)A!\[(.+?)\]/g,
-        "<audio controls='controls' src='$1'>"
+        "<audio controls src='$1'>"
     ],
     [
         /(?<!\\)YT!\[(.+?)\](?:\(([0-9\.]*)(?: |, ?)([0-9\.]*)\))?/g,
@@ -429,39 +423,8 @@ const regexes = [
         "<c-spacer color='$1' amount='$2'></c-spacer>"
     ],
     [
-        /(?<!\\)\\olm(?:arker)?:([0-9]+)\\?(.+?)\\/g,
-        (_, layer, to) => {
-            let selector = "ol";
-            layer = parseInt(layer);
-            for (let i = 0; i < layer; i++) {
-                selector += " li ";
-            }
-            let listStyleType = null;
-            if (to.match("TYPE:")) {
-                listStyleType = to.split("TYPE:")[1];
-                return `<style>
-${selector}{
-    list-style-type: ${listStyleType}
-}
-${selector} li{
-    list-style-type:inherit;
-}
-</style>`;
-            }
-            return `<style>
-    ${selector.trim()}::marker{
-        content: "${to}\\00a0";
-    }
-    ${selector} li::marker{
-        content:inherit;
-    }
-</style>`;
-        }
-    ],
-    [
-        /(?<!\\)\\ulm(?:arker)?:([0-9]+)\\?(.+?)\\/g,
-        (_, layer, to) => {
-            let selector = "ul";
+        /(?<!\\)\\(ol|ul)m(?:arker)?:([0-9]+)(?:\s|:)(.+?)\\/g,
+        (_, selector, layer, to) => {
             layer = parseInt(layer);
             for (let i = 0; i < layer; i++) {
                 selector += " li ";
@@ -604,7 +567,17 @@ ${selector} li{
         }
     ],
     [
-        /(?<!\\)\{cur(?:sor)?: ?(.*?)(?: |:)(.+?)\}(?:\[(.*?)\])?/g,
+        /(?<!\\)((?:\||=) .+\n?)+/g,
+        (items) => {
+            let str = "<dl>";
+            for (let x of items.split("\n")) {
+                str += x[0] === "=" ? `<dt>${x.slice(1).trim()}</dt>` : `<dd>${x.slice(1).trim()}</dd>`;
+            }
+            return str + "</dl>";
+        }
+    ],
+    [
+        /(?<!\\)\{cur(?:sor)?: ?(.*?)(?:\s|:)(.+?)\}(?:\[(.*?)\])?/g,
         '<span style="cursor:$1" title="$3">$2</span>'
     ],
     [
@@ -672,5 +645,45 @@ function convert(value, custom = true, nonCustom = true) {
         });
     }
     //@ts-ignore
-    return nonCustom ? marked(value) : value;
+    return (nonCustom ? marked(value) : value) + `<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js">MathJax.Hub.Config({
+        jax: [
+            'input/TeX',
+            'output/HTML-CSS',
+        ],
+        extensions: [
+            'tex2jax.js',
+            'AssistiveMML.js',
+            'a11y/accessibility-menu.js',
+        ],
+        TeX: {
+        extensions: [
+            'AMSmath.js',
+            'AMSsymbols.js',
+            'noErrors.js',
+            'noUndefined.js',
+        ]
+        },
+        tex2jax: {
+        inlineMath: [
+            ['$', '$'],
+            ['\\(', '\\)'],
+        ],
+        displayMath: [
+            ['$$', '$$'],
+            ['\\[', '\\]'],
+        ],
+        processEscapes: true
+        },
+        showMathMenu: false,
+        showProcessingMessages: false,
+        messageStyle: 'none',
+        skipStartupTypeset: false, // disable initial rendering
+        positionToHash: false
+    })
+// set specific container to render, can be delayed too
+    //@ts-ignore
+    MathJax.Hub.Queue(
+        //@ts-ignore
+        ['Typeset', MathJax.Hub, 'preview']
+    )</script>`;
 }

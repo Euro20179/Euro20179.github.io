@@ -88,9 +88,9 @@
                 <span class="divider"></span>
                 <label>Count of <input type="search" id="preview-search-count" style="width:10vw"></label>
                 <input type="checkbox" id="preview-search-count-regex"><label>use regex?</label>
-                <button id="count-of-button" class="editing-button" onclick="let count;if(document.getElementById('preview-search-count-regex').checked){count = [...preview.textContent.matchAll(document.getElementById('preview-search-count').value)].length}else{count= preview.textContent.split(document.getElementById('preview-search-count').value).length - 1}alert(count)">Get Count</button> 
+                <button id="count-of-button" class="editing-button" onclick="let count;if(document.getElementById('preview-search-count-regex').checked){count = [...preview.textContent.matchAll(document.getElementById('preview-search-count').value)].length}else{count= preview.innerText.split(document.getElementById('preview-search-count').value).length - 1}alert(count)">Get Count</button> 
                 <span class="divider" dashed></span>
-                <button class="editing-button" onclick="alert([...preview.textContent.matchAll(/[^ ]+/gm)].length)">Word Count</button>
+                <button class="editing-button" onclick="alert([...preview.innerText.matchAll(/[^ ]+/gm)].length)">Word Count</button>
             </fieldset>
         </div>
         <div id="ui-options" class="bar-section" style="text-align:right">
@@ -134,7 +134,7 @@
                 <span class="divider"></span>   
                 <button class="editing-button" style="cursor:pointer" onclick='window.open("./Emojis/index.html", "_blank")'>Emoji List</button>
                 <span class="divider"></span>
-                <button class="editing-button" style="cursor: pointer;" title="V 1.0.1" onclick="window.open('./Update.html', '_blank')">Updates</button>
+                <button class="editing-button" style="cursor: pointer;" title="V 1.6.2" onclick="window.open('./Update.html', '_blank')">Updates</button>
                 <span class="divider"></span>
                 <a href="./README.md"><button class="editing-button" style="cursor: pointer;" title="help">Help</button></a>
             </fieldset>
@@ -470,6 +470,6 @@
     <script>
         let TextEditorColorInversion = document.getElementById("text-editor-color-inversion").checked;
         let PreviewColorInversion = document.getElementById("preview-color-inversion").checked;
-    </script>
+</script>
 </body>
 </html>

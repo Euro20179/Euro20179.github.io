@@ -76,7 +76,6 @@ function mathJax() {
         jax: [
             'input/TeX',
             'output/HTML-CSS',
-            'output/PreviewHTML',
         ],
         extensions: [
             'tex2jax.js',
@@ -105,7 +104,7 @@ function mathJax() {
         showMathMenu: false,
         showProcessingMessages: false,
         messageStyle: 'none',
-        skipStartupTypeset: true,
+        skipStartupTypeset: false,
         positionToHash: false
     });
     // set specific container to render, can be delayed too
@@ -259,17 +258,25 @@ function keyPresses(e) {
                 break;
             case "Enter":
                 if (autoTab.checked) {
+                    console.log(tabOverAmount);
+                    if (tabOverAmount > 0) {
+                        //@ts-ignore
+                        if (lastKeyStrokeWasEnter) {
+                            let start = textEditor.selectionStart;
+                            textEditor.value = textEditor.value.slice(0, textEditor.selectionStart - 1) + textEditor.value.slice(textEditor.selectionStart);
+                            textEditor.selectionStart = start - 1;
+                            textEditor.selectionEnd = start - 1;
+                        }
+                        else
+                            startEndTypeInTextArea("\n" + mulString("	", tabOverAmount), "");
+                    }
+                    else {
+                        startEndTypeInTextArea("\n", "");
+                    }
                     if (lastKeyStrokeWasEnter) {
                         if (tabOverAmount > 0) {
                             tabOverAmount--;
                         }
-                    }
-                    if (tabOverAmount > 0) {
-                        //@ts-ignore
-                        startEndTypeInTextArea("\n" + mulString("	", tabOverAmount), "");
-                    }
-                    else {
-                        startEndTypeInTextArea("\n", "");
                     }
                     lastKeyStrokeWasEnter = true;
                     e.preventDefault();
