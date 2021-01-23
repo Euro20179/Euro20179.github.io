@@ -13,6 +13,9 @@ math.config({
 Object.defineProperty(RegExp.prototype, "toJSON", {
     value: RegExp.prototype.toString
 });
+function generateScript(placeHolder, script, id) {
+    return '<span id="' + id + '">' + placeHolder + '</span><script>' + script.replaceAll("{ID}", id) + "</script>";
+}
 function addCustomRegex(searcher, replace) {
     userDefinedRegexes.push([new RegExp(searcher, "g"), replace]);
     localStorage.setItem("customRegularExpressions", JSON.stringify(userDefinedRegexes));
@@ -37,6 +40,14 @@ function loadRegexes() {
         console.log(regex);
         userDefinedRegexes.push(regex);
     }
+}
+function generateId(amount = 10) {
+    let chars = "abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ-";
+    let str = "";
+    for (let i = 0; i < amount; i++) {
+        str += chars[Math.floor(Math.random() * chars.length)];
+    }
+    return str;
 }
 if (localStorage.getItem("customRegularExpressions")) {
     loadRegexes();
@@ -77,15 +88,29 @@ const regexes = [
         (_, ev) => eval(ev)
     ],
     [
-        /(?<!\\)\\function ?(?:=|-)> ?([^]+?)END/g,
+        /(?<!\\)\\function ?(?:=|-)> ?([^]+?)\s;$/gm,
         (_, ev) => Function(ev)()
     ],
     [
-        /(?<!\\)"(.*?)" ?c> ?([^]+?)END/g,
+        /(?<!\\)\\load ? (?:=|-)> ?([^]+?)\s;$/gm,
+        (_, ev) => {
+            let id = (() => {
+                let str = "";
+                let chars = "abcdefghijklmnopqrstuvwxyz12345676890-";
+                for (let i = 0; i < 10; i++) {
+                    str += chars[Math.floor(Math.random() * chars.length)];
+                }
+                return str;
+            })();
+            return `<span id="${id}"></span><script>${ev.replace(/replaceThis\((.*?)\)/g, `document.getElementById("${id}").innerHTML = $1`)}</script>`;
+        }
+    ],
+    [
+        /(?<!\\)"(.*?)" ?c> ?([^]+?)\s;$/gm,
         `<p onclick='$2'>$1</p>`
     ],
     [
-        /(?<!\\)"(.*?)" ?r> ?([^]+?)END/g,
+        /(?<!\\)"(.*?)" ?r> ?([^]+?)\s;$/gm,
         `<p oncontextmenu='$2; event.preventDefault()'>$1</p>`
     ],
     [
@@ -338,12 +363,10 @@ const regexes = [
         '<hr style="background-color:$1;color:$1;border-color:$1" id="$2" />'
     ],
     [
-        /(?<![\\#])(^#{1,6})(?:_\[(.*?)\])? ([^#]+)(?:#(.+))?/gm,
-        (_, heading, border, contents, id) => {
-            return border
-                ? `<h${heading.length} id="${id ?? ""}" style="display:block;border-bottom:${border};">${contents}</h${heading.length}>`
-                : `<h${heading.length} id=${id}>${contents}</h${heading.length}>`;
-        }
+        /(?<![\\#])(^#{1,6})(?:_\[(.*?)\])? ([^#\n]+)(?:#(.+))?/gm,
+        (_, heading, border, contents, id) => border
+            ? `<h${heading.length} id="${id ?? ""}" style="display:block;border-bottom:${border};">${contents}</h${heading.length}>`
+            : `<h${heading.length} id=${id ?? ""}>${contents}</h${heading.length}>`
     ],
     [
         /(?<!\\)\[(\.)?([0-9]+)-([0-9]+)\](?:\{?([0-9]+)\})?/g,
@@ -354,7 +377,7 @@ const regexes = [
         (_, word, speech, def) => `<span class="_word">${word}</span><span class="_word-speech">${speech ? " (" + speech + ")" : ""}</span>:<br><span class="_definition" style='margin-left:1.5em;display:block'>${def}</span>`
     ],
     [
-        /(?<!\\)#\[(.*?)\]/g,
+        /(?<!\\)^#([^\s]*)$/gm,
         "<div id='$1'></div>"
     ],
     [
@@ -467,8 +490,22 @@ ${selector} li{
         }
     ],
     [
+        /(?<!\\)%truetoday%/g,
+        () => {
+            let d = new Date();
+            return generateScript(`${d.getMonth() + 1}/${d.getDate()}/${d.getFullYear()}`, 'let d = new Date(); document.getElementById("{ID}").innerHTML = d.getMonth() + 1 + "/" + d.getDate() + "/" + d.getFullYear()', generateId());
+        }
+    ],
+    [
         /(?<!\\)%now%/g,
         () => (new Date()).toLocaleTimeString()
+    ],
+    [
+        /(?<!\\)%truenow%/g,
+        () => {
+            let id = generateId();
+            return generateScript((new Date()).toLocaleTimeString(), 'document.getElementById("{ID}").innerHTML = (new Date()).toLocaleTimeString()', generateId());
+        }
     ],
     [
         /(?<!\\)\\include(?:\{(summarymarker|softblink|blink|placeholder|kbd|samp|cmd|spin|rainbow|highlight|l#|linenumber|csscolor)\}|(?::|  )(summarymarker|softblink|blink|placeholder|kbd|samp|cmd|spin|rainbow|highlight|l#|linenumber|csscolor)\\)/gi,
@@ -645,9 +682,10 @@ ${selector} li{
     ],
 ];
 function convert(value, custom = true, nonCustom = true) {
+    actionHistory.add();
     if (custom) {
         //handles the $x=2 END thing
-        for (let x of value.matchAll(/(?:var:|\$)([^=]*)=([^]+?)\sEND/g)) {
+        for (let x of value.matchAll(/^(?:var:|\$)([^=]*)=([^]+?)\s;$/gm)) {
             let regex = new RegExp(`%${x[1]}%`, "g");
             value = value.replace(x[0], "").replace(regex, x[2]);
         }
