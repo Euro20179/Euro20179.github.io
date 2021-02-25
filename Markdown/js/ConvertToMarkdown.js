@@ -88,10 +88,6 @@ const regexes = [
         (_, ev) => eval(ev)
     ],
     [
-        /(?<!\\)\\function ?(?:=|-)> ?([^]+?)\s;$/gm,
-        (_, ev) => Function(ev)()
-    ],
-    [
         /(?<!\\)\\load ? (?:=|-)> ?([^]+?)\s;$/gm,
         (_, ev) => {
             let id = (() => {
@@ -108,14 +104,6 @@ const regexes = [
     [
         /(?<!\\)"(.*?)" ?c> ?([^]+?)\s;$/gm,
         `<p onclick='$2'>$1</p>`
-    ],
-    [
-        /(?<!\\)"(.*?)" ?r> ?([^]+?)\s;$/gm,
-        `<p oncontextmenu='$2; event.preventDefault()'>$1</p>`
-    ],
-    [
-        /(?<!\\):reg(?::|_|-)([a-z]):/g,
-        ":regional_indicator_$1:"
     ],
     [
         /(?<!\\):(.+?):/g,
@@ -138,10 +126,6 @@ const regexes = [
     [
         /(?<!\\)([0-9\.]+)\/\/([0-9\.]+)/g,
         "$1⁄$2"
-    ],
-    [
-        /(?<!\\)<spin speed="(.*?)">/g,
-        "<spin style='animation-duration: $1'>"
     ],
     [
         /(?<!\\)--->/g,
@@ -217,7 +201,7 @@ const regexes = [
     ],
     [
         /(?<!\\)\|{2}(.*?)\|{2}/g,
-        `<span style="background-color:black;" onclick="this.style.backgroundColor = 'white'" oncontextmenu="this.style.backgroundColor = 'black'; event.preventDefault()">$1</span>`
+        `<span style="cursor:pointer; background-color:black;" onclick="this.style.backgroundColor = this.style.backgroundColor == 'white' ? 'black' : 'white'">$1</span>`
     ],
     [
         /(?<!\\)>([iub]*) ?(.*)\n-([iub]*) ?(.*)/g,
@@ -266,14 +250,6 @@ const regexes = [
     [
         /(?<!\\)\[(\.)?( |x)\](?!\()/g,
         (_, interactive, checked) => `<input type="checkbox" ${checked === "x" ? "checked" : ""} ${!interactive ? "disabled" : ""}>`
-    ],
-    [
-        /(?<!\\)\{g#:?(?:"|')([^\-\n]*, ?)?rainbow(?:"|')(.*)\}/g,
-        "<span style='background-image:linear-gradient($1 #ff0000, #00ff00, #0000ff, #ff0000)'>$2</span>"
-    ],
-    [
-        /(?<!\\)\{g#:?("|')(.*), ?([^,\}]*)\1([^\}]*)\}/g,
-        "<span style='background-image:linear-gradient($2, $3)'>$4</span>"
     ],
     [
         /(?<!\\)#\[?([a-z0-9]+)(?:\]| -> )(.+?)\|(?:\[(.+?)\])?/gi,
@@ -349,10 +325,6 @@ const regexes = [
     [
         /(?<!\\)"(.+?)"(?:::(.+?)(?:\/(.+?))?)?\s?\.{3}(.*)/g,
         "<details><summary data-marker='$2 ' data-marker-open='$3 '>$1</summary>$4</details>"
-    ],
-    [
-        /(?<!\\)\{(k(?:ey)?|(?:cmd|samp|k(?:ey)?)):(.+?)\}/g,
-        (_, type, contents) => `<${type != "k" && type != "key" ? type : "kbd"}>${contents}</${type != "k" && type != "key" ? type : "kbd"}>`
     ],
     [
         /(?<!\\)(?:\[(.*?)\])?\*-(.+?)-\*(?:\[(.+?)\])?/g,
@@ -446,15 +418,11 @@ const regexes = [
         }
     ],
     [
-        /(?<!\\)\{(?:scroll|move|shift):?(?:(?:dir)?:?(?:"|')(.+?)(?:"|'))? ?(?:w?(?:idth)?:?(?:"|')(.+?)(?:"|'))? ?(?:h?(?:eight)?:?(?:"|')(.+?)(?:"|'))? ?(?:s?(?:croll)?(?:amount)?(?:peed)?:?(?:"|')(.+?)(?:"|'))?:? ?(.+?)\}/g,
-        "<marquee direction='$1' height='$3' width='$2' scrollamount='$4'>$5</marquee>"
-    ],
-    [
         /(?<!\\)\[([0-9-]+?)\]\*(.+?)\*/g,
         '<span style="transform:skewX($1deg);display:inline-flex">$2</span>'
     ],
     [
-        /(?<!\\)\\(ol|ul)m(?:arker)?:([0-9]+)(?:\s|:)(.+?)\\/g,
+        /(?<!\\)\\(ol|ul)m(?:arker)?\{([0-9]+),\s?(.+?)\}\\/g,
         (_, selector, layer, to) => {
             layer = parseInt(layer);
             for (let i = 0; i < layer; i++) {
@@ -508,7 +476,7 @@ ${selector} li{
         }
     ],
     [
-        /(?<!\\)\\include(?:\{(summarymarker|softblink|blink|placeholder|kbd|samp|cmd|spin|rainbow|highlight|l#|linenumber|csscolor)\}|(?::|  )(summarymarker|softblink|blink|placeholder|kbd|samp|cmd|spin|rainbow|highlight|l#|linenumber|csscolor)\\)/gi,
+        /(?<!\\)\\include(?:\{(summarymarker|softblink|blink|placeholder|kbd|samp|cmd|rainbow|highlight|l#|linenumber|csscolor)\}|(?::|  )(summarymarker|softblink|blink|placeholder|kbd|samp|cmd|spin|rainbow|highlight|l#|linenumber|csscolor)\\)/gi,
         (_, include, include2) => {
             include = include2 ?? include;
             switch (include.toUpperCase()) {
@@ -523,8 +491,6 @@ ${selector} li{
                 case "SAMP":
                 case "CMD":
                     return `<style>${include}{font-family:monospace, monospace;color:green;background-color:black;padding:2px}${include}::selection{background-color:white}</style>`;
-                case "SPIN":
-                    return `<style>spin{transform:rotate(0deg);display:inline-block;animation-name:spin-animation;animation-iteration-count:infinite;animation-duration:200ms;animation-timing-function:linear}@keyframes spin-animation{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}</style>`;
                 case "RAINBOW":
                     return `<style>rainbow{animation:rainbow-an 2000ms linear infinite;color:blue}@keyframes rainbow-an{0%{color:#f00}16%{color:#ffff00}32%{color:#00ff00}48%{color:#00ffff}64%{color:#0000ff}80%{color:#ff00ff}100%{color:#f00}}</style>`;
                 case "HIGHLIGHT":
