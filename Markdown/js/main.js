@@ -206,7 +206,6 @@ function addToCurrElem(e) {
     }
 }
 function keyPresses(e) {
-    console.log(e);
     if (AutoCompleteElements) {
         //starts the element
         if (e.key == "<") {
