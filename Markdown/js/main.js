@@ -170,7 +170,7 @@ function addSpace() {
     let color = document.getElementById("space-color").value;
     let amount = document.getElementById("space-amount").value;
     let unit = document.getElementById("space-unit").value;
-    addTextTypeInTextArea(`{space${color} ${amount}${unit}}`);
+    startEndTypeInTextArea(`{space${color} ${amount}${unit}}`, "");
 }
 function addShadow() {
     let unit = document.getElementById('shadow-dir-unit').value;
@@ -184,10 +184,10 @@ function addShadow() {
 function addOLULInclude() {
     let types = document.getElementById("ul-ol-types").value;
     if (types) {
-        addTextTypeInTextArea(`\\${document.getElementById('ul-ol').value}marker:${document.getElementById('list-layer').value}\\TYPE:${types}\\`);
+        startEndTypeInTextArea(`\\${document.getElementById('ul-ol').value}marker:${document.getElementById('list-layer').value}\\TYPE:${types}\\`, "");
     }
     else
-        addTextTypeInTextArea(`\\${document.getElementById('ul-ol').value}marker:${document.getElementById('list-layer').value}\\${document.getElementById('marker-text').value}\\`);
+        startEndTypeInTextArea(`\\${document.getElementById('ul-ol').value}marker:${document.getElementById('list-layer').value}\\${document.getElementById('marker-text').value}\\`, "");
 }
 function addToCurrElem(e) {
     if (currTypingElem[currTypingElem.length - 1] === " " && TypingElem) {
@@ -206,6 +206,7 @@ function addToCurrElem(e) {
     }
 }
 function keyPresses(e) {
+    console.log(e);
     if (AutoCompleteElements) {
         //starts the element
         if (e.key == "<") {
@@ -223,7 +224,7 @@ function keyPresses(e) {
         //ends the typing element
         else if (TypingElem && e.key == ">") {
             if (["hr", "wbr", "br"].indexOf(currTypingElem.join("")) < 0) {
-                addTextTypeInTextArea(">");
+                startEndTypeInTextArea(">", "");
                 //+2 is the length of < and >
                 //extraElemTextLength is the stuff like style=
                 textEditor.setSelectionRange(elementInnerHTML[1] + currTypingElem.length + 2 + extraElemTextLength, elementInnerHTML[1] + currTypingElem.length + 2 + extraElemTextLength);
@@ -246,17 +247,13 @@ function keyPresses(e) {
     if (!e.ctrlKey && !e.altKey && !e.shiftKey) {
         switch (e.key) {
             case "Backspace":
-                if (autoTab.checked) {
-                    if (lastKeyStrokeWasEnter) {
-                        if (tabOverAmount > 0) {
-                            tabOverAmount--;
-                        }
-                    }
+                if (autoTab.checked && lastKeyStrokeWasEnter && tabOverAmount > 0) {
+                    tabOverAmount--;
+                    lastKeyStrokeWasEnter = true;
                 }
                 break;
             case "Enter":
                 if (autoTab.checked) {
-                    console.log(tabOverAmount);
                     if (tabOverAmount > 0) {
                         //@ts-ignore
                         if (lastKeyStrokeWasEnter) {
@@ -306,125 +303,93 @@ function keyPresses(e) {
                 document.getElementById("live-interprate").click();
                 e.preventDefault();
                 break;
-            case "F1":
-                textEditor.style.cursor = "wait";
-                preview.innerHTML = convert(textEditor.value, cusotmMdChkbx.checked);
-                highlightCode();
-                if (useMathJaxCheckbox.checked)
-                    mathJax();
-                textEditor.style.cursor = "initial";
-                e.preventDefault();
-                break;
             default:
                 break;
         }
-        if (e.key != "Enter")
+        if (e.key != "Enter" && e.key != "Backspace")
             lastKeyStrokeWasEnter = false;
     }
     //ctrl + key
     else if (e.ctrlKey && !e.shiftKey && !e.altKey) {
+        if ("q,.burdhiesp1fg23456789kz'".includes(e.key))
+            e.preventDefault();
         switch (e.key) {
             case "q":
                 typeInTextarea("''''", 2);
-                e.preventDefault();
                 break;
             case ",":
                 startEndTypeInTextArea("\\_[", "]");
-                e.preventDefault();
                 break;
             case ".":
                 startEndTypeInTextArea("\\^[", "]");
-                e.preventDefault();
                 break;
             case "b":
                 typeInTextarea("****", 2);
-                e.preventDefault();
                 break;
             case "u":
                 typeInTextarea("__");
-                e.preventDefault();
                 break;
             case "r":
                 typeInTextarea("~__~", 2);
-                e.preventDefault();
                 break;
             case "d":
                 typeInTextarea(".__.", 2);
-                e.preventDefault();
                 break;
             case "h":
                 typeInTextarea("*--*", 2);
-                e.preventDefault();
                 break;
             case "i":
                 typeInTextarea('**');
-                e.preventDefault();
                 break;
             case "e":
                 typeInTextarea("``");
-                e.preventDefault();
                 break;
             case "s":
                 typeInTextarea('~~~~', 2);
-                e.preventDefault();
                 break;
             case "p":
-                addTextTypeInTextArea(">PRO: ");
-                e.preventDefault();
+                typeInTextarea(">PRO: ", 6);
                 break;
             case "1":
                 fileTab.tabTitle.click();
-                e.preventDefault();
                 break;
             case "f":
                 countTab.tabTitle.click();
                 document.getElementById("find-search").focus();
-                e.preventDefault();
                 break;
             case "g":
                 countTab.tabTitle.click();
                 document.getElementById("preview-search-count").focus();
-                e.preventDefault();
                 break;
             case "2":
                 countTab.tabTitle.click();
-                e.preventDefault();
                 break;
             case "3":
                 homeTab.tabTitle.click();
-                e.preventDefault();
                 break;
             case "4":
                 insertTab.tabTitle.click();
-                e.preventDefault();
                 break;
             case "5":
                 emojisTab.tabTitle.click();
-                e.preventDefault();
                 break;
             case "6":
                 regexTab.tabTitle.click();
-                e.preventDefault();
                 break;
             case "7":
                 helpTab.tabTitle.click();
-                e.preventDefault();
                 break;
             case "8":
                 UIOptionsTab.tabTitle.click();
-                e.preventDefault();
                 break;
             case "9":
                 optionsTab.tabTitle.click();
-                e.preventDefault();
                 break;
             case "k":
                 startEndTypeInTextArea("[](", ")", { cursor: 1 });
-                e.preventDefault();
                 break;
             case "z":
                 actionHistory.undo();
-                e.preventDefault();
                 break;
             case "'":
                 addOLULInclude();
@@ -434,31 +399,24 @@ function keyPresses(e) {
     }
     //alt key
     else if (e.altKey && !e.shiftKey && !e.ctrlKey) {
+        if ("pishb69421".includes(e.key))
+            e.preventDefault();
         switch (e.key) {
             case "p":
                 contextMenuColorpicker.click();
-                e.preventDefault();
                 break;
             case "i":
                 typeInTextarea("``");
-                e.preventDefault();
-                break;
-            case "s":
-                addShadow();
-                e.preventDefault();
                 break;
             case "h":
                 addSpace();
-                e.preventDefault();
                 break;
             case "b":
                 addBorder();
-                e.preventDefault();
                 break;
             case "6":
                 DarkMode = !DarkMode;
                 setDarkMode();
-                e.preventDefault();
                 break;
             case "9":
                 useMathJaxCheckbox.checked = !useMathJaxCheckbox.checked;
@@ -466,15 +424,12 @@ function keyPresses(e) {
                     mathJax();
                 else
                     preview.innerHTML = convert(textEditor.value, cusotmMdChkbx.checked);
-                e.preventDefault();
                 break;
             case "4":
                 document.getElementById("custom").click();
-                e.preventDefault();
                 break;
             case "2":
                 document.getElementById("live-interprate").click();
-                e.preventDefault();
                 break;
             case "1":
                 textEditor.style.cursor = "wait";
@@ -483,42 +438,33 @@ function keyPresses(e) {
                 if (useMathJaxCheckbox.checked)
                     mathJax();
                 textEditor.style.cursor = "initial";
-                e.preventDefault();
                 break;
         }
     }
     //ctrl + shift + key
     else if (e.ctrlKey && e.shiftKey && !e.altKey) {
+        console.log(e.ctrlKey, e.shiftKey, e.altKey);
+        if ("URD?FESZBT!@#$%^&*{}|".includes(e.key))
+            e.preventDefault();
         switch (e.key.toUpperCase()) {
             case "U":
                 typeInTextarea('^__^', 2);
-                e.preventDefault();
                 break;
             case "R":
                 typeInTextarea('^~~^', 2);
-                e.preventDefault();
                 break;
             case "D":
                 typeInTextarea('^..^', 2);
-                e.preventDefault();
                 break;
             case "?":
                 startEndTypeInTextArea("> ", "\n-");
-                e.preventDefault();
                 break;
             case "F":
                 startEndTypeInTextArea('f[]', '|', { cursor: 2, defaultCursor: 2 });
-                e.preventDefault();
                 break;
             case "E":
                 const editingBar = document.getElementById('editing-bar');
-                if (editingBar.classList.contains("editing-bar-off")) {
-                    editingBar.classList.value = "editing-bar";
-                }
-                else {
-                    editingBar.classList.value = "editing-bar-off";
-                }
-                e.preventDefault();
+                editingBar.classList.value = editingBar.classList.contains("editing-bar-off") ? "editing-bar" : "editing-bar-off";
                 break;
             case "S":
                 let currTextSize = document.getElementById("text-size").value;
@@ -527,64 +473,49 @@ function keyPresses(e) {
                     currTextSize += currTextUnit;
                 }
                 startEndTypeInTextArea(`s[${currTextSize}]`, '|');
-                e.preventDefault();
                 break;
             case "Z":
                 const currColorSelected = document.getElementById("text-color").value;
                 startEndTypeInTextArea(`#[${currColorSelected.split("#")[1]}]`, '|');
-                e.preventDefault();
                 break;
             case "B":
                 typeInTextarea('> \'\'\'\'[author]', 4);
-                e.preventDefault();
                 break;
             case "T":
                 startEndTypeInTextArea('|', '||\n|---|---|\n|||');
-                e.preventDefault();
                 break;
             case "!":
                 startEndTypeInTextArea(`<c-3d>`, `</c-3d>`);
-                e.preventDefault();
                 break;
             case "@":
                 startEndTypeInTextArea("<c-rainbow>", "</c-rainbow>");
-                e.preventDefault();
                 break;
             case "#":
                 startEndTypeInTextArea("<c-upsidedown>", "</c-upsidedown>");
-                e.preventDefault();
                 break;
             case "$":
                 startEndTypeInTextArea("<c-circled>", "</c-circled>");
-                e.preventDefault();
                 break;
             case "%":
                 startEndTypeInTextArea("<c-unicode>", "</c-unicode>");
-                e.preventDefault();
                 break;
             case "^":
                 startEndTypeInTextArea("<c-choose items=''>", "</c-choose>");
-                e.preventDefault();
                 break;
             case "&":
                 startEndTypeInTextArea("<c-random min=0 max=100 round=0>", "</c-random>");
-                e.preventDefault();
                 break;
             case "*":
                 startEndTypeInTextArea("<c-spacer></c-spacer>", "");
-                e.preventDefault();
                 break;
             case "{":
                 startEndTypeInTextArea("|", "<-|");
-                e.preventDefault();
                 break;
             case "}":
                 startEndTypeInTextArea("|->", "|");
-                e.preventDefault();
                 break;
             case "|":
                 startEndTypeInTextArea("|->", "<-|");
-                e.preventDefault();
                 break;
         }
     }
@@ -596,7 +527,7 @@ function keyPresses(e) {
                     e.preventDefault();
                 break;
             case "p":
-                addTextTypeInTextArea(">CON: ");
+                startEndTypeInTextArea(">CON: ", "");
                 e.preventDefault();
                 break;
             case "i":
@@ -618,12 +549,21 @@ function keyPresses(e) {
                 e.preventDefault();
                 break;
             case "F":
-                addTextTypeInTextArea("\\font{arial}\n");
+                startEndTypeInTextArea("\\font{arial}\n", "");
                 e.preventDefault();
                 break;
             case "U":
                 typeInTextarea("^^__^^", 3),
                     e.preventDefault();
+                break;
+            case "C":
+                textEditor.style.cursor = "wait";
+                preview.innerHTML = convert(textEditor.value, cusotmMdChkbx.checked);
+                highlightCode();
+                if (useMathJaxCheckbox.checked)
+                    mathJax();
+                textEditor.style.cursor = "initial";
+                e.preventDefault();
                 break;
         }
     }
@@ -639,22 +579,6 @@ document.addEventListener("keydown", e => {
         printMe(preview);
     }
     else if (e.altKey && e.shiftKey && e.ctrlKey) {
-        switch (e.key.toUpperCase()) {
-            case "S":
-                saveFile();
-                document.getElementById("download").click();
-                e.preventDefault();
-                break;
-            case "B":
-                savePlain();
-                document.getElementById("download-plain").click();
-                e.preventDefault();
-                break;
-            case "P":
-                savePDF();
-                e.preventDefault();
-                break;
-        }
         if (document.activeElement == textEditor) {
             keyPresses(e);
         }
@@ -671,18 +595,8 @@ document.getElementById("preview-search-count").addEventListener("keydown", (e) 
 });
 let EditMode = false;
 function setEditMode() {
-    if (!EditMode) {
-        const editingBar = document.getElementById("editing-bar");
-        editingBar.classList.value = "editing-bar-off";
-        textEditor.style.width = "100%";
-        preview.style.display = "none";
-    }
-    else {
-        const editingBar = document.getElementById("editing-bar");
-        editingBar.classList.value = "editing-bar";
-        textEditor.style.width = "50%";
-        preview.style.display = "initial";
-    }
+    const editingBar = document.getElementById("editing-bar");
+    [editingBar.classList.value, textEditor.style.width, preview.style.display] = EditMode ? ["editing-bar", "50%", "initial"] : ["editing-bar-off", "100%", "none"];
     EditMode = !EditMode;
 }
 let PreviewMode = false;
@@ -874,29 +788,4 @@ function findMatchingRegexes(log = true) {
         return [];
     });
 }
-document.getElementById("add-custom-emote-value").addEventListener("keydown", e => {
-    if (e.key == "Enter") {
-        document.getElementById("add-emoji-button").click();
-    }
-});
-document.getElementById("remove-custom-emote").addEventListener("keydown", e => {
-    if (e.key == "Enter") {
-        document.getElementById("remove-emoji-button").click();
-    }
-});
-document.getElementById("add-custom-emote-name").addEventListener("keydown", e => {
-    if (e.key == "Enter") {
-        document.getElementById("add-emoji-button").click();
-    }
-});
-document.getElementById("custom-regex-replacer").addEventListener("keydown", e => {
-    if (e.key == "Enter") {
-        document.getElementById("add-regex-button").click();
-    }
-});
-document.getElementById("remove-custom-regex-searcher").addEventListener('keydown', e => {
-    if (e.key == "Enter") {
-        document.getElementById("remove-regex-button").click();
-    }
-});
 document.querySelector("body").removeChild(document.getElementById("loading-screen"));

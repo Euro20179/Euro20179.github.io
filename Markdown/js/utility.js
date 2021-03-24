@@ -136,9 +136,5 @@ String.prototype.multiply = function (times) {
     return newString;
 };
 function mulString(str, amount) {
-    let newStr = "";
-    for (let i = 0; i < amount; i++) {
-        newStr += str;
-    }
-    return newStr;
+    return str.multiply(amount);
 }

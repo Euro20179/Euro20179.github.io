@@ -289,12 +289,6 @@ const regexes = [
         }
     ],
     [
-        /(?<!\\|\.)(?:\[([0-9]+.{2,4})?(?::|x)([0-9]+.{2,4})?\])(!)?(.+?)\|/g,
-        (_, width, height, resize, text) => {
-            return `<c-textbox width="${width ?? ""}" height="${height ?? ""}"${resize ? ' style="resize:none;"' : ""}>${text}</c-textbox>`;
-        }
-    ],
-    [
         /(?<!\\)\((C|R)\)/g,
         (_, CR) => CR == "C" ? "©" : "®"
     ],
@@ -354,39 +348,39 @@ const regexes = [
     ],
     [
         /(?<!\\|!)\[(.*?)\]\((.+?)(?:\s(.*?))?\)/g,
-        (_, text, link, title) => `<a title="${title ?? link}" href="${link}">${text}</a>`
+        (_, text, link, title) => `<a class="_link" title="${title ?? link}" href="${link}">${text}</a>`
     ],
     [
         /(?<!\\)(?:\[(.+?)\])?\^\^_(.+?)_\^\^(?:\[(.+?)\])?/g,
-        '<span style="text-decoration:overline double $1" title="$3">$2</span>'
+        '<span style="text-decoration:overline double $1" title="$3" class=".overline .double">$2</span>'
     ],
     [
         /(?<!\\)(?:\[(.+?)\])?\^_(.+?)_\^(?:\[(.+?)\])?/g,
-        '<span style="text-decoration:overline $1" title="$3">$2</span>'
+        '<span style="text-decoration:overline $1" title="$3" class=".overline">$2</span>'
     ],
     [
         /(?<!\\)(?:\[(.+?)\])?\^\.(.+?)\.\^(?:\[(.+?)\])?/g,
-        '<span style="text-decoration:overline dotted $1" title="$3">$2</span>'
+        '<span style="text-decoration:overline dotted $1" title="$3" class=".overline .dotted">$2</span>'
     ],
     [
         /(?<!\\)(?:\[(.+?)\])?\^~(.+?)~\^(?:\[(.+?)\])?/g,
-        '<span style="text-decoration:overline wavy $1" title="$3">$2</span>'
+        '<span style="text-decoration:overline wavy $1" title="$3" class=".wavy .overline">$2</span>'
     ],
     [
         /(?<!\\)(?:\[(.+?)\])?\._(.+?)_\.(?:\[(.+?)\])?/g,
-        '<span style="text-decoration:underline dotted $1" title="$3">$2</span>'
+        '<span style="text-decoration:underline dotted $1" title="$3" id=".dotted">$2</span>'
     ],
     [
         /(?<!\\)(?:\[(.+?)\])?~_(.+?)_~(?:\[(.+?)\])?/g,
-        '<span style="text-decoration:underline wavy $1" title="$3">$2</span>'
+        '<span style="text-decoration:underline wavy $1" title="$3" class=".wavy">$2</span>'
     ],
     [
         /(?<!\\)(?:\[(.+?)\])?__(.+?)__(?:\[(.+?)\])?/g,
-        '<span style="text-decoration:underline double $1" title="$3">$2</span>'
+        '<span style="text-decoration:underline double $1" title="$3" class=".underline .double">$2</span>'
     ],
     [
         /(?<!\\|_)(?:\[(.+?)\])?_(.+?)_(?:\[(.+?)\])?/g,
-        "<u style='text-decoration:underline $1' title='$3'>$2</u>"
+        "<u style='text-decoration:underline $1' title='$3' class=\".underline\">$2</u>"
     ],
     [
         /(?<!\\)\|->(.+?)(?: ?<(.*?))?\|/g,
@@ -401,9 +395,9 @@ const regexes = [
         '<span class="$1">$2</span>'
     ],
     [
-        /(?<!\\)(?<=(?:\* ?)?)(?:\.|>)(PRO|CON):?(.*)/gi,
+        /(?<!\\)(?:(?:\*|>)(p|x)) (.*)/gi,
         (_, PC, contents) => {
-            let Pro = PC === "PRO";
+            let Pro = PC === "p";
             return `<span style="color:${Pro ? "green" : "red"}">${Pro ? "✓" : "☒"} ${contents}</span>`;
         }
     ],
@@ -412,7 +406,7 @@ const regexes = [
         "<audio controls src='$1'>"
     ],
     [
-        /(?<!\\)(?:YT|V)!\[(.+?)\](?:\(([0-9\.]*)(?: |, ?)([0-9\.]*)\))?/g,
+        /(?<!\\)YT!\[(.+?)\](?:\(([0-9\.]*)(?: |, ?)([0-9\.]*)\))?/g,
         (_, link, width, height) => {
             return `<iframe width="${width}" height="${height}" src="${link.replace("watch?v=", "embed/")}"></iframe>`;
         }
@@ -540,7 +534,7 @@ ${selector} li{
         }
     ],
     [
-        /(?<!\\)\\END(F|S|#|C|H|W|L)(?:\{(.*?)\}| (.*?)\\)/gi,
+        /(?<!\\)\\END(.|\\)(?:\{(.*?)\}| (.*?)\\)?/gi,
         (_, type, newValue, newValue2) => {
             newValue = newValue2 ?? newValue;
             switch (type.toUpperCase()) {
@@ -558,12 +552,10 @@ ${selector} li{
                     return `</div><div style="word-spacing: ${newValue}">`;
                 case "L":
                     return `</div><div style="letter-spacing: ${newValue}">`;
+                default:
+                    return `</div>`;
             }
         }
-    ],
-    [
-        /(?<!\\)\\END(?:.*?\\|\{.*?\})/g,
-        "</div>"
     ],
     [
         /(?<!\\)\$\$(none|unit|simplify)?\$(.*?)\$(nohover)?\$\$/g,
@@ -617,14 +609,6 @@ ${selector} li{
     [
         /(?<!\\)\/=/g,
         "&ne;"
-    ],
-    [
-        /(?<!\\)<\.\.\./g,
-        "&#8672;"
-    ],
-    [
-        /(?<!\\)\.\.\.>/g,
-        "&#8674;"
     ],
     [
         /(?<!\\)^(.*?)->(.+?)$/gm,
