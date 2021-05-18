@@ -252,15 +252,15 @@ const regexes = [
         (_, interactive, checked) => `<input type="checkbox" ${checked === "x" ? "checked" : ""} ${!interactive ? "disabled" : ""}>`
     ],
     [
-        /(?<!\\)#\[?([a-z0-9]+)(?:\]| -> )(.+?)\|(?:\[(.+?)\])?/gi,
+        /(?<!\\)#\[([a-z0-9]+)\](.+?)\|(?:\[(.+?)\])?/gi,
         (_, color, content, title) => `<span title="${title ?? ""}" style="color:${color.match(/(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})/) ? "#" + color : color}">${content}</span>`
     ],
     [
-        /(?<!\\)s\[?([a-z0-9]+)(?:\]| -> )(.+?)\|(?:\[(.+?)\])?/gi,
+        /(?<!\\)s\[([a-z0-9]+)\](.+?)\|(?:\[(.+?)\])?/gi,
         '<span style="font-size:$1" title="$3">$2</span>'
     ],
     [
-        /(?<!\\)f\[?([a-z0-9 ]+)(?:\]| -> )(.+?)\|(?:\[(.+?)\])?/gi,
+        /(?<!\\)f\[([a-z0-9 ]+)\](.+?)\|(?:\[(.+?)\])?/gi,
         '<span title="$3" style="font-family:$1">$2</span>'
     ],
     [
