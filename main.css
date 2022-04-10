@@ -1,0 +1,70 @@
+:root{
+    --purple: rgb(101, 101, 235);
+    --dark-grey: rgb(50, 50, 50);
+    --grey: rgb(128, 128, 128);
+    --light-grey: rgb(200, 200, 200);
+    --blue: rgb(65, 145, 211);
+}
+
+html {
+    font-size: 1.3rem;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6{
+    display: block;
+    text-align: center;
+}
+
+p{
+    color: var(--dark-grey);
+    text-align: center;
+}
+
+section{
+    margin-top: 3rem;
+    margin-bottom: 3rem;
+}
+
+.section-header{
+    text-decoration: solid underline var(--purple);
+}
+
+#project-list{
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    
+    --item-padding: 3px;
+}
+
+#project-list li {
+    margin-bottom: calc(var(--item-padding) + .5ch);
+    margin-top: var(--item-padding);
+    padding-top: var(--item-padding);
+    padding-bottom: var(--item-padding);
+}
+
+#project-list .project{
+    font-size: 1.2em;
+    color: var(--dark-grey);
+    border: 2px solid var(--purple);
+    border-radius: .2em;
+    padding: var(--item-padding);
+    text-decoration: none;
+}
+
+#project-list .project:hover{
+    background-color: var(--purple);
+    filter: brightness(120%);
+    transition: color 100ms ease-in,
+        background-color 100ms ease-in;
+    color: white;
+}
+
+#project-list li::marker{
+    content: ""
+}
