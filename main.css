@@ -1,11 +1,23 @@
 :root{
     --purple: rgb(101, 101, 235);
     --dark-grey: rgb(50, 50, 50);
-    --grey: rgb(128, 128, 128);
+    --grey: rgb(98, 98, 98);
     --light-grey: rgb(200, 200, 200);
     --blue: rgb(65, 145, 211);
     --red: #f13648;
     --osu: #eb73a9;
+    --minecraft: #387e24;
+    --toc-width: 20vw;
+}
+
+
+@keyframes chronimation{
+    0%{
+        rotate: 0deg;
+    }
+    100%{
+        rotate: 360deg;
+    }
 }
 
 @supports not (-moz-appearance:none){
@@ -38,14 +50,31 @@
     }
 }
 
+main, header, footer{
+    margin-left: calc(var(--toc-width) + 2px) ;
+}
+
+footer > p:nth-child(1){
+    position: absolute;
+
+    margin: 0px;
+
+    left: 50vw;
+    bottom: 0px;
+    transform: translateX(-50%);
+
+    font-size: .5rem;
+}
+
 html {
     font-size: 1.3rem;
     font-family: Arial, Helvetica, sans-serif;
+    background-color: #f0f0f0;
 }
 
 h1, h2, h3, h4, h5, h6{
     display: block;
-    text-align: center;
+    padding-left: 10px;
 }
 
 p{
@@ -58,17 +87,21 @@ section{
 }
 
 .section-header{
-    text-decoration: solid underline var(--blue);
+    border-bottom: .1em solid var(--blue);
 }
 
 .osu{
     color: var(--osu);
 }
 
+.minecraft{
+    color: var(--minecraft);
+}
+
 #project-list{
     margin: 0;
     margin-right: 1ch;
-    
+
     --item-padding: 3px;
 }
 
@@ -104,6 +137,8 @@ section{
     position: fixed;
     border: 2px solid var(--blue);
     border-radius: .2em;
+    height: 90vh;
+    width: var(--toc-width);
 }
 
 #table-of-contents-header{
@@ -135,4 +170,8 @@ section{
 
 .tiny{
     font-size: .2em;
+}
+
+.sub-list{
+    list-style: lower-latin;
 }
