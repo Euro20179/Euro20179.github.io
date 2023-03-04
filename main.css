@@ -1,13 +1,16 @@
 :root{
-    --purple: rgb(101, 101, 235);
-    --dark-grey: rgb(50, 50, 50);
-    --grey: rgb(98, 98, 98);
-    --light-grey: rgb(200, 200, 200);
     --blue: rgb(65, 145, 211);
     --red: #f13648;
     --osu: #eb73a9;
     --minecraft: #387e24;
+
     --toc-width: 20vw;
+
+    --main: #1E1E2A;
+
+    --error: #F28FAD;
+
+    --text-color: white;
 }
 
 
@@ -69,7 +72,8 @@ footer > p:nth-child(1){
 html {
     font-size: 1.3rem;
     font-family: Arial, Helvetica, sans-serif;
-    background-color: #f0f0f0;
+    background-color: var(--main);
+    color: var(--text-color);
 }
 
 h1, h2, h3, h4, h5, h6{
@@ -78,7 +82,7 @@ h1, h2, h3, h4, h5, h6{
 }
 
 p{
-    color: var(--dark-grey);
+    color: var(--text-color);
     text-align: center;
 }
 
@@ -174,4 +178,13 @@ section{
 
 .sub-list{
     list-style: lower-latin;
+}
+
+#project-list .deprecated{
+    color: var(--error);
+    font-size: 0.8rem;
+}
+
+#project-list .deprecated::before{
+    content: "(bad) ";
 }
