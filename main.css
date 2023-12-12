@@ -23,26 +23,28 @@
     }
 }
 
-@supports not (-moz-appearance:none){
-    body, body *{
-	display: none;
-	visibility: hidden;
-	color: transparent;
-	background-color: white;
-    }
+@supports (-webkit-text-fill-color: red) {
+    @supports not (-moz-appearance: none) {
+        body *{
+            display: none;
+            visibility: hidden;
+            color: transparent;
+            background-color: white;
+        }
 
-    html::before{
-	content: "I like firefox, therefore this website only works on firefox lol";
-	text-align: center;
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	font-family: times new roman, times, serif;
-	color: white;
-    }
-    html{
-	background: black;
+        html::before{
+            content: "This website does not work in webkit/blink browsers because I said so";
+            text-align: center;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: times new roman, times, serif;
+            color: white;
+        }
+        html{
+            background: black;
+        }
     }
 }
 
@@ -70,10 +72,13 @@ footer > p:nth-child(1){
 }
 
 html {
-    font-size: 1.3rem;
     font-family: Arial, Helvetica, sans-serif;
     background-color: var(--main);
     color: var(--text-color);
+}
+
+body {
+    font-size: 1.3rem;
 }
 
 h1, h2, h3, h4, h5, h6{
